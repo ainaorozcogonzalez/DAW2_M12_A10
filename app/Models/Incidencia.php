@@ -13,8 +13,8 @@ class Incidencia extends Model
         'categoria_id',
         'subcategoria_id',
         'descripcion',
-        'estado',
-        'prioridad',
+        'estado_id',
+        'prioridad_id',
         'fecha_creacion',
         'fecha_resolucion'
     ];
@@ -52,5 +52,15 @@ class Incidencia extends Model
     public function comentarios()
     {
         return $this->hasMany(Comentario::class);
+    }
+
+    public function estado()
+    {
+        return $this->belongsTo(EstadoIncidencia::class);
+    }
+
+    public function prioridad()
+    {
+        return $this->belongsTo(Prioridad::class);
     }
 }

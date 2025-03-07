@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignId('categoria_id')->constrained('categorias');
             $table->foreignId('subcategoria_id')->constrained('subcategorias');
             $table->text('descripcion');
-            $table->enum('estado', ['Sin asignar', 'Asignada', 'En trabajo', 'Resuelta', 'Tancada'])->default('Sin asignar');
-            $table->enum('prioridad', ['alta', 'media', 'baja'])->default('media');
+            $table->foreignId('estado_id')->constrained('estado_incidencias');
+            $table->foreignId('prioridad_id')->constrained('prioridades');
             $table->timestamp('fecha_creacion')->useCurrent();
             $table->timestamp('fecha_resolucion')->nullable();
             $table->timestamps();

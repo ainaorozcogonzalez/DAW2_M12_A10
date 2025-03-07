@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('rol', ['administrador', 'cliente', 'gestor', 'tecnico']);
+            $table->foreignId('rol_id')->constrained('roles');
             $table->foreignId('sede_id')->constrained('sedes');
             $table->enum('estado', ['activo', 'inactivo'])->default('activo');
             $table->timestamps();
