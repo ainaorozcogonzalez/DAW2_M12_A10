@@ -27,7 +27,8 @@ class AuthController extends Controller
             // Redirección basada en el rol
             $user = Auth::user();
             
-            switch ($user->rol) {
+            // Accedemos al nombre del rol a través de la relación
+            switch ($user->rol->nombre) {
                 case 'administrador':
                     return redirect()->route('admin.dashboard');
                 case 'cliente':
