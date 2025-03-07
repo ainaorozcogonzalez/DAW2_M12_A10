@@ -6,5 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sede extends Model
 {
-    //
+    protected $fillable = [
+        'nombre',
+        'direccion'
+    ];
+
+    public function usuarios()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function incidencias()
+    {
+        return $this->hasMany(Incidencia::class);
+    }
 }

@@ -48,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function incidenciasComoCliente()
+    {
+        return $this->hasMany(Incidencia::class, 'cliente_id');
+    }
+
+    public function incidenciasComoTecnico()
+    {
+        return $this->hasMany(Incidencia::class, 'tecnico_id');
+    }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentario::class, 'usuario_id');
+    }
+
+    public function sede()
+    {
+        return $this->belongsTo(Sede::class);
+    }
 }
