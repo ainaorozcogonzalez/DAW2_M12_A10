@@ -11,4 +11,8 @@ class IncidenciaController extends Controller
         $this->middleware('auth');
     }
 
+    public function create()
+    {
+        return view('incidencias.create');
+    }
 } 
