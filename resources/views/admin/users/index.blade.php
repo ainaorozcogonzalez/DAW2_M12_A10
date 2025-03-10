@@ -55,6 +55,47 @@
             </button>
         </div>
 
+        <!-- Filtros -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <form action="{{ route('users.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                    <label for="rol_id" class="block text-sm font-medium text-gray-700">Rol</label>
+                    <select name="rol_id" id="rol_id" class="w-full px-3 py-2 border rounded-md">
+                        <option value="">Todos</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ request('rol_id') == $role->id ? 'selected' : '' }}>{{ $role->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
+                    <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <option value="">Todas</option>
+                        @foreach($sedes as $sede)
+                            <option value="{{ $sede->id }}" {{ request('sede_id') == $sede->id ? 'selected' : '' }}>{{ $sede->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
+                    <select name="estado" id="estado" class="w-full px-3 py-2 border rounded-md">
+                        <option value="">Todos</option>
+                        @foreach($estados as $estado)
+                            <option value="{{ $estado }}" {{ request('estado') == $estado ? 'selected' : '' }}>{{ ucfirst($estado) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <a href="{{ route('users.index') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                        <i class="fas fa-times"></i> Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <!-- User Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($users as $user)

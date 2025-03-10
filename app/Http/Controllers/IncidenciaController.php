@@ -81,4 +81,82 @@ class IncidenciaController extends Controller
 
         return redirect()->back()->with('success', 'Incidencia creada exitosamente');
     }
+
+    public function edit(Incidencia $incidencia)
+    {
+        return response()->json([
+            'id' => $incidencia->id,
+            'titulo' => $incidencia->titulo,
+            'descripcion' => $incidencia->descripcion,
+            'estado' => $incidencia->estado,
+            'prioridad' => $incidencia->prioridad,
+            'cliente_id' => $incidencia->cliente_id,
+            'tecnico_id' => $incidencia->tecnico_id,
+        ]);
+    }
+
+    public function index(Request $request)
+    {
+        // Obtener listas para los selectores del formulario
+        $clientes = User::where('rol_id', 2)->get(); // Suponiendo que el rol 2 es para clientes
+        $tecnicos = User::where('rol_id', 4)->get(); // Suponiendo que el rol 4 es para técnicos
+        $sedes = Sede::all();
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        $estados = EstadoIncidencia::all();
+        $prioridades = Prioridad::all();
+
+        // Construir la consulta base
+        $query = Incidencia::with(['cliente', 'tecnico', 'estado', 'prioridad']);
+
+        // Aplicar filtros si están presentes en la solicitud
+        if ($request->has('estado_id') && $request->estado_id) {
+            $query->where('estado_id', $request->estado_id);
+        }
+
+        if ($request->has('prioridad_id') && $request->prioridad_id) {
+            $query->where('prioridad_id', $request->prioridad_id);
+        }
+
+        if ($request->has('cliente_id') && $request->cliente_id) {
+            $query->where('cliente_id', $request->cliente_id);
+        }
+
+        if ($request->has('tecnico_id') && $request->tecnico_id) {
+            $query->where('tecnico_id', $request->tecnico_id);
+        }
+
+        if ($request->has('sede_id') && $request->sede_id) {
+            $query->where('sede_id', $request->sede_id);
+        }
+
+        if ($request->has('categoria_id') && $request->categoria_id) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
+
+        if ($request->has('subcategoria_id') && $request->subcategoria_id) {
+            $query->where('subcategoria_id', $request->subcategoria_id);
+        }
+
+        // Obtener las incidencias filtradas
+        $incidencias = $query->get();
+
+        // Pasar los datos a la vista
+        return view('admin.incidencias.index', compact(
+            'incidencias',
+            'clientes',
+            'tecnicos',
+            'sedes',
+            'categorias',
+            'subcategorias',
+            'estados',
+            'prioridades'
+        ));
+    }
+
+    public function destroy(Incidencia $incidencia)
+    {
+        $incidencia->delete();
+        return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
+    }
 } 

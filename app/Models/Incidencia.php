@@ -31,17 +31,17 @@ class Incidencia extends Model
 
     public function sede()
     {
-        return $this->belongsTo(Sede::class);
+        return $this->belongsTo(Sede::class, 'sede_id');
     }
 
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
     public function subcategoria()
     {
-        return $this->belongsTo(Subcategoria::class);
+        return $this->belongsTo(Subcategoria::class, 'subcategoria_id');
     }
 
     public function archivos()
@@ -56,11 +56,11 @@ class Incidencia extends Model
 
     public function estado()
     {
-        return $this->belongsTo(EstadoIncidencia::class);
+        return $this->belongsTo(EstadoIncidencia::class, 'estado_id');
     }
 
     public function prioridad()
     {
-        return $this->belongsTo(Prioridad::class);
+        return $this->belongsTo(Prioridad::class, 'prioridad_id');
     }
 }

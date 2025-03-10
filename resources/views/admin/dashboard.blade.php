@@ -39,18 +39,18 @@
             <!-- Quick Stats -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-                    <div class="flex items-center space-x-4">
+                    <a href="{{ route('users.index') }}" class="flex items-center space-x-4">
                         <div class="p-3 bg-indigo-50 rounded-full">
                             <i class="fas fa-users text-indigo-600"></i>
                         </div>
                         <div>
-                            <a href="{{ route('users.index') }}" class="text-gray-500 hover:text-indigo-600 transition-colors">Usuarios</a>
-                            <a href="{{ route('users.index') }}" class="text-2xl font-bold hover:text-indigo-600 transition-colors block">{{ App\Models\User::count() }}</a>
+                            <p class="text-gray-500">Usuarios</p>
+                            <p class="text-2xl font-bold">{{ App\Models\User::count() }}</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-                    <div class="flex items-center space-x-4">
+                    <a href="{{ route('incidencias.index') }}" class="flex items-center space-x-4">
                         <div class="p-3 bg-green-50 rounded-full">
                             <i class="fas fa-tasks text-green-600"></i>
                         </div>
@@ -58,7 +58,7 @@
                             <p class="text-gray-500">Incidencias</p>
                             <p class="text-2xl font-bold">{{ App\Models\Incidencia::count() }}</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                     <div class="flex items-center space-x-4">

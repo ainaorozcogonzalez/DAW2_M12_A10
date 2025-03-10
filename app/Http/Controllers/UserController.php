@@ -95,12 +95,39 @@ class UserController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Usuario creado exitosamente');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('rol', 'sede')->get();
+        // Obtener listas para los selectores del formulario
         $roles = Rol::all();
         $sedes = Sede::all();
-        return view('admin.users.index', compact('users', 'roles', 'sedes'));
+        $estados = ['activo', 'inactivo'];
+
+        // Construir la consulta base
+        $query = User::with(['rol', 'sede']);
+
+        // Aplicar filtros si están presentes en la solicitud
+        if ($request->has('rol_id') && $request->rol_id) {
+            $query->where('rol_id', $request->rol_id);
+        }
+
+        if ($request->has('sede_id') && $request->sede_id) {
+            $query->where('sede_id', $request->sede_id);
+        }
+
+        if ($request->has('estado') && $request->estado) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Obtener los usuarios filtrados
+        $users = $query->get();
+
+        // Pasar los datos a la vista
+        return view('admin.users.index', compact(
+            'users',
+            'roles',
+            'sedes',
+            'estados'
+        ));
     }
 
     public function edit(User $user)
