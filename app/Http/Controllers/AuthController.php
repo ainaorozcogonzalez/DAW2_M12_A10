@@ -22,12 +22,19 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            // Verificar si el usuario está inactivo
+            if ($user->estado === 'inactivo') {
+                Auth::logout();
+                return back()->withErrors([
+                    'general' => 'Tu cuenta está inactiva. Por favor, contacta al administrador.',
+                ])->withInput($request->only('email'));
+            }
+
             $request->session()->regenerate();
             
             // Redirección basada en el rol
-            $user = Auth::user();
-            
-            // Accedemos al nombre del rol a través de la relación
             switch ($user->rol->nombre) {
                 case 'administrador':
                     return redirect()->route('admin.dashboard');
