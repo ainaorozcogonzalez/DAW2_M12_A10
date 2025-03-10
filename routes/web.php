@@ -75,4 +75,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/incidencias', [IncidenciaController::class, 'index'])->name('incidencias.index');
 });
 
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::resource('users', UserController::class);
