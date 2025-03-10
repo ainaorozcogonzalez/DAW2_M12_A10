@@ -18,11 +18,20 @@
                         <i class="fas fa-bell"></i>
                     </button>
                     <div class="relative">
-                        <button class="flex items-center space-x-2">
+                        <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin" class="w-8 h-8 rounded-full">
                             <span class="text-gray-700">Admin</span>
                             <i class="fas fa-chevron-down text-gray-500"></i>
                         </button>
+                        <!-- Menú desplegable -->
+                        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                            <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                @csrf
+                                <button type="submit" class="w-full text-left">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -417,6 +426,21 @@
                 closeSubcategoriaModal();
             }
         }
+
+        // Manejar el menú desplegable
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+
+        userMenuButton.addEventListener('click', () => {
+            userMenu.classList.toggle('hidden');
+        });
+
+        // Cerrar el menú si se hace clic fuera de él
+        document.addEventListener('click', (event) => {
+            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
     </script>
 
     @if(session('success'))
