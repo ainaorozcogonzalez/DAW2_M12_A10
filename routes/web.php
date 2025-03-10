@@ -8,6 +8,7 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\IncidenciaClienteController;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -73,6 +74,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/incidencias', [IncidenciaController::class, 'index'])->name('incidencias.index');
+
+    
+
+    Route::get('/incidencias', [IncidenciaClienteController::class, 'create'])->name('incidencias.index');
+    Route::post('/incidencias', [IncidenciaClienteController::class, 'store'])->name('incidencias.store');
 });
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');

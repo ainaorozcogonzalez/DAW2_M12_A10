@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             EstadoIncidenciasSeeder::class,
             PrioridadesSeeder::class,
             UsersSeeder::class,
+            CategoriasTableSeeder::class,
+            SubcategoriasTableSeeder::class,
         ]);
     }
 }
