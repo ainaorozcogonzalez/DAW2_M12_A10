@@ -44,8 +44,8 @@
                             <i class="fas fa-users text-indigo-600"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500">Usuarios</p>
-                            <p class="text-2xl font-bold">{{ App\Models\User::count() }}</p>
+                            <a href="{{ route('users.index') }}" class="text-gray-500 hover:text-indigo-600 transition-colors">Usuarios</a>
+                            <a href="{{ route('users.index') }}" class="text-2xl font-bold hover:text-indigo-600 transition-colors block">{{ App\Models\User::count() }}</a>
                         </div>
                     </div>
                 </div>

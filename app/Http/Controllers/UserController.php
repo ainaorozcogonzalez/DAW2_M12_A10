@@ -94,4 +94,70 @@ class UserController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'Usuario creado exitosamente');
     }
+
+    public function index()
+    {
+        $users = User::with('rol', 'sede')->get();
+        $roles = Rol::all();
+        $sedes = Sede::all();
+        return view('admin.users.index', compact('users', 'roles', 'sedes'));
+    }
+
+    public function edit(User $user)
+    {
+        return response()->json([
+            'id' => $user->id,
+            'nombre' => $user->nombre,
+            'email' => $user->email,
+            'rol_id' => $user->rol_id,
+            'sede_id' => $user->sede_id,
+            'estado' => $user->estado
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email,' . $user->id,
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/'
+            ],
+            'rol_id' => 'required|exists:roles,id',
+            'sede_id' => 'required|exists:sedes,id',
+            'estado' => 'required|in:activo,inactivo'
+        ]);
+
+        $user->update([
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'rol_id' => $request->rol_id,
+            'sede_id' => $request->sede_id,
+            'estado' => $request->estado
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
+    }
 } 
