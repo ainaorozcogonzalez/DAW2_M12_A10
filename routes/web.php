@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\CategoriaController;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -51,4 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tech/dashboard', function () {
         return view('tech.dashboard');
     })->name('tech.dashboard');
+
+    // Categoría routes
+    Route::prefix('categorias')->group(function () {
+        Route::post('/', [CategoriaController::class, 'store'])->name('categorias.store');
+    });
 });

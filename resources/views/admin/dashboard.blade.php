@@ -127,10 +127,10 @@
                             <i class="fas fa-plus-circle text-green-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Incidencia</p>
                         </button>
-                        <a href="{{ route('reportes.index') }}" class="p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
-                            <i class="fas fa-chart-pie text-yellow-600 mb-2"></i>
-                            <p class="text-sm font-medium">Generar Reporte</p>
-                        </a>
+                        <button onclick="openCategoriaModal()" class="p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                            <i class="fas fa-plus text-yellow-600 mb-2"></i>
+                            <p class="text-sm font-medium">Crear Categoría</p>
+                        </button>
                         <a href="{{ route('configuracion.index') }}" class="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
                             <i class="fas fa-cog text-red-600 mb-2"></i>
                             <p class="text-sm font-medium">Configuración</p>
@@ -283,10 +283,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Categoría Modal -->
+    <div id="categoriaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Categoría</h3>
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('categorias.store') }}" id="categoriaForm">
+                    @csrf
+                    <div>
+                        <input type="text" name="nombre" id="nombre_categoria" placeholder="Nombre de la categoría"
+                            class="w-full px-3 py-2 border rounded-md">
+                        <div id="nombre_categoria-error" class="error-message"></div>
+                    </div>
+                    <div class="flex justify-between mt-4">
+                        <button type="button" onclick="closeCategoriaModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Crear Categoría
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
     <script src="{{ asset('js/user-form.js') }}"></script>
     <script src="{{ asset('js/incidencia-form.js') }}"></script>
+    <script src="{{ asset('js/categoria-form.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -320,6 +348,38 @@
                 closeIncidenciaModal();
             }
         }
+
+        function openCategoriaModal() {
+            document.getElementById('categoriaModal').classList.remove('hidden');
+        }
+
+        function closeCategoriaModal() {
+            document.getElementById('categoriaModal').classList.add('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('categoriaModal');
+            if (event.target == modal) {
+                closeCategoriaModal();
+            }
+        }
     </script>
+
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </body>
 </html> 
