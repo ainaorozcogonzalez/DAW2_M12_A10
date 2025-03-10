@@ -98,3 +98,4 @@ Route::get('storage/archivos/{filename}', function ($filename) {
         'Content-Disposition' => 'inline; filename="' . $filename . '"',
     ]);
 })->name('archivos.serve');
+Route::resource('users', UserController::class);

@@ -152,7 +152,7 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" id="userForm">
+                <form class="mt-4 space-y-4" method="POST" id="userForm" data-store-url="{{ route('users.store') }}">
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="user_id" id="user_id">
@@ -213,6 +213,15 @@
 
     <script src="{{ asset('js/user-modal.js') }}"></script>
     <script>
+        // Asegurar que las funciones estén disponibles globalmente
+        window.openUserModal = function() {
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        window.closeUserModal = function() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
         // Manejar el menú desplegable
         const userMenuButton = document.getElementById('user-menu-button');
         const userMenu = document.getElementById('user-menu');

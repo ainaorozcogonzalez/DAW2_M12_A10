@@ -144,6 +144,15 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        \Log::info('Datos recibidos para actualización:', $request->all());
+        \Log::info('Usuario a actualizar:', $user->toArray());
+        
+        // Verificar que los datos requeridos están presentes
+        if (!$request->has('rol_id') || !$request->has('sede_id')) {
+            \Log::error('Faltan campos requeridos en la solicitud');
+            return back()->withErrors(['error' => 'Faltan campos requeridos']);
+        }
+
         $request->validate([
             'nombre' => [
                 'required',
@@ -157,7 +166,7 @@ class UserController extends Controller
                 'email',
                 'max:255',
                 'unique:users,email,' . $user->id,
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0.9.-]+\.[a-zA-Z]{2,}$/'
             ],
             'password' => [
                 'nullable',
@@ -170,14 +179,19 @@ class UserController extends Controller
             'estado' => 'required|in:activo,inactivo'
         ]);
 
-        $user->update([
+        $updateData = [
             'nombre' => $request->nombre,
             'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
             'rol_id' => $request->rol_id,
             'sede_id' => $request->sede_id,
             'estado' => $request->estado
-        ]);
+        ];
+
+        if ($request->password) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        $user->update($updateData);
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente');
     }
