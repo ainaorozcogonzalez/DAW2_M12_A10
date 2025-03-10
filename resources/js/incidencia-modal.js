@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const incidenciaModal = document.getElementById('incidencia-modal');
+    const incidenciaModal = document.getElementById('incidenciaModal');
     const incidenciaForm = document.getElementById('incidencia-form');
 
     window.openIncidenciaModal = function(incidencia) {
@@ -44,36 +44,17 @@ document.addEventListener('DOMContentLoaded', function() {
         tecnico_id: { required: true, message: 'Seleccione un técnico.' }
     };
 
-    // Agregar eventos blur a todos los campos
-    Object.keys(fields).forEach(fieldId => {
-        const input = document.getElementById(fieldId);
-        if (input) {
-            input.addEventListener('blur', () => validateField(input, fields[fieldId]));
-        }
-    });
-
-    // Validar formulario al enviar
-    incidenciaForm.addEventListener('submit', function(event) {
-        let isValid = true;
-        Object.keys(fields).forEach(fieldId => {
-            const input = document.getElementById(fieldId);
-            if (input && !validateField(input, fields[fieldId])) {
-                isValid = false;
-            }
-        });
-
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
-
     // Función para validar un campo
     function validateField(input, rules) {
         const value = input.value.trim();
-        const errorDiv = input.parentNode.querySelector('.error-message') || 
-                        document.createElement('div');
+        const errorDiv = document.getElementById(`${input.id}-error`);
         
-        errorDiv.className = 'text-red-500 text-sm mt-1 error-message';
+        if (!errorDiv) {
+            console.error(`No se encontró el div de error para el input: ${input.id}`);
+            return false;
+        }
+
+        errorDiv.className = 'text-red-500 text-sm mt-1';
         input.classList.remove('border-red-500');
 
         // Limpiar mensajes anteriores
@@ -92,4 +73,32 @@ document.addEventListener('DOMContentLoaded', function() {
         input.classList.remove('border-red-500');
         return true;
     }
+
+    // Agregar eventos blur a todos los campos
+    Object.keys(fields).forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+            input.addEventListener('blur', () => {
+                console.log(`Validando campo: ${fieldId}`); // Para depuración
+                validateField(input, fields[fieldId]);
+            });
+        } else {
+            console.error(`No se encontró el input: ${fieldId}`);
+        }
+    });
+
+    // Validar formulario al enviar
+    incidenciaForm.addEventListener('submit', function(event) {
+        let isValid = true;
+        Object.keys(fields).forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            if (input && !validateField(input, fields[fieldId])) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
 }); 

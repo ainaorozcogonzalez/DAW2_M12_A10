@@ -226,7 +226,7 @@
                                 <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="cliente_id-error" class="error-message"></div>
+                        <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
@@ -235,7 +235,7 @@
                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="sede_id-error" class="error-message"></div>
+                        <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -244,7 +244,7 @@
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="categoria_id-error" class="error-message"></div>
+                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -253,12 +253,12 @@
                                 <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="subcategoria_id-error" class="error-message"></div>
+                        <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <textarea name="descripcion" id="descripcion" placeholder="Descripción de la incidencia"
                             class="w-full px-3 py-2 border rounded-md"></textarea>
-                        <div id="descripcion-error" class="error-message"></div>
+                        <div id="descripcion-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
@@ -267,7 +267,7 @@
                                 <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="estado_id-error" class="error-message"></div>
+                        <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
@@ -276,7 +276,7 @@
                                 <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="prioridad_id-error" class="error-message"></div>
+                        <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeIncidenciaModal()"
