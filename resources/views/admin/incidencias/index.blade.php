@@ -225,13 +225,13 @@
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" id="categoria_id_modal" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
                             @foreach($categorias as $categoria)
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="categoria_id_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -241,6 +241,11 @@
                             @endforeach
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div>
+                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
+                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-end space-x-4">
                         <button type="button" onclick="closeIncidenciaModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancelar</button>
@@ -253,6 +258,10 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ asset('js/incidencia-form.js') }}"></script>
+    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    <script src="{{ asset('js/categoria-form.js') }}"></script>
+    <script src="{{ asset('js/user-form.js') }}"></script>
     <script>
         // Funciones para abrir/cerrar el modal
         function openIncidenciaModal() {
@@ -278,7 +287,7 @@
                     document.getElementById('cliente_id').value = incidencia.cliente_id;
                     document.getElementById('tecnico_id').value = incidencia.tecnico_id;
                     document.getElementById('sede_id').value = incidencia.sede_id;
-                    document.getElementById('categoria_id').value = incidencia.categoria_id;
+                    document.getElementById('categoria_id_modal').value = incidencia.categoria_id;
                     document.getElementById('subcategoria_id').value = incidencia.subcategoria_id;
                     document.getElementById('incidenciaModal').classList.remove('hidden');
                 })
