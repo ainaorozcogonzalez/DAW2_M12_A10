@@ -116,17 +116,17 @@
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-xl font-bold mb-4">Acciones Rápidas</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <button onclick="openUserModal()" class="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
                             <i class="fas fa-user-plus text-indigo-600 mb-2"></i>
                             <p class="text-sm font-medium">Agregar Usuario</p>
                         </button>
-                        <a href="{{ route('incidencias.create') }}" class="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <button onclick="openIncidenciaModal()" class="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                             <i class="fas fa-plus-circle text-green-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Incidencia</p>
-                        </a>
+                        </button>
                         <a href="{{ route('reportes.index') }}" class="p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
                             <i class="fas fa-chart-pie text-yellow-600 mb-2"></i>
                             <p class="text-sm font-medium">Generar Reporte</p>
@@ -160,7 +160,7 @@
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md">
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password">
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
@@ -173,7 +173,7 @@
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" id="user_sede_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una sede</option>
                             @foreach($sedes as $sede)
                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
@@ -182,7 +182,7 @@
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="estado" id="estado" class="w-full px-3 py-2 border rounded-md">
                             <option value="inactivo" selected>Inactivo</option>
                             <option value="activo">Activo</option>
                         </select>
@@ -203,7 +203,90 @@
         </div>
     </div>
 
+    <!-- Incidencia Modal -->
+    <div id="incidenciaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}" id="incidenciaForm">
+                    @csrf
+                    <div>
+                        <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione un cliente</option>
+                            @foreach($clientes as $cliente)
+                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="cliente_id-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione una sede</option>
+                            @foreach($sedes as $sede)
+                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="sede_id-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione una categoría</option>
+                            @foreach($categorias as $categoria)
+                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="categoria_id-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione una subcategoría</option>
+                            @foreach($subcategorias as $subcategoria)
+                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="subcategoria_id-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <textarea name="descripcion" id="descripcion" placeholder="Descripción de la incidencia"
+                            class="w-full px-3 py-2 border rounded-md"></textarea>
+                        <div id="descripcion-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione un estado</option>
+                            @foreach($estados as $estado)
+                                <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="estado_id-error" class="error-message"></div>
+                    </div>
+                    <div>
+                        <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione una prioridad</option>
+                            @foreach($prioridades as $prioridad)
+                                <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="prioridad_id-error" class="error-message"></div>
+                    </div>
+                    <div class="flex justify-between mt-4">
+                        <button type="button" onclick="closeIncidenciaModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Crear Incidencia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="{{ asset('js/user-form.js') }}"></script>
+    <script src="{{ asset('js/incidencia-form.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -219,6 +302,22 @@
             const modal = document.getElementById('userModal');
             if (event.target == modal) {
                 closeUserModal();
+            }
+        }
+
+        function openIncidenciaModal() {
+            document.getElementById('incidenciaModal').classList.remove('hidden');
+        }
+
+        function closeIncidenciaModal() {
+            document.getElementById('incidenciaModal').classList.add('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('incidenciaModal');
+            if (event.target == modal) {
+                closeIncidenciaModal();
             }
         }
     </script>

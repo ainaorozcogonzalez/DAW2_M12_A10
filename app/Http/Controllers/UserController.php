@@ -8,6 +8,10 @@ use App\Models\User;
 use App\Models\Rol;
 use App\Models\Sede;
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
+use App\Models\Subcategoria;
+use App\Models\EstadoIncidencia;
+use App\Models\Prioridad;
 
 class UserController extends Controller
 {
@@ -20,7 +24,31 @@ class UserController extends Controller
     {
         $roles = Rol::all();
         $sedes = Sede::all();
-        return view('admin.dashboard', compact('roles', 'sedes'));
+        
+        // Datos para incidencias
+        $clientes = User::whereHas('rol', function($query) {
+            $query->where('nombre', 'cliente');
+        })->get();
+
+        $tecnicos = User::whereHas('rol', function($query) {
+            $query->where('nombre', 'tecnico');
+        })->get();
+
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        $estados = EstadoIncidencia::all();
+        $prioridades = Prioridad::all();
+
+        return view('admin.dashboard', compact(
+            'roles',
+            'sedes',
+            'clientes',
+            'tecnicos',
+            'categorias',
+            'subcategorias',
+            'estados',
+            'prioridades'
+        ));
     }
 
     public function store(Request $request)

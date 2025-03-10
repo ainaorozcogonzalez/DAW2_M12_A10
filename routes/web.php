@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     // Incidencia routes
     Route::prefix('incidencias')->group(function () {
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
+        Route::post('/', [IncidenciaController::class, 'store'])->name('incidencias.store');
     });
 
     // Report routes
