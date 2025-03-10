@@ -131,10 +131,10 @@
                             <i class="fas fa-plus text-yellow-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Categoría</p>
                         </button>
-                        <a href="{{ route('configuracion.index') }}" class="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
-                            <i class="fas fa-cog text-red-600 mb-2"></i>
-                            <p class="text-sm font-medium">Configuración</p>
-                        </a>
+                        <button onclick="openSubcategoriaModal()" class="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                            <i class="fas fa-plus text-red-600 mb-2"></i>
+                            <p class="text-sm font-medium">Crear Subcategoría</p>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -310,11 +310,48 @@
             </div>
         </div>
     </div>
+
+    <!-- Subcategoria Modal -->
+    <div id="subcategoriaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Subcategoría</h3>
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('subcategorias.store') }}" id="subcategoriaForm">
+                    @csrf
+                    <div>
+                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione una categoría</option>
+                            @foreach($categorias as $categoria)
+                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div>
+                        <input type="text" name="nombre" id="nombre_subcategoria" placeholder="Nombre de la subcategoría"
+                            class="w-full px-3 py-2 border rounded-md">
+                        <div id="nombre_subcategoria-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div class="flex justify-between mt-4">
+                        <button type="button" onclick="closeSubcategoriaModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            Crear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
     <script src="{{ asset('js/user-form.js') }}"></script>
     <script src="{{ asset('js/incidencia-form.js') }}"></script>
     <script src="{{ asset('js/categoria-form.js') }}"></script>
+    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -364,6 +401,22 @@
                 closeCategoriaModal();
             }
         }
+
+        function openSubcategoriaModal() {
+            document.getElementById('subcategoriaModal').classList.remove('hidden');
+        }
+
+        function closeSubcategoriaModal() {
+            document.getElementById('subcategoriaModal').classList.add('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('subcategoriaModal');
+            if (event.target == modal) {
+                closeSubcategoriaModal();
+            }
+        }
     </script>
 
     @if(session('success'))
@@ -381,5 +434,17 @@
             </ul>
         </div>
     @endif
+
+    <style>
+        .border-red-500 {
+            border-color: #ef4444 !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
 </body>
 </html> 

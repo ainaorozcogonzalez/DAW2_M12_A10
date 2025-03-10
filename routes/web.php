@@ -7,6 +7,7 @@ use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\SubcategoriaController;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -56,5 +57,10 @@ Route::middleware('auth')->group(function () {
     // Categoría routes
     Route::prefix('categorias')->group(function () {
         Route::post('/', [CategoriaController::class, 'store'])->name('categorias.store');
+    });
+
+    // Subcategoría routes
+    Route::prefix('subcategorias')->group(function () {
+        Route::post('/', [SubcategoriaController::class, 'store'])->name('subcategorias.store');
     });
 });
