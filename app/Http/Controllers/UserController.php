@@ -26,12 +26,33 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/'
+            ],
             'rol_id' => 'required|exists:roles,id',
             'sede_id' => 'required|exists:sedes,id',
-            'estado' => 'required|in:activo,inactivo',
+            'estado' => 'required|in:activo,inactivo'
+        ], [
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'email.regex' => 'El formato del email no es válido.',
+            'password.regex' => 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
         ]);
 
         User::create([

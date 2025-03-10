@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('rol_id')->constrained('roles');
             $table->foreignId('sede_id')->constrained('sedes');
-            $table->enum('estado', ['activo', 'inactivo'])->default('activo');
+            $table->enum('estado', ['activo', 'inactivo'])->default('inactivo');
             $table->timestamps();
         });
     }

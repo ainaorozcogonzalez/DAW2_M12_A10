@@ -146,41 +146,47 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}">
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}" id="userForm">
                     @csrf
                     <div>
-                        <input type="text" name="nombre" placeholder="Nombre completo" required
+                        <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
                             class="w-full px-3 py-2 border rounded-md">
+                        <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="email" name="email" placeholder="Correo electrónico" required
+                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
                             class="w-full px-3 py-2 border rounded-md">
+                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="password" name="password" placeholder="Contraseña" required
+                        <input type="password" name="password" id="password" placeholder="Contraseña"
                             class="w-full px-3 py-2 border rounded-md">
+                        <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="rol_id" id="rol_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione un rol</option>
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}">{{ $role->nombre }}</option>
                             @endforeach
                         </select>
+                        <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una sede</option>
                             @foreach($sedes as $sede)
                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                             @endforeach
                         </select>
+                        <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="estado" id="estado" class="w-full px-3 py-2 border rounded-md" required>
+                            <option value="inactivo" selected>Inactivo</option>
                             <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
                         </select>
+                        <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeUserModal()"
@@ -196,6 +202,8 @@
             </div>
         </div>
     </div>
+
+    <script src="{{ asset('js/user-form.js') }}"></script>
 
     <script>
         function openUserModal() {
