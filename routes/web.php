@@ -8,6 +8,9 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\TecnicoController;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -58,9 +61,9 @@ Route::middleware('auth')->group(function () {
         return view('manager.dashboard');
     })->name('manager.dashboard');
 
-    Route::get('/tech/dashboard', function () {
-        return view('tech.dashboard');
-    })->name('tech.dashboard');
+    Route::get('/tecnico/dashboard', [TecnicoController::class, 'dashboard'])->name('tecnico.dashboard');
+    Route::post('/incidencias/{incidencia}/cambiar-estado', [TecnicoController::class, 'cambiarEstado'])->name('incidencias.cambiar-estado');
+    Route::post('/incidencias/{incidencia}/comentar', [TecnicoController::class, 'enviarComentario'])->name('incidencias.comentar');
 
     // Categoría routes
     Route::prefix('categorias')->group(function () {
@@ -73,6 +76,25 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/incidencias', [IncidenciaController::class, 'index'])->name('incidencias.index');
+
+    Route::get('/incidencias/{incidencia}/mensajes', [TecnicoController::class, 'obtenerMensajes'])->name('incidencias.mensajes');
+    Route::post('/incidencias/mensajes', [TecnicoController::class, 'enviarMensaje'])->name('incidencias.enviar-mensaje');
 });
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+Route::get('storage/archivos/{filename}', function ($filename) {
+    $path = storage_path('app/public/archivos/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404, 'Archivo no encontrado: ' . $path);
+    }
+
+    $file = file_get_contents($path);
+    $type = mime_content_type($path);
+
+    return Response::make($file, 200, [
+        'Content-Type' => $type,
+        'Content-Disposition' => 'inline; filename="' . $filename . '"',
+    ]);
+})->name('archivos.serve');

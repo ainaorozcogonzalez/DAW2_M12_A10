@@ -43,7 +43,7 @@ class AuthController extends Controller
                 case 'gestor':
                     return redirect()->route('manager.dashboard');
                 case 'tecnico':
-                    return redirect()->route('tech.dashboard');
+                    return redirect()->route('tecnico.dashboard');
                 default:
                     Auth::logout();
                     return back()->withErrors([

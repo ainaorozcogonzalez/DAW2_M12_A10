@@ -21,4 +21,9 @@ class Comentario extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function archivo()
+    {
+        return $this->hasOne(Archivo::class);
+    }
 }
