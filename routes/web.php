@@ -16,13 +16,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     // Dashboard routes
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [UserController::class, 'create'])->name('admin.dashboard');
 
     // User routes
     Route::prefix('users')->group(function () {
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
     });
 
     // Incidencia routes

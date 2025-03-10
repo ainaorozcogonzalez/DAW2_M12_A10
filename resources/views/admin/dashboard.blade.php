@@ -119,10 +119,10 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-xl font-bold mb-4">Acciones Rápidas</h3>
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="{{ route('users.create') }}" class="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                        <button onclick="openUserModal()" class="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
                             <i class="fas fa-user-plus text-indigo-600 mb-2"></i>
                             <p class="text-sm font-medium">Agregar Usuario</p>
-                        </a>
+                        </button>
                         <a href="{{ route('incidencias.create') }}" class="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                             <i class="fas fa-plus-circle text-green-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Incidencia</p>
@@ -140,5 +140,79 @@
             </div>
         </main>
     </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}">
+                    @csrf
+                    <div>
+                        <input type="text" name="nombre" placeholder="Nombre completo" required
+                            class="w-full px-3 py-2 border rounded-md">
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="Correo electrónico" required
+                            class="w-full px-3 py-2 border rounded-md">
+                    </div>
+                    <div>
+                        <input type="password" name="password" placeholder="Contraseña" required
+                            class="w-full px-3 py-2 border rounded-md">
+                    </div>
+                    <div>
+                        <select name="rol_id" class="w-full px-3 py-2 border rounded-md" required>
+                            <option value="">Seleccione un rol</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}">{{ $role->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md" required>
+                            <option value="">Seleccione una sede</option>
+                            @foreach($sedes as $sede)
+                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <select name="estado" class="w-full px-3 py-2 border rounded-md" required>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between mt-4">
+                        <button type="button" onclick="closeUserModal()"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Crear Usuario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openUserModal() {
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('userModal');
+            if (event.target == modal) {
+                closeUserModal();
+            }
+        }
+    </script>
 </body>
 </html> 
