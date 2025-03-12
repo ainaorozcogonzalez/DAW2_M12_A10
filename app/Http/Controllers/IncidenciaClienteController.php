@@ -10,6 +10,7 @@ use App\Models\Categoria;
 use App\Models\Subcategoria;
 use App\Models\EstadoIncidencia;
 use App\Models\Prioridad;
+use Illuminate\Support\Facades\Auth;
 
 class IncidenciaClienteController extends Controller
 {
@@ -23,28 +24,25 @@ class IncidenciaClienteController extends Controller
      */
     public function create()
     {
-        // Obtener clientes (usuarios con rol 'cliente')
-        $clientes = User::whereHas('rol', function($query) {
-            $query->where('nombre', 'cliente');
-        })->get();
+        // Obtener el usuario autenticado (cliente)
+        /** @var User $cliente */
+        $cliente = Auth::user();
 
-        // Obtener técnicos (usuarios con rol 'tecnico')
-        $tecnicos = User::whereHas('rol', function($query) {
-            $query->where('nombre', 'tecnico');
-        })->get();
+        // Obtener la sede del cliente
+        $sede = $cliente->sede;
 
-        // Obtener sedes, categorías, subcategorías, estados y prioridades
-        $sedes = Sede::all();
+        // Obtener categorías y subcategorías
         $categorias = Categoria::all();
         $subcategorias = Subcategoria::all();
+
+        // Obtener estados y prioridades
         $estados = EstadoIncidencia::all();
         $prioridades = Prioridad::all();
 
         // Pasar los datos a la vista
         return view('incidencias.create', compact(
-            'clientes',
-            'tecnicos',
-            'sedes',
+            'cliente',
+            'sede',
             'categorias',
             'subcategorias',
             'estados',
@@ -57,19 +55,18 @@ class IncidenciaClienteController extends Controller
      */
     public function store(Request $request)
     {
+        // Obtener el usuario autenticado (cliente)
+        /** @var User $cliente */
+        $cliente = Auth::user();
+
         // Validar los datos del formulario
         $request->validate([
-            'cliente_id' => 'required|exists:users,id',
-            'tecnico_id' => 'nullable|exists:users,id',
-            'sede_id' => 'required|exists:sedes,id',
             'categoria_id' => 'required|exists:categorias,id',
             'subcategoria_id' => 'required|exists:subcategorias,id',
             'descripcion' => 'required|string|min:10|max:1000',
             'estado_id' => 'required|exists:estado_incidencias,id',
             'prioridad_id' => 'required|exists:prioridades,id'
         ], [
-            'cliente_id.required' => 'Seleccione un cliente',
-            'sede_id.required' => 'Seleccione una sede',
             'categoria_id.required' => 'Seleccione una categoría',
             'subcategoria_id.required' => 'Seleccione una subcategoría',
             'descripcion.required' => 'La descripción es obligatoria',
@@ -81,9 +78,8 @@ class IncidenciaClienteController extends Controller
 
         // Crear la incidencia
         Incidencia::create([
-            'cliente_id' => $request->cliente_id,
-            'tecnico_id' => $request->tecnico_id,
-            'sede_id' => $request->sede_id,
+            'cliente_id' => $cliente->id, // Asignar el ID del cliente autenticado
+            'sede_id' => $cliente->sede_id, // Asignar la sede del cliente autenticado
             'categoria_id' => $request->categoria_id,
             'subcategoria_id' => $request->subcategoria_id,
             'descripcion' => $request->descripcion,
@@ -113,68 +109,6 @@ class IncidenciaClienteController extends Controller
             'estado_id' => $incidencia->estado_id,
             'prioridad_id' => $incidencia->prioridad_id,
         ]);
-    }
-
-    /**
-     * Muestra una lista de incidencias con opciones de filtrado.
-     */
-    public function index(Request $request)
-    {
-        // Obtener listas para los selectores del formulario
-        $clientes = User::where('rol_id', 2)->get(); // Suponiendo que el rol 2 es para clientes
-        $tecnicos = User::where('rol_id', 4)->get(); // Suponiendo que el rol 4 es para técnicos
-        $sedes = Sede::all();
-        $categorias = Categoria::all();
-        $subcategorias = Subcategoria::all();
-        $estados = EstadoIncidencia::all();
-        $prioridades = Prioridad::all();
-
-        // Construir la consulta base
-        $query = Incidencia::with(['cliente', 'tecnico', 'estado', 'prioridad']);
-
-        // Aplicar filtros si están presentes en la solicitud
-        if ($request->has('estado_id') && $request->estado_id) {
-            $query->where('estado_id', $request->estado_id);
-        }
-
-        if ($request->has('prioridad_id') && $request->prioridad_id) {
-            $query->where('prioridad_id', $request->prioridad_id);
-        }
-
-        if ($request->has('cliente_id') && $request->cliente_id) {
-            $query->where('cliente_id', $request->cliente_id);
-        }
-
-        if ($request->has('tecnico_id') && $request->tecnico_id) {
-            $query->where('tecnico_id', $request->tecnico_id);
-        }
-
-        if ($request->has('sede_id') && $request->sede_id) {
-            $query->where('sede_id', $request->sede_id);
-        }
-
-        if ($request->has('categoria_id') && $request->categoria_id) {
-            $query->where('categoria_id', $request->categoria_id);
-        }
-
-        if ($request->has('subcategoria_id') && $request->subcategoria_id) {
-            $query->where('subcategoria_id', $request->subcategoria_id);
-        }
-
-        // Obtener las incidencias filtradas y paginadas
-        $incidencias = $query->paginate(10); // Paginar con 10 incidencias por página
-
-        // Pasar los datos a la vista
-        return view('admin.incidencias.index', compact(
-            'incidencias',
-            'clientes',
-            'tecnicos',
-            'sedes',
-            'categorias',
-            'subcategorias',
-            'estados',
-            'prioridades'
-        ));
     }
 
     /**
