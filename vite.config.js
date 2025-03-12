@@ -8,7 +8,8 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/auth/login.css',
-                'resources/js/app.js'
+                'resources/js/app.js',
+                'resources/js/manager/datosincidencias.js',
             ],
             refresh: true,
         }),

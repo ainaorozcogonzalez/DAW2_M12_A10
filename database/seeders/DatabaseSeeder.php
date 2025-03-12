@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Subcategoria;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,8 +20,9 @@ class DatabaseSeeder extends Seeder
             EstadoIncidenciasSeeder::class,
             PrioridadesSeeder::class,
             UsersSeeder::class,
-            CategoriasTableSeeder::class,
-            SubcategoriasTableSeeder::class,
+            CategoriasSeeder::class,
+            SubCategoriasSeeder::class,
+            IncidenciaSeeder::class,
         ]);
     }
 }
