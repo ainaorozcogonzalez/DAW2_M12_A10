@@ -8,6 +8,7 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\GestorEquiposController;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -54,10 +55,6 @@ Route::middleware('auth')->group(function () {
         return view('client.dashboard');
     })->name('client.dashboard');
 
-    Route::get('/manager/dashboard', function () {
-        return view('manager.dashboard');
-    })->name('manager.dashboard');
-
     Route::get('/tech/dashboard', function () {
         return view('tech.dashboard');
     })->name('tech.dashboard');
@@ -73,6 +70,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/incidencias', [IncidenciaController::class, 'index'])->name('incidencias.index');
+
+    // Gestor
+
+    Route::controller(GestorEquiposController::class)->group(function () {
+        Route::get('/manager/dashboard', 'vistagestor')->name('manager.dashboard');
+        Route::post('/datosincidencias', 'datosincidencias');
+        Route::post('/editarassignar', 'editarassignar');
+        Route::post('/editarprioridad', 'editarprioridad');
+    });
 });
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');

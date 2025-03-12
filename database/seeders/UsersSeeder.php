@@ -43,6 +43,14 @@ class UsersSeeder extends Seeder
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
             ],
+            [
+                'nombre' => 'pruebas',
+                'email' => 'pruebas@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 4, // tecnico
+                'sede_id' => 1, // Barcelona
+                'estado' => 'activo'
+            ],
         ];
 
         foreach ($users as $user) {
