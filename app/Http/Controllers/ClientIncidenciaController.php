@@ -25,13 +25,30 @@ class ClientIncidenciaController extends Controller
 
     public function index()
     {
+        if (request()->wantsJson()) {
+            $incidencias = Incidencia::where('cliente_id', auth()->id())->get();
+            $contadores = [
+                'total' => Incidencia::where('cliente_id', auth()->id())->count(),
+                'pendientes' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', '!=', 5)->count(),
+                'cerradas' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', 5)->count(),
+            ];
+            
+            $html = view('cliente.partials.lista-incidencias', compact('incidencias'))->render();
+            
+            return response()->json([
+                'html' => $html,
+                'contadores' => $contadores
+            ]);
+        }
+
         $estados = EstadoIncidencia::all();
         $prioridades = Prioridad::all();
         $sedes = Sede::all();
         $categorias = Categoria::all();
         
-        // Obtener las incidencias filtradas
+        // Obtener las incidencias filtradas con las relaciones cargadas
         $incidencias = Incidencia::where('cliente_id', auth()->id())
+            ->with(['estado', 'categoria', 'subcategoria', 'sede', 'prioridad']) // Cargar las relaciones
             ->when(request('estado_id'), function($query, $estado_id) {
                 return $query->where('estado_id', $estado_id);
             })
@@ -78,51 +95,45 @@ class ClientIncidenciaController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('Starting store method');
-        \Log::info('Request data:', $request->all());
-        \Log::info('Authenticated user:', auth()->user() ? auth()->user()->toArray() : 'No user');
-
-        // Validación de campos
-        $request->validate([
-            'categoria_id' => 'required|exists:categorias,id',
-            'subcategoria_id' => 'required|exists:subcategorias,id',
-            'descripcion' => 'required|string|min:10|max:1000'
-        ], [
-            'categoria_id.required' => 'Seleccione una categoría',
-            'subcategoria_id.required' => 'Seleccione una subcategoría',
-            'descripcion.required' => 'La descripción es obligatoria',
-            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres',
-            'descripcion.max' => 'La descripción no puede exceder los 1000 caracteres'
-        ]);
-
         try {
-            \Log::info('Creating incidencia');
-            $estadoSinAsignar = EstadoIncidencia::where('nombre', 'Sin asignar')->first();
-            if (!$estadoSinAsignar) {
-                \Log::error('Estado "Sin asignar" no encontrado');
-                throw new \Exception('Estado "Sin asignar" no encontrado');
-            }
-            \Log::info('Estado Sin asignar:', $estadoSinAsignar->toArray());
+            $request->validate([
+                'descripcion' => 'required|string|min:10',
+                'categoria_id' => 'required|exists:categorias,id',
+                'subcategoria_id' => 'required|exists:subcategorias,id',
+            ]);
 
             $incidencia = Incidencia::create([
                 'cliente_id' => auth()->id(),
-                'tecnico_id' => null,
-                'sede_id' => auth()->user()->sede_id,
+                'descripcion' => $request->descripcion,
                 'categoria_id' => $request->categoria_id,
                 'subcategoria_id' => $request->subcategoria_id,
-                'descripcion' => $request->descripcion,
-                'estado_id' => $estadoSinAsignar->id,
-                'prioridad_id' => null,
-                'fecha_creacion' => now(),
+                'sede_id' => auth()->user()->sede_id,
+                'estado_id' => 1, // ID del estado inicial
+                'prioridad_id' => null, // Prioridad null por defecto
             ]);
 
-            \Log::info('Incidencia created:', $incidencia->toArray());
+            // Cargar las relaciones necesarias
+            $incidencia->load(['estado', 'categoria', 'subcategoria', 'sede', 'prioridad']);
 
-            return redirect()->route('client.dashboard')->with('success', 'Incidencia creada exitosamente');
+            // Obtener los contadores actualizados
+            $contadores = [
+                'total' => Incidencia::where('cliente_id', auth()->id())->count(),
+                'pendientes' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', '!=', 5)->count(),
+                'cerradas' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', 5)->count(),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Incidencia creada correctamente',
+                'incidencia' => $incidencia,
+                'contadores' => $contadores
+            ]);
+
         } catch (\Exception $e) {
-            \Log::error('Error creating incidencia: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al crear la incidencia: ' . $e->getMessage())
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear la incidencia: ' . $e->getMessage()
+            ], 500);
         }
     }
 

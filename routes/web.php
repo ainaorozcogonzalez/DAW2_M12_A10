@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('incidencias')->group(function () {
         Route::get('/', [IncidenciaController::class, 'index'])->name('incidencias.index');
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
-        Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
+        Route::post('/', [IncidenciaController::class, 'store'])->name('incidencias.store');
         Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
