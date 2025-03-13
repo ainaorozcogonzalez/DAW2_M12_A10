@@ -17,7 +17,7 @@ function cargarMensajes(incidenciaId) {
             chatMessages.innerHTML = data.map(mensaje => `
                 <div class="mb-2 ${mensaje.usuario_id == userId ? 'text-right' : 'text-left'}">
                     <div class="inline-block max-w-2/3 px-4 py-2 rounded-lg ${mensaje.usuario_id == userId ? 'bg-blue-100' : 'bg-gray-100'}">
-                        <p class="text-sm">${mensaje.mensaje}</p>
+                        ${mensaje.mensaje ? `<p class="text-sm">${mensaje.mensaje}</p>` : ''}
                         ${mensaje.archivo ? `<a href="${mensaje.archivo.url_archivo}" target="_blank" class="text-blue-500 hover:text-blue-700">Ver archivo adjunto</a>` : ''}
                         <p class="text-xs text-gray-500 mt-1">${new Date(mensaje.created_at).toLocaleString()}</p>
                     </div>
