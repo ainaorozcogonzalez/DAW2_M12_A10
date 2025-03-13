@@ -126,7 +126,9 @@ function datosadicionales() {
             return response.json();
         })
         .then(data => {
+
             Array.from(nombreusuario).forEach(element => {
+                element.innerHTML = "";
                 element.innerHTML += data.nombre;
             });
 
@@ -150,13 +152,8 @@ function datosadicionales() {
                 prioridades.innerHTML = "";
                 data.prioridad.forEach(prioridad => {
                     let respuesta = ""
-                    if (prioridad[1]) {
-                        respuesta += ' <option value=""></option>';
-                    } else {
-                        respuesta += ' <option value="' + prioridad.id + '" >' + prioridad.nombre + '</option>';
-                        prioridades.innerHTML += respuesta;
-
-                    }
+                    respuesta += ' <option value="' + prioridad.id + '" >' + prioridad.nombre + '</option>';
+                    prioridades.innerHTML += respuesta;
                 });
             });
 
