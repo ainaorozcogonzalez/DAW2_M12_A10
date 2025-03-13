@@ -8,6 +8,7 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
+<<<<<<< HEAD
 use App\Http\Controllers\ClientIncidenciaController;
 use App\Models\EstadoIncidencia;
 use App\Models\Incidencia;
@@ -15,6 +16,9 @@ use App\Models\Prioridad;
 use App\Models\Sede;
 use App\Models\Subcategoria;
 use App\Models\Categoria;
+=======
+use App\Http\Controllers\GestorEquiposController;
+>>>>>>> ba4e35cf242f9b61f9e9d4f7ba78d45471db8b13
 use App\Http\Controllers\TecnicoController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -34,17 +38,18 @@ Route::middleware('auth')->group(function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/', [UserController::class, 'store'])->name('users.store');
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::post('/admincrearusuario', [UserController::class, 'store']);
+        Route::post('/{user}/edit', [UserController::class, 'edit']);
+        Route::put('/editar', [UserController::class, 'update']);
+        Route::delete('/eliminaruario', [UserController::class, 'destroy']);
+        Route::post('/datosusuarios', [UserController::class, 'datosusuarios']);
     });
 
     // Incidencia routes
     Route::prefix('incidencias')->group(function () {
         Route::get('/', [IncidenciaController::class, 'index'])->name('incidencias.index');
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
-        Route::post('/', [IncidenciaController::class, 'store'])->name('incidencias.store');
+        Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
         Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
@@ -75,15 +80,26 @@ Route::middleware('auth')->group(function () {
 
     // Categoría routes
     Route::prefix('categorias')->group(function () {
-        Route::post('/', [CategoriaController::class, 'store'])->name('categorias.store');
+        // Route::post('/admincrearcategoria', [CategoriaController::class, 'store'])->name('categorias.store');
+        Route::post('/admincrearcategoria', [CategoriaController::class, 'store']);
     });
 
     // Subcategoría routes
     Route::prefix('subcategorias')->group(function () {
-        Route::post('/', [SubcategoriaController::class, 'store'])->name('subcategorias.store');
+        Route::post('/admincrearsubcategoria', [SubcategoriaController::class, 'store']);
+        // Route::post('/', [SubcategoriaController::class, 'store'])->name('subcategorias.store');
     });
 
     Route::get('/incidencias', [IncidenciaController::class, 'index'])->name('incidencias.index');
+
+    // Gestor
+
+    Route::controller(GestorEquiposController::class)->group(function () {
+        Route::get('/manager/dashboard', 'vistagestor')->name('manager.dashboard');
+        Route::post('/datosincidencias', 'datosincidencias');
+        Route::post('/editarassignar', 'editarassignar');
+        Route::post('/editarprioridad', 'editarprioridad');
+    });
 
     Route::get('/incidencias/{incidencia}/mensajes', [TecnicoController::class, 'obtenerMensajes'])->name('incidencias.mensajes');
     Route::post('/incidencias/mensajes', [TecnicoController::class, 'enviarMensaje'])->name('incidencias.enviar-mensaje');
@@ -93,7 +109,7 @@ Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 Route::get('storage/archivos/{filename}', function ($filename) {
     $path = storage_path('app/public/archivos/' . $filename);
-    
+
     if (!file_exists($path)) {
         abort(404, 'Archivo no encontrado: ' . $path);
     }

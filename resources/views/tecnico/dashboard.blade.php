@@ -75,7 +75,25 @@
                 <div class="mt-4">
                     <!-- Área de mensajes -->
                     <div id="chatMessages" class="h-64 overflow-y-auto mb-4 border p-4 rounded-md">
-                        <!-- Los mensajes se cargarán aquí -->
+                        @if(isset($mensajes) && count($mensajes) > 0)
+                            @foreach($mensajes as $mensaje)
+                                <div class="mb-2 {{ $mensaje->usuario_id == auth()->id() ? 'text-right' : 'text-left' }}">
+                                    <div class="inline-block max-w-2/3 px-4 py-2 rounded-lg {{ $mensaje->usuario_id == auth()->id() ? 'bg-blue-100' : 'bg-gray-100' }}">
+                                        @if($mensaje->mensaje)
+                                            <p class="text-sm">{{ $mensaje->mensaje }}</p>
+                                        @endif
+                                        @if($mensaje->archivo)
+                                            <a href="{{ $mensaje->archivo->url_archivo }}" target="_blank" class="text-blue-500 hover:text-blue-700">
+                                                Ver archivo adjunto
+                                            </a>
+                                        @endif
+                                        <p class="text-xs text-gray-500 mt-1">{{ $mensaje->created_at->format('d/m/Y H:i') }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-gray-500 text-center">No hay mensajes para mostrar.</p>
+                        @endif
                     </div>
 
                     <!-- Formulario para enviar mensajes -->

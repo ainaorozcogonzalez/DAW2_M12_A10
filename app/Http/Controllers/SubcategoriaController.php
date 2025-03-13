@@ -15,21 +15,28 @@ class SubcategoriaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'categoria_id' => 'required|exists:categorias,id',
-            'nombre' => 'required|string|max:255|unique:subcategorias,nombre'
-        ], [
-            'categoria_id.required' => 'Seleccione una categoría',
-            'nombre.required' => 'El nombre de la subcategoría es obligatorio',
-            'nombre.max' => 'El nombre no puede exceder los 255 caracteres',
-            'nombre.unique' => 'Ya existe una subcategoría con este nombre'
-        ]);
+        // $request->validate([
+        //     'categoria_id' => 'required|exists:categorias,id',
+        //     'nombre' => 'required|string|max:255|unique:subcategorias,nombre'
+        // ], [
+        //     'categoria_id.required' => 'Seleccione una categoría',
+        //     'nombre.required' => 'El nombre de la subcategoría es obligatorio',
+        //     'nombre.max' => 'El nombre no puede exceder los 255 caracteres',
+        //     'nombre.unique' => 'Ya existe una subcategoría con este nombre'
+        // ]);
+        try {
+            Subcategoria::create([
+                'categoria_id' => $request->categoria_id,
+                'nombre' => $request->nombre
+            ]);
+            echo "success Categoria: " . $request->nombre . " creada correctamente";
+            die();
+        } catch (\PDOException $e) {
+            echo "error No se pudo crear la categoria: " . $request->nombre;
+            die();
+        }
+        echo "error Intentelo mas tarde";
 
-        Subcategoria::create([
-            'categoria_id' => $request->categoria_id,
-            'nombre' => $request->nombre
-        ]);
-
-        return redirect()->back()->with('success', 'Subcategoría creada exitosamente');
+        // return redirect()->back()->with('success', 'Subcategoría creada exitosamente');
     }
-} 
+}

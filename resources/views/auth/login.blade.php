@@ -28,14 +28,14 @@
                         <input id="email" name="email" type="email" autocomplete="email"
                             class="appearance-none rounded-md relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 input-focus focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Correo electrónico"
-                            value="{{ old('email') }}">
+                            value="admin@incidencias.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden">Por favor, introduce un email válido.</div>
                     </div>
                     <div>
                         <label for="password" class="sr-only">Contraseña</label>
                         <input id="password" name="password" type="password" autocomplete="current-password"
                             class="appearance-none rounded-md relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 input-focus focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Contraseña">
+                            placeholder="Contraseña" value="qweQWE123">
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden">La contraseña debe tener al menos 8 caracteres.</div>
                     </div>
                 </div>

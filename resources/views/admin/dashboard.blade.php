@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panel de Administrador</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body class="bg-gray-50">
     <div class="min-h-screen">
         <!-- Header -->
@@ -19,13 +22,16 @@
                     </button>
                     <div class="relative">
                         <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
-                            <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin" class="w-8 h-8 rounded-full">
-                            <span class="text-gray-700">Admin</span>
+                            <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin"
+                                class="w-8 h-8 rounded-full">
+                            <span class="text-gray-700"> <span class="nombreusuario"></span></span>
                             <i class="fas fa-chevron-down text-gray-500"></i>
                         </button>
                         <!-- Menú desplegable -->
-                        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-                            <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <div id="user-menu"
+                            class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                            <form method="POST" action="{{ route('logout') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 @csrf
                                 <button type="submit" class="w-full text-left">
                                     <i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión
@@ -41,7 +47,7 @@
         <main class="container mx-auto px-4 py-8">
             <!-- Welcome Section -->
             <div class="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg p-6 text-white mb-8">
-                <h2 class="text-2xl font-bold mb-2">Bienvenido, Administrador!</h2>
+                <h2 class="text-2xl font-bold mb-2">Bienvenido, <span class="nombreusuario"></span>!</h2>
                 <p class="text-gray-100">Aquí puedes gestionar todos los aspectos del sistema de incidencias.</p>
             </div>
 
@@ -54,7 +60,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Usuarios</p>
-                            <p class="text-2xl font-bold">{{ App\Models\User::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalusuarios"></p>
                         </div>
                     </a>
                 </div>
@@ -65,7 +71,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Incidencias</p>
-                            <p class="text-2xl font-bold">{{ App\Models\Incidencia::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalincidencias"></p>
                         </div>
                     </a>
                 </div>
@@ -76,7 +82,8 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Reportes</p>
-                            <p class="text-2xl font-bold">{{ App\Models\Incidencia::whereNotNull('fecha_resolucion')->count() }}</p>
+                            <p class="text-2xl font-bold">
+                                {{ App\Models\Incidencia::whereNotNull('fecha_resolucion')->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -125,22 +132,26 @@
                 </div>
 
                 <!-- Quick Actions -->
-    <div class="bg-white rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-xl font-bold mb-4">Acciones Rápidas</h3>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="openUserModal()" class="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                        <button onclick="openUserModal()"
+                            class="p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
                             <i class="fas fa-user-plus text-indigo-600 mb-2"></i>
                             <p class="text-sm font-medium">Agregar Usuario</p>
                         </button>
-                        <button onclick="openIncidenciaModal()" class="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <button onclick="openIncidenciaModal()"
+                            class="p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                             <i class="fas fa-plus-circle text-green-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Incidencia</p>
                         </button>
-                        <button onclick="openCategoriaModal()" class="p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                        <button onclick="openCategoriaModal()"
+                            class="p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
                             <i class="fas fa-plus text-yellow-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Categoría</p>
                         </button>
-                        <button onclick="openSubcategoriaModal()" class="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                        <button onclick="openSubcategoriaModal()"
+                            class="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
                             <i class="fas fa-plus text-red-600 mb-2"></i>
                             <p class="text-sm font-medium">Crear Subcategoría</p>
                         </button>
@@ -155,45 +166,46 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}" id="userForm">
+                <form class="mt-4 space-y-4" method="POST" id="userForm"
+                    onsubmit="Crearusuario(event.preventDefault())">
                     @csrf
+                    @method('POST')
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md" required>
+                            class="w-full px-3 py-2 border rounded-md" required value="asdASD">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" required>
+                            class="w-full px-3 py-2 border rounded-md" required value="asd@asd.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password" required>
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password"
+                            value="asdASD123" required>
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md"
+                            required>
                             <option value="">Seleccione un rol</option>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_roles"></span>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md"
+                            required>
                             <option value="">Seleccione una sede</option>
-                            @foreach($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md" required>
-                            <option value="inactivo" selected>Inactivo</option>
-                            <option value="activo">Activo</option>
+                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione un estado</option>
+                            <span class="mostrar_estadousuario"></span>
                         </select>
                         <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -217,41 +229,35 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}" id="incidenciaForm">
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
+                    onsubmit="crearincidencia(event.preventDefault())">
                     @csrf
                     <div>
                         <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione un cliente</option>
-                            @foreach($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_clientes"></span>
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una sede</option>
-                            @foreach($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
-                            @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="subcategoria_id" id="subcategoria_id"
+                            class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una subcategoría</option>
-                            @foreach($subcategorias as $subcategoria)
-                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_subcategorias"></span>
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -263,18 +269,14 @@
                     <div>
                         <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione un estado</option>
-                            @foreach($estados as $estado)
-                                <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_estado"></span>
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una prioridad</option>
-                            @foreach($prioridades as $prioridad)
-                                <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_prioridades"></span>
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -298,11 +300,12 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Categoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('categorias.store') }}" id="categoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="categoriaForm"
+                    onsubmit="crearcategoria(event.preventDefault())">
                     @csrf
                     <div>
-                        <input type="text" name="nombre" id="nombre_categoria" placeholder="Nombre de la categoría"
-                            class="w-full px-3 py-2 border rounded-md">
+                        <input type="text" name="nombre" id="nombre_categoria"
+                            placeholder="Nombre de la categoría" class="w-full px-3 py-2 border rounded-md">
                         <div id="nombre_categoria-error" class="error-message"></div>
                     </div>
                     <div class="flex justify-between mt-4">
@@ -325,20 +328,19 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Subcategoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('subcategorias.store') }}" id="subcategoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="subcategoriaForm"
+                    onsubmit="crearsubcategoria(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
-                            @foreach($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="text" name="nombre" id="nombre_subcategoria" placeholder="Nombre de la subcategoría"
-                            class="w-full px-3 py-2 border rounded-md">
+                        <input type="text" name="nombre" id="nombre_subcategoria"
+                            placeholder="Nombre de la subcategoría" class="w-full px-3 py-2 border rounded-md">
                         <div id="nombre_subcategoria-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-between mt-4">
@@ -346,8 +348,7 @@
                             class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
                             Cancelar
                         </button>
-                        <button type="submit"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                             Crear
                         </button>
                     </div>
@@ -355,12 +356,13 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-    <script src="{{ asset('js/user-form.js') }}"></script>
-    <script src="{{ asset('js/incidencia-form.js') }}"></script>
-    <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/incidencia-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/categoria-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
+    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -448,8 +450,8 @@
             if (!form) return;
 
             const fields = {
-                nombre: { 
-                    required: true, 
+                nombre: {
+                    required: true,
                     regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
                     message: 'El nombre solo puede contener letras y espacios.'
                 },
@@ -463,9 +465,18 @@
                     regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
                     message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
                 },
-                rol_id: { required: true, message: 'Seleccione un rol' },
-                sede_id: { required: true, message: 'Seleccione una sede' },
-                estado: { required: true, message: 'Seleccione un estado' }
+                rol_id: {
+                    required: true,
+                    message: 'Seleccione un rol'
+                },
+                sede_id: {
+                    required: true,
+                    message: 'Seleccione una sede'
+                },
+                estado: {
+                    required: true,
+                    message: 'Seleccione un estado'
+                }
             };
 
             Object.keys(fields).forEach(fieldId => {
@@ -517,16 +528,17 @@
         });
     </script>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+    @if (session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+            role="alert">
             <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
-
-    @if($errors->any())
+    <div id="alerts"></div>
+    @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <ul>
-                @foreach($errors->all() as $error)
+                @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -545,4 +557,5 @@
         }
     </style>
 </body>
-</html> 
+
+</html>

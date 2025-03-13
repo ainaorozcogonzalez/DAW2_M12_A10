@@ -36,7 +36,7 @@ class IncidenciasSeeder extends Seeder
                 'cliente_id' => 2,
                 'tecnico_id' => 4,
                 'sede_id' => 1,
-                'categoria_id' => 3,
+                'categoria_id' => 1,
                 'subcategoria_id' => 5,
                 'descripcion' => 'No hay conexión WiFi',
                 'estado_id' => 4,
