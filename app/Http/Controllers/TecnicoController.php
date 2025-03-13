@@ -19,12 +19,22 @@ class TecnicoController extends Controller
     {
         $incidencias = Incidencia::where('tecnico_id', auth()->id())
             ->with(['cliente', 'estado', 'prioridad'])
+            ->when(request('hideClosed'), function($query) {
+                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+                if ($estadoCerrada) {
+                    return $query->where('estado_id', '!=', $estadoCerrada->id);
+                }
+            })
             ->get();
 
         $estados = EstadoIncidencia::whereNotIn('nombre', ['Sin asignar', 'Cerrada'])->get();
 
         // Inicializamos $mensajes como un array vacío
         $mensajes = [];
+
+        if (request()->ajax()) {
+            return view('tecnico.partials.incidencias', compact('incidencias', 'estados', 'mensajes'));
+        }
 
         return view('tecnico.dashboard', compact('incidencias', 'estados', 'mensajes'));
     }
