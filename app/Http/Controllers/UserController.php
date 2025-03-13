@@ -13,6 +13,7 @@ use App\Models\Categoria;
 use App\Models\Subcategoria;
 use App\Models\EstadoIncidencia;
 use App\Models\Prioridad;
+use App\Models\Incidencia;
 
 class UserController extends Controller
 {
@@ -140,9 +141,19 @@ class UserController extends Controller
     public function datosusuarios(Request $request)
     {
         $nombre = Auth::user()->nombre;
+        $estadosincidenas = EstadoIncidencia::all();
         $roles = Rol::all();
         $sedes = Sede::all();
+        $clientes = User::whereHas('rol', function ($query) {
+            $query->where('nombre', 'tecnico');
+        })->get();
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
         $estados = ['Activo', 'Inactivo'];
+
+        $prioridad = Prioridad::all();
+        $totalusers = User::count();
+        $totalincidencias = Incidencia::count();
 
         // Construir la consulta base
         $query = User::with(['rol', 'sede']);
@@ -164,7 +175,20 @@ class UserController extends Controller
         $users = $query->get();
 
         $roles = Rol::all();;
-        return response()->json(['roles' => $roles, 'sedes' => $sedes, 'estados' => $estados, 'users' => $users, 'nombre' => $nombre]);
+        return response()->json([
+            'roles' => $roles,
+            'sedes' => $sedes,
+            'estados' => $estados,
+            'users' => $users,
+            'nombre' => $nombre,
+            'categorias' => $categorias,
+            'subcategorias' => $subcategorias,
+            'clientes' => $clientes,
+            'estadosincidenas' => $estadosincidenas,
+            'totalusers' => $totalusers,
+            'totalincidencias' => $totalincidencias,
+            'prioridad' => $prioridad
+        ]);
     }
 
 

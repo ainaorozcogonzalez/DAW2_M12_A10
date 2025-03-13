@@ -26,13 +26,13 @@ class CategoriaController extends Controller
             Categoria::create([
                 'nombre' => $request->nombre
             ]);
-            echo "Creado Categoria: " . $request->nombre . " creada correctamente";
+            echo "success Categoria: " . $request->nombre . " creada correctamente";
             die();
         } catch (\PDOException $e) {
-            echo "Error No se pudo crear la categoria: " . $request->nombre;
+            echo "error No se pudo crear la categoria: " . $request->nombre;
             die();
         }
-        echo "Invalido Intentelo mas tarde";
+        echo "error Intentelo mas tarde";
 
         // return redirect()->back()->with('success', 'Categoría creada exitosamente');
     }

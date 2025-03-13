@@ -60,7 +60,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Usuarios</p>
-                            <p class="text-2xl font-bold" id="totalusuarios">{{ App\Models\User::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalusuarios"></p>
                         </div>
                     </a>
                 </div>
@@ -71,7 +71,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Incidencias</p>
-                            <p class="text-2xl font-bold" id="totalincidencias">{{ App\Models\Incidencia::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalincidencias"></p>
                         </div>
                     </a>
                 </div>
@@ -190,9 +190,7 @@
                         <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md"
                             required>
                             <option value="">Seleccione un rol</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_roles"></span>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -200,17 +198,14 @@
                         <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md"
                             required>
                             <option value="">Seleccione una sede</option>
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md"
-                            required>
-                            <option value="inactivo" selected>Inactivo</option>
-                            <option value="activo">Activo</option>
+                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md">
+                            <option value="">Seleccione un estado</option>
+                            <span class="mostrar_estadousuario"></span>
                         </select>
                         <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -240,27 +235,21 @@
                     <div>
                         <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione un cliente</option>
-                            @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_clientes"></span>
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una sede</option>
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -268,9 +257,7 @@
                         <select name="subcategoria_id" id="subcategoria_id"
                             class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una subcategoría</option>
-                            @foreach ($subcategorias as $subcategoria)
-                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_subcategorias"></span>
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -282,18 +269,14 @@
                     <div>
                         <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione un estado</option>
-                            @foreach ($estados as $estado)
-                                <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_estado"></span>
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una prioridad</option>
-                            @foreach ($prioridades as $prioridad)
-                                <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_prioridades"></span>
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -349,11 +332,9 @@
                     onsubmit="crearsubcategoria(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
+                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -378,9 +359,9 @@
     </div>
 
     {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
-    <script src="{{ asset('js/incidencia-form.js') }}"></script>
-    <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    {{-- <script src="{{ asset('js/incidencia-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/categoria-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
     <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
     <script>

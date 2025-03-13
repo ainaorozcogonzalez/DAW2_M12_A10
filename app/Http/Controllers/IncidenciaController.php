@@ -81,14 +81,13 @@ class IncidenciaController extends Controller
                 'prioridad_id' => $request->prioridad_id
             ]);
 
-            echo "Creado Incidencia: " . $request->descripcion . " creada correctamente";
+            echo "success Incidencia: " . $request->descripcion . " creada correctamente";
             die();
         } catch (\PDOException $e) {
-            echo "Error No se pudo crear la incidencia: " . $request->descripcion;
+            echo "error No se pudo crear la incidencia: " . $request->descripcion;
             die();
         }
-        echo "Invalido Intentelo mas tarde";
-        // return redirect()->back()->with('success', 'Incidencia creada exitosamente');
+        echo "error Intentelo mas tarde";
     }
 
     public function edit(Incidencia $incidencia)
