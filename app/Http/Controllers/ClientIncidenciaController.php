@@ -78,9 +78,7 @@ class ClientIncidenciaController extends Controller
 
     public function store(Request $request)
     {
-        // Add this to see the incoming request data
-        \Log::info('Incoming request data:', $request->all());
-        
+        // Validar los datos del formulario
         $request->validate([
             'descripcion' => 'required|string|min:10|max:1000',
             'categoria_id' => 'required|exists:categorias,id',
@@ -88,26 +86,23 @@ class ClientIncidenciaController extends Controller
         ]);
 
         try {
-            // Add this to see the authenticated user's data
-            \Log::info('Authenticated user:', auth()->user()->toArray());
-            
+            // Crear la incidencia
             $incidencia = Incidencia::create([
-                'cliente_id' => auth()->id(),
-                'tecnico_id' => null,
-                'sede_id' => auth()->user()->sede_id,
+                'cliente_id' => auth()->id(), // ID del cliente autenticado
+                'tecnico_id' => null, // Inicialmente no hay técnico asignado
+                'sede_id' => auth()->user()->sede_id, // Sede del cliente
                 'categoria_id' => $request->categoria_id,
                 'subcategoria_id' => $request->subcategoria_id,
                 'descripcion' => $request->descripcion,
-                'estado_id' => EstadoIncidencia::where('nombre', 'Sin asignar')->first()->id,
-                'prioridad_id' => null,
-                'fecha_creacion' => now(),
+                'estado_id' => EstadoIncidencia::where('nombre', 'Sin asignar')->first()->id, // Estado inicial
+                'prioridad_id' => null, // Inicialmente no hay prioridad asignada
+                'fecha_creacion' => now(), // Fecha actual
             ]);
 
-            // Add this to see the created incidencia
-            \Log::info('Created incidencia:', $incidencia->toArray());
-
+            // Redirigir con mensaje de éxito
             return redirect()->route('client.dashboard')->with('success', 'Incidencia creada exitosamente');
         } catch (\Exception $e) {
+            // Registrar el error y redirigir con mensaje de error
             \Log::error('Error creating incidencia: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al crear la incidencia: ' . $e->getMessage());
         }

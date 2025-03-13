@@ -228,6 +228,9 @@
                         <label for="subcategoria_id" class="block text-sm font-medium text-gray-700">Subcategoría</label>
                         <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md" required>
                             <option value="">Seleccione una subcategoría</option>
+                            @foreach($subcategorias as $subcategoria)
+                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
+                            @endforeach
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -235,7 +238,7 @@
                         <button type="button" onclick="closeIncidenciaModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                             Crear Incidencia
                         </button>
                     </div>

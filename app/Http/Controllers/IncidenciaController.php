@@ -206,9 +206,10 @@ class IncidenciaController extends Controller
             'incidencias',
             'prioridades',
             'categorias',
-            'contadorTotal', // Pasar el contador total
-            'contadorCerradas', // Pasar el contador de cerradas
-            'contadorPendientes' // Pasar el contador de pendientes
+            'subcategorias',
+            'contadorTotal',
+            'contadorCerradas',
+            'contadorPendientes'
         ));
     }
 
