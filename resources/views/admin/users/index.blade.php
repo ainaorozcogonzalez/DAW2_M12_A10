@@ -81,23 +81,20 @@
                         @csrf
                         <div>
                             <label for="rol_id" class="block text-sm font-medium text-gray-700">Rol</label>
-                            <select name="rol_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="rol_id" class="w-full px-3 py-2 border rounded-md mostrar_roles">
                                 <option value="">Todos</option>
-                                <span class="mostrar_roles"></span>
                             </select>
                         </div>
                         <div>
                             <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
-                            <select name="sede_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                                 <option value="">Todas</option>
-                                <span class="mostrar_sedes"></span>
                             </select>
                         </div>
                         <div>
                             <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
-                            <select name="estado" class="w-full px-3 py-2 border rounded-md">
+                            <select name="estado" class="w-full px-3 py-2 border rounded-md mostrar_estados">
                                 <option value="">Todos</option>
-                                <span class="mostrar_estados"></span>
                             </select>
                         </div>
                         <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
@@ -174,9 +171,9 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/users/modals.js') }}"></script>
-    <script src="{{ asset('js/users/datosusuarios.js') }}"></script>
-    <script src="{{ asset('js/users/acciones.js') }}"></script>
+    <script src="{{ asset('js/admin/users/modals.js') }}"></script>
+    <script src="{{ asset('js/admin/users/datosusuarios.js') }}"></script>
+    <script src="{{ asset('js/admin/users/acciones.js') }}"></script>
 </body>
 
 </html>
