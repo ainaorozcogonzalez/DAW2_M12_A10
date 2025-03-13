@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.openUserModal = function() {
         modalTitle.innerText = 'Crear Nuevo Usuario';
         formMethod.value = 'POST';
-        userForm.action = "{{ route('users.store') }}";
+        userForm.action = userForm.dataset.storeUrl;
         userIdInput.value = '';
         resetForm();
         userModal.classList.remove('hidden');
@@ -20,16 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/users/${userId}/edit`)
             .then(response => response.json())
             .then(user => {
+                console.log('Datos del usuario recibidos:', user);
+                
                 modalTitle.innerText = 'Editar Usuario';
                 formMethod.value = 'PUT';
                 userForm.action = `/users/${userId}`;
                 userIdInput.value = user.id;
+                
+                // Verificar que los elementos existen
+                const rolField = document.getElementById('rol_id');
+                const sedeField = document.getElementById('sede_id');
+                console.log('Campo rol_id:', rolField);
+                console.log('Campo sede_id:', sedeField);
+                
+                if (rolField) {
+                    rolField.value = user.rol_id;
+                    console.log('Valor de rol_id establecido:', rolField.value);
+                }
+                if (sedeField) {
+                    sedeField.value = user.sede_id;
+                    console.log('Valor de sede_id establecido:', sedeField.value);
+                }
+                
                 document.getElementById('nombre').value = user.nombre;
                 document.getElementById('email').value = user.email;
-                document.getElementById('rol_id').value = user.rol_id;
-                document.getElementById('sede_id').value = user.sede_id;
                 document.getElementById('estado').value = user.estado;
                 document.getElementById('password').required = false;
+                
                 userModal.classList.remove('hidden');
             });
     }
@@ -77,15 +94,25 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Agregar eventos blur a todos los campos
-    Object.keys(fields).forEach(fieldId => {
-        const input = document.getElementById(fieldId);
-        if (input) {
-            input.addEventListener('blur', () => validateField(input, fields[fieldId]));
-        }
-    });
+    // Object.keys(fields).forEach(fieldId => {
+    //     const input = document.getElementById(fieldId);
+    //     if (input) {
+    //         input.addEventListener('blur', () => validateField(input, fields[fieldId]));
+    //     }
+    // });
 
     // Validar formulario al enviar
     userForm.addEventListener('submit', function(event) {
+        console.log('Formulario enviado:', {
+            action: userForm.action,
+            method: formMethod.value,
+            data: new FormData(userForm)
+        });
+        
+        // Verificar valores de los campos
+        console.log('rol_id:', document.getElementById('rol_id').value);
+        console.log('sede_id:', document.getElementById('sede_id').value);
+        
         let isValid = true;
         Object.keys(fields).forEach(fieldId => {
             const input = document.getElementById(fieldId);
@@ -99,25 +126,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function validateField(input, rules) {
-        const errorDiv = document.getElementById(`${input.id}-error`);
-        errorDiv.textContent = '';
-        input.classList.remove('border-red-500');
+    // function validateField(input, rules) {
+    //     const errorDiv = document.getElementById(`${input.id}-error`);
+    //     errorDiv.textContent = '';
+    //     input.classList.remove('border-red-500');
 
-        const value = input.value.trim();
+    //     const value = input.value.trim();
 
-        if (rules.required && (typeof rules.required === 'function' ? rules.required() : rules.required) && !value) {
-            showError(errorDiv, 'Este campo es obligatorio', input);
-            return false;
-        }
+    //     if (rules.required && (typeof rules.required === 'function' ? rules.required() : rules.required) && !value) {
+    //         showError(errorDiv, 'Este campo es obligatorio', input);
+    //         return false;
+    //     }
 
-        if (rules.regex && value && !rules.regex.test(value)) {
-            showError(errorDiv, rules.message, input);
-            return false;
-        }
+    //     if (rules.regex && value && !rules.regex.test(value)) {
+    //         showError(errorDiv, rules.message, input);
+    //         return false;
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
     function showError(errorDiv, message, input) {
         errorDiv.textContent = message;

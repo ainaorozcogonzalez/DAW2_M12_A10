@@ -103,6 +103,24 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div>
+                            <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
+                            <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                                <option value="">Todas</option>
+                                @foreach($sedes as $sede)
+                                    <option value="{{ $sede->id }}" {{ request('sede_id') == $sede->id ? 'selected' : '' }}>{{ $sede->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="categoria_id" class="block text-sm font-medium text-gray-700">Categoría</label>
+                            <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                                <option value="">Todas</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}" {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
                             <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                                 <i class="fas fa-filter"></i> Filtrar
@@ -225,13 +243,13 @@
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" id="categoria_id_modal" class="w-full px-3 py-2 border rounded-md">
                             <option value="">Seleccione una categoría</option>
                             @foreach($categorias as $categoria)
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="categoria_id_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -253,6 +271,10 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ asset('js/incidencia-form.js') }}"></script>
+    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    <script src="{{ asset('js/categoria-form.js') }}"></script>
+    <script src="{{ asset('js/user-form.js') }}"></script>
     <script>
         // Funciones para abrir/cerrar el modal
         function openIncidenciaModal() {
@@ -278,7 +300,7 @@
                     document.getElementById('cliente_id').value = incidencia.cliente_id;
                     document.getElementById('tecnico_id').value = incidencia.tecnico_id;
                     document.getElementById('sede_id').value = incidencia.sede_id;
-                    document.getElementById('categoria_id').value = incidencia.categoria_id;
+                    document.getElementById('categoria_id_modal').value = incidencia.categoria_id;
                     document.getElementById('subcategoria_id').value = incidencia.subcategoria_id;
                     document.getElementById('incidenciaModal').classList.remove('hidden');
                 })

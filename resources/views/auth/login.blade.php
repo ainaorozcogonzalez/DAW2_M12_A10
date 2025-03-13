@@ -28,7 +28,7 @@
                         <input id="email" name="email" type="email" autocomplete="email"
                             class="appearance-none rounded-md relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 input-focus focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Correo electrónico"
-                            value="gestor@incidencias.com">
+                            value="admin@incidencias.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden">Por favor, introduce un email válido.</div>
                     </div>
                     <div>

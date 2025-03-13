@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             CategoriasSeeder::class,
             SubCategoriasSeeder::class,
-            IncidenciaSeeder::class,
+            IncidenciasSeeder::class,
+            ComentariosSeeder::class,
+            ArchivosSeeder::class,
         ]);
     }
 }

@@ -24,13 +24,13 @@ class UserController extends Controller
     {
         $roles = Rol::all();
         $sedes = Sede::all();
-        
+
         // Datos para incidencias
-        $clientes = User::whereHas('rol', function($query) {
+        $clientes = User::whereHas('rol', function ($query) {
             $query->where('nombre', 'cliente');
         })->get();
 
-        $tecnicos = User::whereHas('rol', function($query) {
+        $tecnicos = User::whereHas('rol', function ($query) {
             $query->where('nombre', 'tecnico');
         })->get();
 
@@ -53,46 +53,54 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => [
-                'required',
-                'string',
-                'max:255',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
-            ],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:users',
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
-            ],
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/'
-            ],
-            'rol_id' => 'required|exists:roles,id',
-            'sede_id' => 'required|exists:sedes,id',
-            'estado' => 'required|in:activo,inactivo'
-        ], [
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
-            'email.regex' => 'El formato del email no es válido.',
-            'password.regex' => 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
-        ]);
+        // $request->validate([
+        //     'nombre' => [
+        //         'required',
+        //         'string',
+        //         'max:255',
+        //         'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+        //     ],
+        //     'email' => [
+        //         'required',
+        //         'string',
+        //         'email',
+        //         'max:255',
+        //         'unique:users',
+        //         'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+        //     ],
+        //     'password' => [
+        //         'required',
+        //         'string',
+        //         'min:8',
+        //         'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/'
+        //     ],
+        //     'rol_id' => 'required|exists:roles,id',
+        //     'sede_id' => 'required|exists:sedes,id',
+        //     'estado' => 'required|in:activo,inactivo'
+        // ], [
+        //     'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+        //     'email.regex' => 'El formato del email no es válido.',
+        //     'password.regex' => 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
+        // ]);
+        try {
+            User::create([
+                'nombre' => $request->nombre,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'rol_id' => $request->rol_id,
+                'sede_id' => $request->sede_id,
+                'estado' => $request->estado,
+            ]);
 
-        User::create([
-            'nombre' => $request->nombre,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'rol_id' => $request->rol_id,
-            'sede_id' => $request->sede_id,
-            'estado' => $request->estado,
-        ]);
+            echo "Creado " . $request->nombre . " creado correctamente";
+            die();
+        } catch (\PDOException $e) {
+            echo "Error No se pudo crear a: " . $request->nombre;
+            die();
+        }
+        echo "Invalido Intentelo mas tarde";
 
-        return redirect()->route('admin.dashboard')->with('success', 'Usuario creado exitosamente');
+        // return redirect()->route('admin.dashboard')->with('success', 'Usuario creado exitosamente');
     }
 
     public function index(Request $request)
@@ -130,6 +138,36 @@ class UserController extends Controller
         ));
     }
 
+    public function datosusuarios(Request $request)
+    {
+        $roles = Rol::all();
+        $sedes = Sede::all();
+        $estados = ['Activo', 'Inactivo'];
+
+        // Construir la consulta base
+        $query = User::with(['rol', 'sede']);
+
+        // Aplicar filtros si están presentes en la solicitud
+        if ($request->has('rol_id') && $request->rol_id) {
+            $query->where('rol_id', $request->rol_id);
+        }
+
+        if ($request->has('sede_id') && $request->sede_id) {
+            $query->where('sede_id', $request->sede_id);
+        }
+
+        if ($request->has('estado') && $request->estado) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Obtener los usuarios filtrados
+        $users = $query->get();
+
+        $roles = Rol::all();;
+        return response()->json(['roles' => $roles, 'sedes' => $sedes, 'estados' => $estados, 'users' => $users]);
+    }
+
+
     public function edit(User $user)
     {
         return response()->json([
@@ -144,6 +182,15 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        \Log::info('Datos recibidos para actualización:', $request->all());
+        \Log::info('Usuario a actualizar:', $user->toArray());
+
+        // Verificar que los datos requeridos están presentes
+        if (!$request->has('rol_id') || !$request->has('sede_id')) {
+            \Log::error('Faltan campos requeridos en la solicitud');
+            return back()->withErrors(['error' => 'Faltan campos requeridos']);
+        }
+
         $request->validate([
             'nombre' => [
                 'required',
@@ -157,7 +204,7 @@ class UserController extends Controller
                 'email',
                 'max:255',
                 'unique:users,email,' . $user->id,
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0.9.-]+\.[a-zA-Z]{2,}$/'
             ],
             'password' => [
                 'nullable',
@@ -170,21 +217,36 @@ class UserController extends Controller
             'estado' => 'required|in:activo,inactivo'
         ]);
 
-        $user->update([
+        $updateData = [
             'nombre' => $request->nombre,
             'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
             'rol_id' => $request->rol_id,
             'sede_id' => $request->sede_id,
             'estado' => $request->estado
-        ]);
+        ];
+
+        if ($request->password) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        $user->update($updateData);
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request)
     {
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
+        try {
+            $user = User::find($request->id);
+            if ($user) {
+                $user->delete();
+                echo "ok";
+                die();
+            }
+            echo "no existe";
+        } catch (\PDOException $e) {
+            echo "error " . $e;
+        }
+        // return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
     }
-} 
+}

@@ -59,7 +59,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Usuarios</p>
-                            <p class="text-2xl font-bold">{{ App\Models\User::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalusuarios">{{ App\Models\User::count() }}</p>
                         </div>
                     </a>
                 </div>
@@ -70,7 +70,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Incidencias</p>
-                            <p class="text-2xl font-bold">{{ App\Models\Incidencia::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalincidencias">{{ App\Models\Incidencia::count() }}</p>
                         </div>
                     </a>
                 </div>
@@ -165,25 +165,29 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}" id="userForm">
+                <form class="mt-4 space-y-4" method="POST" id="userForm"
+                    onsubmit="Crearusuario(event.preventDefault())">
                     @csrf
+                    @method('POST')
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md">
+                            class="w-full px-3 py-2 border rounded-md" required value="asdASD">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md">
+                            class="w-full px-3 py-2 border rounded-md" required value="asd@asd.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password">
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password"
+                            value="asdASD123" required>
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" id="rol_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md"
+                            required>
                             <option value="">Seleccione un rol</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->id }}">{{ $role->nombre }}</option>
@@ -192,7 +196,8 @@
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="user_sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md"
+                            required>
                             <option value="">Seleccione una sede</option>
                             @foreach ($sedes as $sede)
                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
@@ -201,7 +206,8 @@
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado" class="w-full px-3 py-2 border rounded-md">
+                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md"
+                            required>
                             <option value="inactivo" selected>Inactivo</option>
                             <option value="activo">Activo</option>
                         </select>
@@ -227,8 +233,8 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}"
-                    id="incidenciaForm">
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
+                    onsubmit="crearincidencia(event.preventDefault())">
                     @csrf
                     <div>
                         <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
@@ -237,7 +243,7 @@
                                 <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="cliente_id-error" class="error-message"></div>
+                        <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
@@ -246,7 +252,7 @@
                                 <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="sede_id-error" class="error-message"></div>
+                        <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -255,7 +261,7 @@
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="categoria_id-error" class="error-message"></div>
+                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id"
@@ -265,12 +271,12 @@
                                 <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="subcategoria_id-error" class="error-message"></div>
+                        <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <textarea name="descripcion" id="descripcion" placeholder="Descripción de la incidencia"
                             class="w-full px-3 py-2 border rounded-md"></textarea>
-                        <div id="descripcion-error" class="error-message"></div>
+                        <div id="descripcion-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
@@ -279,7 +285,7 @@
                                 <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="estado_id-error" class="error-message"></div>
+                        <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
@@ -288,7 +294,7 @@
                                 <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="prioridad_id-error" class="error-message"></div>
+                        <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeIncidenciaModal()"
@@ -310,8 +316,8 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Categoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('categorias.store') }}"
-                    id="categoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="categoriaForm"
+                    onsubmit="crearcategoria(event.preventDefault())">
                     @csrf
                     <div>
                         <input type="text" name="nombre" id="nombre_categoria"
@@ -338,8 +344,8 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Subcategoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('subcategorias.store') }}"
-                    id="subcategoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="subcategoriaForm"
+                    onsubmit="crearsubcategoria(event.preventDefault())">
                     @csrf
                     <div>
                         <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
@@ -374,6 +380,7 @@
     <script src="{{ asset('js/incidencia-form.js') }}"></script>
     <script src="{{ asset('js/categoria-form.js') }}"></script>
     <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -454,6 +461,89 @@
                 userMenu.classList.add('hidden');
             }
         });
+
+        // Validaciones JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('userForm');
+            if (!form) return;
+
+            const fields = {
+                nombre: {
+                    required: true,
+                    regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+                    message: 'El nombre solo puede contener letras y espacios.'
+                },
+                email: {
+                    required: true,
+                    regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: 'El formato del email no es válido.'
+                },
+                password: {
+                    required: true,
+                    regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                    message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
+                },
+                rol_id: {
+                    required: true,
+                    message: 'Seleccione un rol'
+                },
+                sede_id: {
+                    required: true,
+                    message: 'Seleccione una sede'
+                },
+                estado: {
+                    required: true,
+                    message: 'Seleccione un estado'
+                }
+            };
+
+            Object.keys(fields).forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (input) {
+                    input.addEventListener('blur', () => validateField(input, fields[fieldId]));
+                }
+            });
+
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                Object.keys(fields).forEach(fieldId => {
+                    const input = document.getElementById(fieldId);
+                    if (input && !validateField(input, fields[fieldId])) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+
+            function validateField(input, rules) {
+                const errorDiv = document.getElementById(`${input.id}-error`);
+                errorDiv.textContent = '';
+                input.classList.remove('border-red-500');
+
+                const value = input.value.trim();
+
+                if (rules.required && !value) {
+                    showError(errorDiv, 'Este campo es obligatorio', input);
+                    return false;
+                }
+
+                if (rules.regex && value && !rules.regex.test(value)) {
+                    showError(errorDiv, rules.message, input);
+                    return false;
+                }
+
+                return true;
+            }
+
+            function showError(errorDiv, message, input) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+                input.classList.add('border-red-500');
+            }
+        });
     </script>
 
     @if (session('success'))
@@ -462,7 +552,7 @@
             <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
-
+    <div id="alerts"></div>
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <ul>

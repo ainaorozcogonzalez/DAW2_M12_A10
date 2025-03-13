@@ -44,10 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validateField(input, rules) {
         const value = input.value.trim();
-        const errorDiv = input.parentNode.querySelector('.error-message') || 
+        const errorDiv = document.getElementById(`${input.id}-error`) || 
                         document.createElement('div');
         
-        errorDiv.className = 'text-red-500 text-sm mt-1 error-message';
+        errorDiv.id = `${input.id}-error`;
+        errorDiv.className = 'text-red-500 text-sm mt-1';
         input.classList.remove('border-red-500');
 
         // Limpiar mensajes anteriores
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validar campo requerido
         if (rules.required && !value) {
-            errorDiv.textContent = rules.message;
+            errorDiv.textContent = rules.message || rules.messages?.required;
             input.classList.add('border-red-500');
             if (!input.parentNode.contains(errorDiv)) {
                 input.parentNode.appendChild(errorDiv);
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validar longitud mínima
         if (rules.minLength && value.length < rules.minLength) {
-            errorDiv.textContent = rules.messages.minLength;
+            errorDiv.textContent = rules.messages?.minLength;
             input.classList.add('border-red-500');
             if (!input.parentNode.contains(errorDiv)) {
                 input.parentNode.appendChild(errorDiv);
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validar longitud máxima
         if (rules.maxLength && value.length > rules.maxLength) {
-            errorDiv.textContent = rules.messages.maxLength;
+            errorDiv.textContent = rules.messages?.maxLength;
             input.classList.add('border-red-500');
             if (!input.parentNode.contains(errorDiv)) {
                 input.parentNode.appendChild(errorDiv);
