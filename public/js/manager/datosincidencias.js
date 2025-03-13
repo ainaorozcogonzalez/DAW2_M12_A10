@@ -115,12 +115,7 @@ function asignar(id) {
 }
 
 document.getElementById("borrarfiltros").addEventListener("click", function (event) {
-    // Prevenir la acción por defecto
     event.preventDefault();
-
-    // Resetear el formulario de búsqueda
     document.getElementById("frmbusqueda").reset();
-
-    // Llamar a la función que recarga o realiza la búsqueda de incidencias
     datosincidencias();
 });

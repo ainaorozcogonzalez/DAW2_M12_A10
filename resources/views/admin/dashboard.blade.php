@@ -7,6 +7,7 @@
     <title>Panel de Administrador</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50">
@@ -23,7 +24,7 @@
                         <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin"
                                 class="w-8 h-8 rounded-full">
-                            <span class="text-gray-700">Admin</span>
+                            <span class="text-gray-700"> <span class="nombreusuario"></span></span>
                             <i class="fas fa-chevron-down text-gray-500"></i>
                         </button>
                         <!-- Menú desplegable -->
@@ -46,7 +47,7 @@
         <main class="container mx-auto px-4 py-8">
             <!-- Welcome Section -->
             <div class="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg p-6 text-white mb-8">
-                <h2 class="text-2xl font-bold mb-2">Bienvenido, Administrador!</h2>
+                <h2 class="text-2xl font-bold mb-2">Bienvenido, <span class="nombreusuario"></span>!</h2>
                 <p class="text-gray-100">Aquí puedes gestionar todos los aspectos del sistema de incidencias.</p>
             </div>
 
@@ -376,7 +377,7 @@
     </div>
     </div>
 
-    <script src="{{ asset('js/user-form.js') }}"></script>
+    {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
     <script src="{{ asset('js/incidencia-form.js') }}"></script>
     <script src="{{ asset('js/categoria-form.js') }}"></script>
     <script src="{{ asset('js/subcategoria-form.js') }}"></script>

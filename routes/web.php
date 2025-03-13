@@ -29,8 +29,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/admincrearusuario', [UserController::class, 'store']);
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::post('/{user}/edit', [UserController::class, 'edit']);
+        Route::put('/editar', [UserController::class, 'update']);
         Route::delete('/eliminaruario', [UserController::class, 'destroy']);
         Route::post('/datosusuarios', [UserController::class, 'datosusuarios']);
     });

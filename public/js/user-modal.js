@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const userModal = document.getElementById('userModal');
     const userForm = document.getElementById('userForm');
     const modalTitle = document.getElementById('modalTitle');
@@ -6,33 +6,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const userIdInput = document.getElementById('user_id');
 
     // Funciones para abrir/cerrar el modal
-    window.openUserModal = function() {
+    window.openUserModal = function () {
         modalTitle.innerText = 'Crear Nuevo Usuario';
         formMethod.value = 'POST';
-        userForm.action = userForm.dataset.storeUrl;
         userIdInput.value = '';
         resetForm();
         userModal.classList.remove('hidden');
     }
 
-    window.openEditModal = function(userId) {
+    window.openEditModal = function (userId) {
         console.log('Editando usuario con ID:', userId);
         fetch(`/users/${userId}/edit`)
             .then(response => response.json())
             .then(user => {
                 console.log('Datos del usuario recibidos:', user);
-                
+
                 modalTitle.innerText = 'Editar Usuario';
                 formMethod.value = 'PUT';
                 userForm.action = `/users/${userId}`;
                 userIdInput.value = user.id;
-                
+
                 // Verificar que los elementos existen
                 const rolField = document.getElementById('rol_id');
                 const sedeField = document.getElementById('sede_id');
                 console.log('Campo rol_id:', rolField);
                 console.log('Campo sede_id:', sedeField);
-                
+
                 if (rolField) {
                     rolField.value = user.rol_id;
                     console.log('Valor de rol_id establecido:', rolField.value);
@@ -41,22 +40,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     sedeField.value = user.sede_id;
                     console.log('Valor de sede_id establecido:', sedeField.value);
                 }
-                
+
                 document.getElementById('nombre').value = user.nombre;
                 document.getElementById('email').value = user.email;
                 document.getElementById('estado').value = user.estado;
                 document.getElementById('password').required = false;
-                
+
                 userModal.classList.remove('hidden');
             });
     }
 
-    window.closeUserModal = function() {
+    window.closeUserModal = function () {
         userModal.classList.add('hidden');
     }
 
     // Cerrar modal al hacer clic fuera de él
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == userModal) {
             closeUserModal();
         }
@@ -73,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validaciones del formulario
     const fields = {
-        nombre: { 
-            required: true, 
+        nombre: {
+            required: true,
             regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
             message: 'El nombre solo puede contener letras y espacios.'
         },
@@ -84,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             message: 'El formato del email no es válido.'
         },
         password: {
-            required: function() { return formMethod.value === 'POST'; },
+            required: function () { return formMethod.value === 'POST'; },
             regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
             message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
         },
@@ -102,17 +101,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // });
 
     // Validar formulario al enviar
-    userForm.addEventListener('submit', function(event) {
+    userForm.addEventListener('submit', function (event) {
         console.log('Formulario enviado:', {
             action: userForm.action,
             method: formMethod.value,
             data: new FormData(userForm)
         });
-        
+
         // Verificar valores de los campos
         console.log('rol_id:', document.getElementById('rol_id').value);
         console.log('sede_id:', document.getElementById('sede_id').value);
-        
+
         let isValid = true;
         Object.keys(fields).forEach(fieldId => {
             const input = document.getElementById(fieldId);

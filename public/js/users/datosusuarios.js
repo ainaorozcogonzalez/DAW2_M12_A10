@@ -36,11 +36,12 @@ function mostrardatosusuarios() {
                 respuesta += '        </p>';
                 respuesta += '    </div>';
                 respuesta += '    <div class="mt-4 flex space-x-2">';
+                respuesta += '        <form class="inline" id="formeliminar" onsubmit="cargadatoseditar(event, ' + user.id + ')">';
                 respuesta += '        <button class="text-indigo-600 hover:text-indigo-900">';
                 respuesta += '            <i class="fas fa-edit"></i> Editar';
                 respuesta += '        </button>';
+                respuesta += '        </form>';
                 respuesta += '        <form class="inline" id="formeliminar" onsubmit="eliminar(event, ' + user.id + ')">';
-                respuesta += '        <input type="hidden" name="id" value="' + user.id + '">';
                 respuesta += '            <button type="submit" class="text-red-600 hover:text-red-900">';
                 respuesta += '                <i class="fas fa-trash"></i> Eliminar';
                 respuesta += '            </button>';
@@ -52,35 +53,12 @@ function mostrardatosusuarios() {
         })
 }
 
-
-function eliminar(event, id) {
-    event.preventDefault();
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
-
-    var formData = new FormData();
-    formData.append('_token', csrfToken);
-    formData.append('_method', 'DELETE');
-    formData.append('id', id);
-
-    fetch("/users/eliminaruario", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            mostrardatosusuarios()
-        })
-}
-
 datosfiltros()
 
 function datosfiltros() {
-    let mostrarroles = document.getElementById("mostrar_roles");
-    let mostrarsedes = document.getElementById("mostrar_sedes");
-    let mostrarestados = document.getElementById("mostrar_estados");
+    let mostrarroles = document.getElementsByClassName("mostrar_roles");
+    let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
+    let mostrarestados = document.getElementsByClassName("mostrar_estados");
     var form = document.getElementById("formfiltros");
     var formData = new FormData(form);
     fetch("/users/datosusuarios", {
@@ -95,30 +73,28 @@ function datosfiltros() {
             mostrarroles.innerHTML = "";
             mostrarsedes.innerHTML = "";
             mostrarestados.innerHTML = "";
-            data.roles.forEach(rol => {
-                let respuesta = ""
-                respuesta += ' <option value="' + rol.id + '" >' + rol.nombre + '</option>';
-                mostrarroles.innerHTML += respuesta;
+
+            Array.from(mostrarroles).forEach(rols => {
+                rols.innerHTML = "";
+                data.roles.forEach(rol => {
+                    let respuesta = ""
+                    respuesta += ' <option value="' + rol.id + '" >' + rol.nombre + '</option>';
+                    rols.innerHTML += respuesta;
+                });
             });
 
-            data.sedes.forEach(sede => {
-                let respuesta = ""
-                respuesta += ' <option value="' + sede.id + '" >' + sede.nombre + '</option>';
-                mostrarsedes.innerHTML += respuesta;
+            Array.from(mostrarsedes).forEach(sedes => {
+                sedes.innerHTML = "";
+                data.sedes.forEach(sede => {
+                    sedes.innerHTML += ' <option value="' + sede.id + '" >' + sede.nombre + '</option>';
+                });
             });
 
-            data.estados.forEach(estado => {
-                let respuesta = ""
-                respuesta += ' <option value="' + estado + '" >' + estado + '</option>';
-                mostrarestados.innerHTML += respuesta;
+            Array.from(mostrarestados).forEach(mostrarestado => {
+                mostrarestado.innerHTML = "";
+                data.estados.forEach(estado => {
+                    mostrarestado.innerHTML += ' <option value="' + estado + '" >' + estado + '</option>';
+                });
             });
         })
 }
-
-document.getElementById('btnBorrarFiltros').onclick = () => {
-    // Restablecer los valores de los selectores a la opción vacía
-    let formfiltros = document.getElementById("formfiltros");
-    formfiltros.reset()
-    datosfiltros();
-    mostrardatosusuarios();
-};
