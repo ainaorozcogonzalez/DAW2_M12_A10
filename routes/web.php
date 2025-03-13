@@ -8,7 +8,6 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
-<<<<<<< HEAD
 use App\Http\Controllers\ClientIncidenciaController;
 use App\Models\EstadoIncidencia;
 use App\Models\Incidencia;
@@ -16,9 +15,7 @@ use App\Models\Prioridad;
 use App\Models\Sede;
 use App\Models\Subcategoria;
 use App\Models\Categoria;
-=======
 use App\Http\Controllers\GestorEquiposController;
->>>>>>> ba4e35cf242f9b61f9e9d4f7ba78d45471db8b13
 use App\Http\Controllers\TecnicoController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
