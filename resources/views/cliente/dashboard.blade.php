@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Cliente</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="{{ asset('js/incidencia-modal.js') }}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100" data-user-id="{{ auth()->id() }}">
     <!-- Header -->
     <header class="bg-white shadow">
         <div class="container mx-auto px-4 py-6 flex justify-between items-center">
@@ -49,7 +51,7 @@
 
         <!-- Filtros y ordenación mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <form action="{{ route('client.dashboard') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form id="filtrosForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label for="estado_id" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
@@ -79,10 +81,10 @@
                         <i class="fas fa-filter"></i>
                         <span>Filtrar</span>
                     </button>
-                    <a href="{{ route('client.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
+                    <button type="button" id="limpiarFiltros" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-sync"></i>
                         <span>Limpiar</span>
-                    </a>
+                    </button>
                 </div>
             </form>
         </div>
@@ -141,11 +143,11 @@
                         <div class="text-sm text-gray-600 mb-4">
                             <div class="flex items-center space-x-2 mb-2">
                                 <i class="fas fa-tag text-gray-400"></i>
-                                <span>{{ $incidencia->categoria->nombre }}</span>
+                                <span>{{ $incidencia->categoria->nombre ?? 'Sin categoría' }}</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-map-marker-alt text-gray-400"></i>
-                                <span>{{ $incidencia->sede->nombre }}</span>
+                                <span>{{ $incidencia->sede->nombre ?? 'Sin sede' }}</span>
                             </div>
                         </div>
 
@@ -158,19 +160,19 @@
                                         'Baja' => 'text-gray-500',
                                         'default' => 'text-gray-500'
                                     ];
-                                    $prioridadColor = $prioridadColors[$incidencia->prioridad->nombre] ?? $prioridadColors['default'];
+                                    $prioridadColor = $prioridadColors[$incidencia->prioridad->nombre ?? 'default'] ?? $prioridadColors['default'];
                                 @endphp
                                 <span class="{{ $prioridadColor }}">
                                     <i class="fas fa-exclamation-circle"></i>
                                 </span>
                                 <span class="text-sm {{ $prioridadColor }}">
-                                    {{ $incidencia->prioridad->nombre }}
+                                    {{ $incidencia->prioridad->nombre ?? 'Sin prioridad' }}
                                 </span>
                             </div>
                             <div class="flex space-x-2">
-                                <a href="#" class="text-green-500 hover:text-green-700 transition duration-200" title="Chat">
+                                <button onclick="openChatModal({{ $incidencia->id }})" class="text-green-500 hover:text-green-700 transition duration-200" title="Chat">
                                     <i class="fas fa-comments"></i>
-                                </a>
+                                </button>
                                 <button onclick="confirmarCierre({{ $incidencia->id }})" class="text-red-500 hover:text-red-700 transition duration-200" title="Cerrar incidencia" {{ $incidencia->estado_id == 5 ? 'disabled' : '' }}>
                                     <i class="fas fa-times-circle"></i>
                                 </button>
@@ -207,7 +209,7 @@
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
                 <div id="form-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}" id="incidenciaForm">
+                <form id="incidenciaForm" class="mt-4 space-y-4">
                     @csrf
                     <div>
                         <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
@@ -246,6 +248,49 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Chat -->
+    <div id="chatModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-5 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Chat con el Técnico</h3>
+                <div class="mt-4">
+                    <!-- Área de mensajes -->
+                    <div id="chatMessages" class="h-80 overflow-y-auto mb-4 border p-4 rounded-md">
+                        <p class="text-gray-500 text-center">No hay mensajes para mostrar.</p>
+                    </div>
+
+                    <!-- Formulario para enviar mensajes -->
+                    <form id="chatForm" class="space-y-4" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="incidencia_id" id="chatIncidenciaId">
+                        <div>
+                            <textarea name="mensaje" id="chatMensaje" class="w-full px-3 py-2 border rounded-md" placeholder="Escribe tu mensaje..."></textarea>
+                        </div>
+                        <div class="relative">
+                            <input type="file" name="archivo" id="chatArchivo" class="hidden">
+                            <label for="chatArchivo" class="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer flex items-center justify-center space-x-2">
+                                <i class="fas fa-paperclip"></i>
+                                <span>Adjuntar archivo</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1 text-center">Formatos aceptados: JPG, PNG, PDF, WEBP, ZIP, RAR, TAR, GZ (máximo 20MB)</p>
+                        </div>
+                        <div class="flex justify-end space-x-4">
+                            <button type="button" onclick="closeChatModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                                Cerrar
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referencia al archivo JavaScript externo -->
+    <script src="{{ asset('js/chat.js') }}"></script>
 
     <script>
         // Funciones para abrir/cerrar el modal

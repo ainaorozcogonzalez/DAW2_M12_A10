@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('incidencias')->group(function () {
         Route::get('/', [IncidenciaController::class, 'index'])->name('incidencias.index');
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
-        Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
+        Route::post('/', [IncidenciaController::class, 'store'])->name('incidencias.store');
         Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
@@ -122,7 +122,10 @@ Route::get('storage/archivos/{filename}', function ($filename) {
 Route::resource('users', UserController::class);
 
 Route::prefix('client')->middleware('auth')->group(function() {
-    Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
+    // Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
+    Route::post('/dashboard', [ClientIncidenciaController::class, 'indexCliente'])->name('client.dashboard');
+
+    Route::post('/dashboard/filtrar', [ClientIncidenciaController::class, 'index'])->name('client.dashboard.filtrar');
     Route::post('/incidencias', [ClientIncidenciaController::class, 'store'])->name('client.incidencias.store');
 });
 
@@ -131,4 +134,4 @@ Route::get('/subcategorias/{categoria_id}', function ($categoria_id) {
     return response()->json($subcategorias);
 });
 
-Route::get('/cliente/dashboard', [IncidenciaController::class, 'indexCliente'])->name('client.dashboard');
+Route::get('/cliente/dashboard', [ClientIncidenciaController::class, 'indexCliente'])->name('client.dashboard');
