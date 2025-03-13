@@ -222,7 +222,7 @@
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="categoria_id-error" class="text red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <label for="subcategoria_id" class="block text-sm font-medium text-gray-700">Subcategoría</label>

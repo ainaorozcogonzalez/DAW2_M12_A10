@@ -78,33 +78,51 @@ class ClientIncidenciaController extends Controller
 
     public function store(Request $request)
     {
-        // Validar los datos del formulario
+        \Log::info('Starting store method');
+        \Log::info('Request data:', $request->all());
+        \Log::info('Authenticated user:', auth()->user() ? auth()->user()->toArray() : 'No user');
+
+        // Validación de campos
         $request->validate([
-            'descripcion' => 'required|string|min:10|max:1000',
             'categoria_id' => 'required|exists:categorias,id',
             'subcategoria_id' => 'required|exists:subcategorias,id',
+            'descripcion' => 'required|string|min:10|max:1000'
+        ], [
+            'categoria_id.required' => 'Seleccione una categoría',
+            'subcategoria_id.required' => 'Seleccione una subcategoría',
+            'descripcion.required' => 'La descripción es obligatoria',
+            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres',
+            'descripcion.max' => 'La descripción no puede exceder los 1000 caracteres'
         ]);
 
         try {
-            // Crear la incidencia
+            \Log::info('Creating incidencia');
+            $estadoSinAsignar = EstadoIncidencia::where('nombre', 'Sin asignar')->first();
+            if (!$estadoSinAsignar) {
+                \Log::error('Estado "Sin asignar" no encontrado');
+                throw new \Exception('Estado "Sin asignar" no encontrado');
+            }
+            \Log::info('Estado Sin asignar:', $estadoSinAsignar->toArray());
+
             $incidencia = Incidencia::create([
-                'cliente_id' => auth()->id(), // ID del cliente autenticado
-                'tecnico_id' => null, // Inicialmente no hay técnico asignado
-                'sede_id' => auth()->user()->sede_id, // Sede del cliente
+                'cliente_id' => auth()->id(),
+                'tecnico_id' => null,
+                'sede_id' => auth()->user()->sede_id,
                 'categoria_id' => $request->categoria_id,
                 'subcategoria_id' => $request->subcategoria_id,
                 'descripcion' => $request->descripcion,
-                'estado_id' => EstadoIncidencia::where('nombre', 'Sin asignar')->first()->id, // Estado inicial
-                'prioridad_id' => null, // Inicialmente no hay prioridad asignada
-                'fecha_creacion' => now(), // Fecha actual
+                'estado_id' => $estadoSinAsignar->id,
+                'prioridad_id' => null,
+                'fecha_creacion' => now(),
             ]);
 
-            // Redirigir con mensaje de éxito
+            \Log::info('Incidencia created:', $incidencia->toArray());
+
             return redirect()->route('client.dashboard')->with('success', 'Incidencia creada exitosamente');
         } catch (\Exception $e) {
-            // Registrar el error y redirigir con mensaje de error
             \Log::error('Error creating incidencia: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al crear la incidencia: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al crear la incidencia: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

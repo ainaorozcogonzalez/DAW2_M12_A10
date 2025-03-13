@@ -110,7 +110,7 @@ Route::resource('users', UserController::class);
 
 Route::prefix('client')->middleware('auth')->group(function() {
     Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
-    Route::post('/incidencias', [ClientIncidenciaController::class, 'store'])->name('incidencias.store');
+    Route::post('/incidencias', [ClientIncidenciaController::class, 'store'])->name('client.incidencias.store');
 });
 
 Route::get('/subcategorias/{categoria_id}', function ($categoria_id) {
