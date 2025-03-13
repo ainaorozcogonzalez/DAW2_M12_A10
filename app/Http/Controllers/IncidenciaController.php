@@ -175,7 +175,6 @@ class IncidenciaController extends Controller
         $incidencia->delete();
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
     }
-<<<<<<< HEAD
 
     public function indexCliente()
     {
@@ -252,6 +251,3 @@ class IncidenciaController extends Controller
         }
     }
 } 
-=======
-}
->>>>>>> ba4e35cf242f9b61f9e9d4f7ba78d45471db8b13
