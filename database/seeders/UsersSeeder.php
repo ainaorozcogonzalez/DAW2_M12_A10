@@ -14,7 +14,7 @@ class UsersSeeder extends Seeder
             [
                 'nombre' => 'Admin',
                 'email' => 'admin@incidencias.com',
-                'password' => Hash::make('qweQWE123'),
+                'password' => bcrypt('qweQWE123'),
                 'rol_id' => 1, // administrador
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
@@ -22,7 +22,7 @@ class UsersSeeder extends Seeder
             [
                 'nombre' => 'Cliente',
                 'email' => 'cliente@incidencias.com',
-                'password' => Hash::make('qweQWE123'),
+                'password' => bcrypt('qweQWE123'),
                 'rol_id' => 2, // cliente
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
@@ -30,7 +30,7 @@ class UsersSeeder extends Seeder
             [
                 'nombre' => 'Gestor',
                 'email' => 'gestor@incidencias.com',
-                'password' => Hash::make('qweQWE123'),
+                'password' => bcrypt('qweQWE123'),
                 'rol_id' => 3, // gestor
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
@@ -38,7 +38,7 @@ class UsersSeeder extends Seeder
             [
                 'nombre' => 'Técnico',
                 'email' => 'tecnico@incidencias.com',
-                'password' => Hash::make('qweQWE123'),
+                'password' => bcrypt('qweQWE123'),
                 'rol_id' => 4, // tecnico
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
@@ -49,4 +49,4 @@ class UsersSeeder extends Seeder
             User::create($user);
         }
     }
-} 
+}
