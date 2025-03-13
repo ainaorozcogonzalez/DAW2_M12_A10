@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('subcategoria_id')->constrained('subcategorias');
             $table->text('descripcion');
             $table->foreignId('estado_id')->constrained('estado_incidencias');
-            $table->foreignId('prioridad_id')->constrained('prioridades');
+            $table->foreignId('prioridad_id')->nullable()->constrained('prioridades');
             $table->timestamp('fecha_creacion')->useCurrent();
             $table->timestamp('fecha_resolucion')->nullable();
             $table->timestamps();
