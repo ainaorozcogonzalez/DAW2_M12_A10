@@ -8,6 +8,13 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
+use App\Http\Controllers\ClientIncidenciaController;
+use App\Models\EstadoIncidencia;
+use App\Models\Incidencia;
+use App\Models\Prioridad;
+use App\Models\Sede;
+use App\Models\Subcategoria;
+use App\Models\Categoria;
 
 // Redirigir la ruta raíz al login
 Route::redirect('/', '/login');
@@ -38,6 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
+        Route::post('/{incidencia}/cerrar', [IncidenciaController::class, 'cerrar'])->name('incidencias.cerrar');
     });
 
     // Report routes
@@ -76,3 +84,15 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('users', UserController::class);
+
+Route::prefix('client')->middleware('auth')->group(function() {
+    Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
+    Route::post('/incidencias', [ClientIncidenciaController::class, 'store'])->name('incidencias.store');
+});
+
+Route::get('/subcategorias/{categoria_id}', function ($categoria_id) {
+    $subcategorias = Subcategoria::where('categoria_id', $categoria_id)->get();
+    return response()->json($subcategorias);
+});
+
+Route::get('/cliente/dashboard', [IncidenciaController::class, 'indexCliente'])->name('client.dashboard');

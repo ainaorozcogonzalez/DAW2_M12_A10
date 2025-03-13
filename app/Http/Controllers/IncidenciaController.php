@@ -138,6 +138,14 @@ class IncidenciaController extends Controller
             $query->where('subcategoria_id', $request->subcategoria_id);
         }
 
+        // Excluir incidencias cerradas si el filtro está activo
+        if ($request->has('excluir_cerradas') && $request->excluir_cerradas) {
+            $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+            if ($estadoCerrada) {
+                $query->where('estado_id', '!=', $estadoCerrada->id);
+            }
+        }
+
         // Obtener las incidencias filtradas
         $incidencias = $query->get();
 
@@ -158,5 +166,79 @@ class IncidenciaController extends Controller
     {
         $incidencia->delete();
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
+    }
+
+    public function indexCliente()
+    {
+        $prioridades = Prioridad::all();
+        $estados = EstadoIncidencia::all();
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        $sedes = Sede::all();
+        
+        // Obtener las incidencias filtradas
+        $incidencias = Incidencia::where('cliente_id', auth()->id())
+            ->when(request('estado_id'), function($query, $estado_id) {
+                return $query->where('estado_id', $estado_id);
+            })
+            ->when(request('excluir_cerradas'), function($query) {
+                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+                if ($estadoCerrada) {
+                    return $query->where('estado_id', '!=', $estadoCerrada->id);
+                }
+            })
+            ->when(request('sort') == 'fecha_creacion', function($query) {
+                return $query->orderBy('fecha_creacion', request('direction', 'asc'));
+            })
+            ->get();
+
+        // Contadores de incidencias
+        $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count(); // Total de incidencias
+        $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
+            ->whereHas('estado', function($query) {
+                $query->where('nombre', 'Cerrada');
+            })
+            ->count();
+        $contadorPendientes = $contadorTotal - $contadorCerradas; // Incidencias pendientes
+
+        return view('cliente.dashboard', compact(
+            'estados',
+            'incidencias',
+            'prioridades',
+            'categorias',
+            'contadorTotal', // Pasar el contador total
+            'contadorCerradas', // Pasar el contador de cerradas
+            'contadorPendientes' // Pasar el contador de pendientes
+        ));
+    }
+
+    public function cerrar(Incidencia $incidencia)
+    {
+        try {
+            // Verificar si el estado "Cerrada" existe
+            $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+
+            if (!$estadoCerrada) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El estado "Cerrada" no existe en la base de datos'
+                ], 404);
+            }
+
+            // Actualizar el estado de la incidencia
+            $incidencia->estado_id = $estadoCerrada->id;
+            $incidencia->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Incidencia cerrada correctamente'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error al cerrar la incidencia: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cerrar la incidencia: ' . $e->getMessage()
+            ], 500);
+        }
     }
 } 
