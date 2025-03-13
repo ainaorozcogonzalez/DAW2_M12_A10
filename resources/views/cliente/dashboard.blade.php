@@ -51,7 +51,7 @@
 
         <!-- Filtros y ordenación mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <form action="{{ route('client.dashboard') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form id="filtrosForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label for="estado_id" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
@@ -81,10 +81,10 @@
                         <i class="fas fa-filter"></i>
                         <span>Filtrar</span>
                     </button>
-                    <a href="{{ route('client.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
+                    <button type="button" id="limpiarFiltros" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-sync"></i>
                         <span>Limpiar</span>
-                    </a>
+                    </button>
                 </div>
             </form>
         </div>

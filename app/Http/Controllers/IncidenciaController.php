@@ -176,51 +176,6 @@ class IncidenciaController extends Controller
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
     }
 
-    public function indexCliente()
-    {
-        $prioridades = Prioridad::all();
-        $estados = EstadoIncidencia::all();
-        $categorias = Categoria::all();
-        $subcategorias = Subcategoria::all();
-        $sedes = Sede::all();
-        
-        // Obtener las incidencias filtradas
-        $incidencias = Incidencia::where('cliente_id', auth()->id())
-            ->when(request('estado_id'), function($query, $estado_id) {
-                return $query->where('estado_id', $estado_id);
-            })
-            ->when(request('excluir_cerradas'), function($query) {
-                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
-                if ($estadoCerrada) {
-                    return $query->where('estado_id', '!=', $estadoCerrada->id);
-                }
-            })
-            ->when(request('sort') == 'fecha_creacion', function($query) {
-                return $query->orderBy('fecha_creacion', request('direction', 'asc'));
-            })
-            ->get();
-
-        // Contadores de incidencias
-        $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count(); // Total de incidencias
-        $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
-            ->whereHas('estado', function($query) {
-                $query->where('nombre', 'Cerrada');
-            })
-            ->count();
-        $contadorPendientes = $contadorTotal - $contadorCerradas; // Incidencias pendientes
-
-        return view('cliente.dashboard', compact(
-            'estados',
-            'incidencias',
-            'prioridades',
-            'categorias',
-            'subcategorias',
-            'contadorTotal',
-            'contadorCerradas',
-            'contadorPendientes'
-        ));
-    }
-
     public function cerrar(Incidencia $incidencia)
     {
         try {

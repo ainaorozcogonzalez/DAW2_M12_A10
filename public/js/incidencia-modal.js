@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Manejar el envío del formulario con fetch
+    // Manejar el envío del formulario de creación de incidencias
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         
@@ -56,18 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Crear FormData con los datos del formulario
-        const formData = new FormData(form);
-
-        // Obtener el token CSRF
+        const formData = new FormData(this);
         const token = document.querySelector('meta[name="csrf-token"]')?.content;
-        
-        if (!token) {
-            console.error('CSRF token not found');
-            return;
-        }
 
-        // Realizar la petición fetch
         fetch('/client/incidencias', {
             method: 'POST',
             headers: {
@@ -79,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Mostrar SweetAlert de éxito
                 Swal.fire({
                     icon: 'success',
                     title: '¡Éxito!',
@@ -92,15 +82,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeIncidenciaModal();
                 
                 // Limpiar el formulario
-                form.reset();
+                this.reset();
                 
                 // Crear y añadir la nueva tarjeta de incidencia
                 const contenedorIncidencias = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.gap-6');
-                
-                // Crear la nueva tarjeta
                 const nuevaTarjeta = crearTarjetaIncidencia(data.incidencia);
-                
-                // Añadir la tarjeta al principio del contenedor
                 contenedorIncidencias.insertAdjacentHTML('afterbegin', nuevaTarjeta);
 
                 // Actualizar los contadores
@@ -156,7 +142,7 @@ function crearTarjetaIncidencia(incidencia) {
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <span class="text-sm text-gray-500">${new Date().toLocaleString()}</span>
+                        <span class="text-sm text-gray-500">${new Date(incidencia.fecha_creacion).toLocaleString()}</span>
                         <h3 class="text-lg font-semibold mt-1">${incidencia.descripcion}</h3>
                     </div>
                     <div class="flex space-x-2">
@@ -209,6 +195,16 @@ function actualizarContadores(contadores) {
     }
 }
 
+// Funciones para abrir/cerrar el modal
+function openIncidenciaModal() {
+    document.getElementById('incidenciaModal').classList.remove('hidden');
+}
+
+function closeIncidenciaModal() {
+    document.getElementById('incidenciaModal').classList.add('hidden');
+}
+
+// Función para confirmar el cierre de una incidencia
 function confirmarCierre(incidenciaId) {
     if (confirm('¿Estás seguro de que deseas cerrar esta incidencia?')) {
         fetch(`/incidencias/${incidenciaId}/cerrar`, {
@@ -235,11 +231,61 @@ function confirmarCierre(incidenciaId) {
     }
 }
 
-// Añade estas funciones si no están ya definidas
-function openIncidenciaModal() {
-    document.getElementById('incidenciaModal').classList.remove('hidden');
-}
+// Función para manejar el envío del formulario de filtros
+document.getElementById('filtrosForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    aplicarFiltros();
+});
 
-function closeIncidenciaModal() {
-    document.getElementById('incidenciaModal').classList.add('hidden');
+// Función para limpiar los filtros
+document.getElementById('limpiarFiltros').addEventListener('click', function() {
+    document.getElementById('filtrosForm').reset();
+    aplicarFiltros();
+});
+
+// Función para aplicar los filtros
+function aplicarFiltros() {
+    const formData = new FormData(document.getElementById('filtrosForm'));
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch('/client/dashboard/filtrar', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const contenedorIncidencias = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3.gap-6');
+        contenedorIncidencias.innerHTML = '';
+
+        if (data.incidencias && data.incidencias.length > 0) {
+            data.incidencias.forEach(incidencia => {
+                const nuevaTarjeta = crearTarjetaIncidencia(incidencia);
+                contenedorIncidencias.insertAdjacentHTML('beforeend', nuevaTarjeta);
+            });
+        } else {
+            // Mostrar mensaje de "No hay incidencias"
+            contenedorIncidencias.innerHTML = `
+                <div class="bg-white p-8 rounded-lg shadow-md text-center col-span-full">
+                    <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay incidencias</h3>
+                    <p class="text-gray-500 mb-4">No se encontraron incidencias con los filtros aplicados.</p>
+                </div>
+            `;
+        }
+
+        // Actualizar los contadores
+        actualizarContadores(data.contadores);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al aplicar los filtros'
+        });
+    });
 }

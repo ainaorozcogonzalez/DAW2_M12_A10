@@ -23,70 +23,69 @@ class ClientIncidenciaController extends Controller
         });
     }
 
-    public function index()
-    {
-        if (request()->wantsJson()) {
-            $incidencias = Incidencia::where('cliente_id', auth()->id())->get();
-            $contadores = [
-                'total' => Incidencia::where('cliente_id', auth()->id())->count(),
-                'pendientes' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', '!=', 5)->count(),
-                'cerradas' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', 5)->count(),
-            ];
-            
-            $html = view('cliente.partials.lista-incidencias', compact('incidencias'))->render();
-            
-            return response()->json([
-                'html' => $html,
-                'contadores' => $contadores
-            ]);
-        }
-
-        $estados = EstadoIncidencia::all();
-        $prioridades = Prioridad::all();
-        $sedes = Sede::all();
-        $categorias = Categoria::all();
-        
-        // Obtener las incidencias filtradas con las relaciones cargadas
+    public function indexCliente()
+{
+    if (request()->wantsJson()) {
         $incidencias = Incidencia::where('cliente_id', auth()->id())
-            ->with(['estado', 'categoria', 'subcategoria', 'sede', 'prioridad']) // Cargar las relaciones
-            ->when(request('estado_id'), function($query, $estado_id) {
-                return $query->where('estado_id', $estado_id);
-            })
-            ->when(request('excluir_cerradas'), function($query) {
+            ->with(['estado', 'categoria', 'subcategoria', 'sede', 'prioridad'])
+            ->when(request('estado_id'), fn($query, $estado_id) => $query->where('estado_id', $estado_id))
+            ->when(request('prioridad_id'), fn($query, $prioridad_id) => $query->where('prioridad_id', $prioridad_id))
+            ->when(request('excluir_cerradas'), function ($query) {
                 $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
                 if ($estadoCerrada) {
                     return $query->where('estado_id', '!=', $estadoCerrada->id);
                 }
             })
-            ->when(request('sort') == 'fecha_creacion', function($query) {
-                return $query->orderBy('fecha_creacion', request('direction', 'asc'));
-            })
             ->get();
 
-        // Contadores de incidencias
-        $contadorResueltas = Incidencia::where('cliente_id', auth()->id())
-            ->whereHas('estado', function($query) {
-                $query->where('nombre', 'Resuelta');
-            })
-            ->count();
+        $contadores = [
+            'total' => Incidencia::where('cliente_id', auth()->id())->count(),
+            'pendientes' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', '!=', 5)->count(),
+            'cerradas' => Incidencia::where('cliente_id', auth()->id())->where('estado_id', 5)->count(),
+        ];
 
-        $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
-            ->whereHas('estado', function($query) {
-                $query->where('nombre', 'Cerrada');
-            })
-            ->count();
-
-        return view('cliente.dashboard', compact(
-            'estados',
-            'incidencias',
-            'prioridades',
-            'sedes',
-            'categorias',
-            'contadorResueltas',
-            'contadorCerradas'
-        ));
+        return response()->json([
+            'incidencias' => $incidencias,
+            'contadores' => $contadores
+        ]);
     }
 
+    $prioridades = Prioridad::all();
+    $estados = EstadoIncidencia::all();
+    $categorias = Categoria::all();
+    $subcategorias = Subcategoria::all();
+    $sedes = Sede::all();
+
+    $incidencias = Incidencia::where('cliente_id', auth()->id())
+        ->with(['estado', 'categoria', 'subcategoria', 'sede', 'prioridad'])
+        ->when(request('estado_id'), fn($query, $estado_id) => $query->where('estado_id', $estado_id))
+        ->when(request('excluir_cerradas'), function ($query) {
+            $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+            if ($estadoCerrada) {
+                return $query->where('estado_id', '!=', $estadoCerrada->id);
+            }
+        })
+        ->when(request('sort') == 'fecha_creacion', fn($query) => $query->orderBy('fecha_creacion', request('direction', 'asc')))
+        ->get();
+
+    $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count();
+    $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
+        ->whereHas('estado', fn($query) => $query->where('nombre', 'Cerrada'))
+        ->count();
+    $contadorPendientes = $contadorTotal - $contadorCerradas;
+
+    return view('cliente.dashboard', compact(
+        'estados',
+        'incidencias',
+        'prioridades',
+        'categorias',
+        'subcategorias',
+        'sedes',
+        'contadorTotal',
+        'contadorCerradas',
+        'contadorPendientes'
+    ));
+}
     public function create()
     {
         $prioridades = Prioridad::all();
