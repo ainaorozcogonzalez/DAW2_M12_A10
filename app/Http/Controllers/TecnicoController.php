@@ -23,7 +23,10 @@ class TecnicoController extends Controller
 
         $estados = EstadoIncidencia::whereNotIn('nombre', ['Sin asignar', 'Cerrada'])->get();
 
-        return view('tecnico.dashboard', compact('incidencias', 'estados'));
+        // Inicializamos $mensajes como un array vacío
+        $mensajes = [];
+
+        return view('tecnico.dashboard', compact('incidencias', 'estados', 'mensajes'));
     }
 
     public function cambiarEstado(Request $request, Incidencia $incidencia)
@@ -66,7 +69,7 @@ class TecnicoController extends Controller
     {
         $request->validate([
             'incidencia_id' => 'required|exists:incidencias,id',
-            'mensaje' => 'required_without:archivo|string|max:500',
+            'mensaje' => 'nullable|string|max:500',
             'archivo' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
