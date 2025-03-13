@@ -144,22 +144,19 @@
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="rol_id" class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
-                            <span class="mostrar_roles"></span>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
-                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" class="w-full px-3 py-2 border rounded-md">
-                            <span class="mostrar_estados"></span>
+                        <select name="estado" class="w-full px-3 py-2 border rounded-md mostrar_estados">
                         </select>
                         <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>

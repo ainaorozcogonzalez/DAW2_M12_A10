@@ -145,12 +145,18 @@ function datosadicionales() {
             mostrarclientes.innerHTML = "";
             mostrarestado.innerHTML = "";
 
+
             Array.from(mostrarprioridades).forEach(prioridades => {
                 prioridades.innerHTML = "";
                 data.prioridad.forEach(prioridad => {
                     let respuesta = ""
-                    respuesta += ' <option value="' + prioridad.id + '" >' + prioridad.nombre + '</option>';
-                    prioridades.innerHTML += respuesta;
+                    if (prioridad[1]) {
+                        respuesta += ' <option value=""></option>';
+                    } else {
+                        respuesta += ' <option value="' + prioridad.id + '" >' + prioridad.nombre + '</option>';
+                        prioridades.innerHTML += respuesta;
+
+                    }
                 });
             });
 
@@ -214,3 +220,5 @@ function datosadicionales() {
             });
         })
 }
+
+

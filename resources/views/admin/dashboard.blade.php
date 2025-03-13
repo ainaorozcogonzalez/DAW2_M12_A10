@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Panel de Administrador</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -188,25 +189,23 @@
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md"
-                            required>
+                        <select name="rol_id" id="rol_id_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_roles" required>
                             <option value="">Seleccione un rol</option>
-                            <span class="mostrar_roles"></span>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md"
-                            required>
+                        <select name="sede_id" id="sede_id_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes" required>
                             <option value="">Seleccione una sede</option>
-                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md">
+                        <select name="estado" id="estado_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estadousuario">
                             <option value="">Seleccione un estado</option>
-                            <span class="mostrar_estadousuario"></span>
                         </select>
                         <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -234,31 +233,29 @@
                     onsubmit="crearincidencia(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="cliente_id" id="cliente_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_clientes">
                             <option value="">Seleccione un cliente</option>
-                            <span class="mostrar_clientes"></span>
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" id="incidencia_sede_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
-                            <span class="mostrar_sedes"></span>
                         </select>
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
-                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id"
-                            class="w-full px-3 py-2 border rounded-md">
+                            class="w-full px-3 py-2 border rounded-md mostrar_subcategorias">
                             <option value="">Seleccione una subcategoría</option>
-                            <span class="mostrar_subcategorias"></span>
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -268,16 +265,16 @@
                         <div id="descripcion-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="estado_id" id="estado_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estado">
                             <option value="">Seleccione un estado</option>
-                            <span class="mostrar_estado"></span>
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="prioridad_id" id="prioridad_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_prioridades">
                             <option value="">Seleccione una prioridad</option>
-                            <span class="mostrar_prioridades"></span>
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -333,9 +330,8 @@
                     onsubmit="crearsubcategoria(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
-                            <span class="mostrar_categorias"></span>
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -358,12 +354,12 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
     {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
     {{-- <script src="{{ asset('js/incidencia-form.js') }}"></script> --}}
     {{-- <script src="{{ asset('js/categoria-form.js') }}"></script> --}}
     {{-- <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
-    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
     <script>
         function openUserModal() {
@@ -528,23 +524,6 @@
             }
         });
     </script>
-
-    @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-            role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-    <div id="alerts"></div>
-    @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <style>
         .border-red-500 {
