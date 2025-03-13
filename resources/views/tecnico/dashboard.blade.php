@@ -47,8 +47,12 @@
             </div>
 
             <!-- Sección de incidencias -->
-            <div class="mb-8">
+            <div class="mb-8 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">Incidencias Asignadas</h2>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="hideClosed" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 transition duration-200">
+                    <label for="hideClosed" class="text-sm text-gray-600">Ocultar cerradas</label>
+                </div>
             </div>
 
             <div id="incidenciasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -175,6 +179,17 @@
 
     <!-- Referencia al archivo JavaScript externo -->
     <script src="{{ asset('js/chat.js') }}"></script>
+    <script>
+        document.getElementById('hideClosed').addEventListener('change', function() {
+            const incidencias = document.querySelectorAll('#incidenciasContainer > div');
+            incidencias.forEach(incidencia => {
+                const estado = incidencia.querySelector('.estado-badge').textContent.trim();
+                if (estado === 'Cerrada') {
+                    incidencia.style.display = this.checked ? 'none' : 'block';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
