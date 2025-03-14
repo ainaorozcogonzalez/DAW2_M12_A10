@@ -4,6 +4,10 @@ function datosincidencias() {
     var resultado = document.getElementById("infoincidencias");
     var form = document.getElementById("frmbusqueda");
     var formData = new FormData(form);
+    
+    // Guardar el valor seleccionado actual del técnico
+    var selectedTecnico = document.getElementById("tecnico").value;
+    
     fetch("/datosincidencias", {
         method: "POST",
         body: formData
@@ -13,6 +17,13 @@ function datosincidencias() {
             return response.json();
         })
         .then(data => {
+            // Llenar el select de técnicos
+            var tecnicoSelect = document.getElementById("tecnico");
+            tecnicoSelect.innerHTML = '<option value="">Todos</option>';
+            data.tecnicos.forEach(tecnico => {
+                tecnicoSelect.innerHTML += `<option value="${tecnico.id}" ${tecnico.id == selectedTecnico ? 'selected' : ''}>${tecnico.nombre}</option>`;
+            });
+            
             resultado.innerHTML = "";
             data.incidencias.forEach(incidencia => {
                 var tecnico = incidencia.tecniconombre ? incidencia.tecniconombre : "Sin asignar";
@@ -71,7 +82,7 @@ function datosincidencias() {
                                 </div>
                                 <div class="flex items-center space-x-1 ${prioridadColor}">
                                     <i class="fas fa-exclamation-circle"></i>
-                                    <span>${incidencia.nombreprioridades}</span>
+                                    <span>${incidencia.nombreprioridades ? incidencia.nombreprioridades : 'Sin asignar'}</span>
                                 </div>
                             </div>
 
@@ -173,5 +184,17 @@ function asignar(id) {
 document.getElementById("borrarfiltros").addEventListener("click", function (event) {
     event.preventDefault();
     document.getElementById("frmbusqueda").reset();
+    // Limpiar el select de técnicos
+    document.getElementById("tecnico").innerHTML = '<option value="">Todos</option>';
     datosincidencias();
+});
+
+document.getElementById('ocultarCerradas').addEventListener('change', function() {
+    const incidencias = document.querySelectorAll('#infoincidencias > div');
+    incidencias.forEach(incidencia => {
+        const estado = incidencia.querySelector('.px-2.py-1.text-sm.rounded-full').textContent.trim();
+        if (estado === 'Cerrada') {
+            incidencia.style.display = this.checked ? 'none' : 'block';
+        }
+    });
 });

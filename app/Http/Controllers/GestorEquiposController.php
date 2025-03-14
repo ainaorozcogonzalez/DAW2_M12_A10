@@ -35,6 +35,22 @@ class GestorEquiposController extends Controller
             $incidencias->where('incidencias.prioridad_id', '=', "$prioridad");
         }
 
+        if ($request->tecnico) {
+            $incidencias->where('incidencias.tecnico_id', '=', $request->tecnico);
+        }
+
+        if ($request->orden) {
+            if ($request->orden == 'numerico') {
+                $incidencias->orderBy('incidencias.id');
+            } else {
+                $order = $request->orden == 'asc' ? 'asc' : 'desc';
+                $incidencias->orderBy('incidencias.prioridad_id', $order);
+            }
+        } else {
+            // Orden por defecto: numérico por ID de incidencia
+            $incidencias->orderBy('incidencias.id');
+        }
+
         if ($request->fechacreacion && $request->fechafin) {
             $fechacreacion = $request->fechacreacion . ' 00:00:00';
             $fechafin = $request->fechafin . ' 23:59:59';
@@ -47,10 +63,16 @@ class GestorEquiposController extends Controller
             $incidencias->where('incidencias.created_at', '<=', $fechafin);
         }
 
+        if ($request->fecha_creacion) {
+            $fecha = $request->fecha_creacion . ' 00:00:00';
+            $incidencias->whereDate('incidencias.created_at', '=', $fecha);
+        }
+
         $incidencias = $incidencias->get();
 
         $tecnicos = User::select('id', 'nombre')
-            ->where('rol_id', '=', 4, 'AND', 'sede_id', '=', Auth::user()->sede_id)
+            ->where('rol_id', 4)
+            ->where('sede_id', Auth::user()->sede_id)
             ->get();
 
         $prioridades = Prioridad::all();
@@ -83,6 +105,15 @@ class GestorEquiposController extends Controller
     {
         try {
             if ($request->assignadopara != "") {
+                // Verificar que el técnico pertenece a la misma sede que el gestor
+                $tecnico = User::where('id', $request->assignadopara)
+                    ->where('sede_id', Auth::user()->sede_id)
+                    ->first();
+
+                if (!$tecnico) {
+                    throw new \Exception('El técnico no pertenece a tu sede');
+                }
+
                 $resultado = Incidencia::find($request->id);
                 $resultado->tecnico_id = $request->assignadopara;
                 $resultado->estado_id = 2;
@@ -99,6 +130,8 @@ class GestorEquiposController extends Controller
             }
         } catch (\PDOException $e) {
             echo "error";
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
     }
 }

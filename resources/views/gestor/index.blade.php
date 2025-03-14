@@ -46,7 +46,7 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Filtros mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <form action="" method="post" id="frmbusqueda" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <form action="" method="post" id="frmbusqueda" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 @csrf
                 <div>
                     <label for="prioridad" class="block text-sm font-medium text-gray-700 mb-1">Prioridad</label>
@@ -58,18 +58,28 @@
                     </select>
                 </div>
                 <div>
-                    <label for="fechacreacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha creación</label>
-                    <input type="date" name="fechacreacion" id="fechacreacion" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <label for="tecnico" class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
+                    <select name="tecnico" id="tecnico" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="">Todos</option>
+                    </select>
                 </div>
                 <div>
-                    <label for="fechafin" class="block text-sm font-medium text-gray-700 mb-1">Fecha fin</label>
-                    <input type="date" name="fechafin" id="fechafin" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <label for="orden" class="block text-sm font-medium text-gray-700 mb-1">Ordenar por</label>
+                    <select name="orden" id="orden" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="numerico" selected>Numérico</option>
+                        <option value="desc">Prioridad: Menor a mayor</option>
+                        <option value="asc">Prioridad: Mayor a menor</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="fecha_creacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha de creación</label>
+                    <input type="date" name="fecha_creacion" id="fecha_creacion" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
                 </div>
                 <div class="flex items-end space-x-2">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
-                        <i class="fas fa-filter"></i>
-                        <span>Filtrar</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="ocultarCerradas" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 transition duration-200">
+                        <label for="ocultarCerradas" class="text-sm text-gray-600">Ocultar cerradas</label>
+                    </div>
                     <button type="button" id="borrarfiltros" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-sync"></i>
                         <span>Limpiar</span>
