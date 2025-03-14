@@ -94,12 +94,13 @@ class IncidenciaController extends Controller
     {
         return response()->json([
             'id' => $incidencia->id,
-            'titulo' => $incidencia->titulo,
             'descripcion' => $incidencia->descripcion,
             'estado' => $incidencia->estado,
             'prioridad' => $incidencia->prioridad,
             'cliente_id' => $incidencia->cliente_id,
             'tecnico_id' => $incidencia->tecnico_id,
+            'sede' => $incidencia->sede,
+            'categoria' => $incidencia->categoria,
         ]);
     }
 

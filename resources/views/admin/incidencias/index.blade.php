@@ -84,37 +84,37 @@
                         <div>
                             <label for="estado_id" class="block text-sm font-medium text-gray-700">Estado</label>
                             <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
-                                <option value="">Todos</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="prioridad_id" class="block text-sm font-medium text-gray-700">Prioridad</label>
                             <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
-                                <option value="">Todas</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="cliente_id" class="block text-sm font-medium text-gray-700">Cliente</label>
                             <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
-                                <option value="">Todos</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="tecnico_id" class="block text-sm font-medium text-gray-700">Técnico</label>
                             <select name="tecnico_id" class="w-full px-3 py-2 border rounded-md mostrartecnicos">
-                                <option value="">Todos</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
                             <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
-                                <option value="">Todas</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="categoria_id" class="block text-sm font-medium text-gray-700">Categoría</label>
                             <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
-                                <option value="">Todas</option>
+                                <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
@@ -198,7 +198,8 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm">
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
+                    onsubmit="mostrardatosusuarios(event.preventDefault())">
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="incidencia_id" id="incidencia_id">
@@ -208,59 +209,47 @@
                     </div>
                     <div>
                         <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
-                            <option value="">Seleccione un estado</option>
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
-                            <option value="">Seleccione una prioridad</option>
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
+                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
+                            <option value="">Intentelo más tarde</option>
+                        </select>
+                        <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div>
                         <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
-                            <option value="">Seleccione un cliente</option>
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="tecnico_id" class="w-full px-3 py-2 border rounded-md mostrartecnicos">
-                            <option value="">Seleccione un técnico</option>
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="tecnico_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
-                            <option value="">Seleccione una sede</option>
-                        </select>
-                        <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                    </div>
-                    <div>
                         <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
-                            <option value="">Seleccione una categoría</option>
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="categoria_id_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="subcategoria_id"
-                            class="w-full px-3 py-2 border rounded-md mostrarsubcategorias">
-                            <option value="">Seleccione una subcategoría</option>
+                        <select name="subcategoria_id" id="mostrarsubcategorias"
+                            class="w-full px-3 py-2 border rounded-md ">
+                            <option value="">Intentelo más tarde</option>
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
-<<<<<<< HEAD
-                    <div>
-                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
-                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="excluir_cerradas" name="excluir_cerradas" value="1" {{ request('excluir_cerradas') ? 'checked' : '' }}>
-                        <label for="excluir_cerradas">Excluir cerradas</label>
-                    </div>
-=======
->>>>>>> main
                     <div class="flex justify-end space-x-4">
                         <button type="button" onclick="closeIncidenciaModal()"
                             class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancelar</button>
@@ -281,74 +270,6 @@
     <script src="{{ asset('js/subcategoria-form.js') }}"></script>
     <script src="{{ asset('js/categoria-form.js') }}"></script>
     <script src="{{ asset('js/user-form.js') }}"></script> --}}
-    {{-- <script>
-        // Funciones para abrir/cerrar el modal
-        function openIncidenciaModal() {
-            document.getElementById('modalTitle').innerText = 'Crear Nueva Incidencia';
-            document.getElementById('formMethod').value = 'POST';
-            resetForm();
-            document.getElementById('incidenciaModal').classList.remove('hidden');
-        }
-
-        function openEditIncidenciaModal(incidenciaId) {
-            axios.get(`/incidencias/${incidenciaId}/edit`)
-                .then(response => {
-                    const incidencia = response.data;
-                    document.getElementById('modalTitle').innerText = 'Editar Incidencia';
-                    document.getElementById('formMethod').value = 'PUT';
-                    document.getElementById('incidenciaForm').action = `/incidencias/${incidenciaId}`;
-                    document.getElementById('incidencia_id').value = incidencia.id;
-                    document.getElementById('titulo').value = incidencia.titulo;
-                    document.getElementById('descripcion').value = incidencia.descripcion;
-                    document.getElementById('estado_id').value = incidencia.estado_id;
-                    document.getElementById('prioridad_id').value = incidencia.prioridad_id;
-                    document.getElementById('cliente_id').value = incidencia.cliente_id;
-                    document.getElementById('tecnico_id').value = incidencia.tecnico_id;
-                    document.getElementById('sede_id').value = incidencia.sede_id;
-                    document.getElementById('categoria_id_modal').value = incidencia.categoria_id;
-                    document.getElementById('subcategoria_id').value = incidencia.subcategoria_id;
-                    document.getElementById('incidenciaModal').classList.remove('hidden');
-                })
-                .catch(error => {
-                    console.error('Error fetching incidencia data:', error);
-                });
-        }
-
-        function closeIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.add('hidden');
-            resetForm();
-        }
-
-        function resetForm() {
-            document.getElementById('incidenciaForm').reset();
-            const errorMessages = document.querySelectorAll('.error-message');
-            errorMessages.forEach(error => error.classList.add('hidden'));
-            const inputs = document.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => input.classList.remove('border-red-500'));
-        }
-
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('incidenciaModal')) {
-                closeIncidenciaModal();
-            }
-        }
-
-        // Manejar el menú desplegable
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
-
-        userMenuButton.addEventListener('click', () => {
-            userMenu.classList.toggle('hidden');
-        });
-
-        // Cerrar el menú si se hace clic fuera de él
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.classList.add('hidden');
-            }
-        });
-    </script> --}}
 </body>
 
 </html>
