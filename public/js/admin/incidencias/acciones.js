@@ -7,31 +7,50 @@ document.getElementById('btnBorrarFiltros').onclick = () => {
     mostrardatosincidencias();
 };
 
+function closeUserModal() {
+    var form = document.getElementById("userForm");
+    form.reset()
+    document.getElementById('userModal').classList.add('hidden');
+}
+
 function eliminar(id) {
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+    Swal.fire({
+        title: "Eliminar la<br>Incidencia #" + id + '?',
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#4f46e5",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
 
-    var formData = new FormData();
-    formData.append('_token', csrfToken);
-    formData.append('_method', 'DELETE');
-    formData.append('id', id);
+            var formData = new FormData();
+            formData.append('_token', csrfToken);
+            formData.append('_method', 'DELETE');
+            formData.append('id', id);
 
-    fetch("/incidencias/" + id, {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            console.log(primeraParte)
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-            mostrardatosincidencias()
-        })
+            fetch("/incidencias/" + id, {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al cargar los datos");
+                    return response.text();
+                })
+                .then(data => {
+                    const [primeraParte, resto] = data.split(/ (.+)/);
+                    console.log(primeraParte)
+                    Swal.fire({
+                        title: resto,
+                        icon: primeraParte,
+                    });
+                    mostrardatosincidencias()
+                })
+        }
+    });
 }
 
 function cargadatoseditar(id) {
@@ -63,56 +82,35 @@ function cargadatoseditar(id) {
             document.getElementById('descripcion').value = data.descripcion || '';
 
             let estado_id = form.querySelector('select[name="estado_id"]');
-            if (data.estado) {
-                estado_id.value = data.estado;
-            }
+            estado_id.value = data.estado.id;
 
             let prioridad_id = form.querySelector('select[name="prioridad_id"]');
-            if (data.sede_id) {
-                prioridad_id.value = data.sede_id;
-            }
+            prioridad_id.value = data.prioridad.id;
 
             let cliente_id = form.querySelector('select[name="cliente_id"]');
-            if (data.estado) {
-                // convierte la primera letra en mayuscula
-                cliente_id.value = data.estado.charAt(0).toUpperCase() + data.estado.slice(1).toLowerCase();
-            }
+            cliente_id.value = data.cliente_id;
 
             let tecnico_id = form.querySelector('select[name="tecnico_id"]');
-            if (data.estado) {
-                // convierte la primera letra en mayuscula
-                tecnico_id.value = data.estado.charAt(0).toUpperCase() + data.estado.slice(1).toLowerCase();
-            }
+            tecnido = data.tecnico_id == null ? "" : data.tecnico_id
+            tecnico_id.value = tecnido;
 
             let sede_id = form.querySelector('select[name="sede_id"]');
-            if (data.estado) {
-                // convierte la primera letra en mayuscula
-                sede_id.value = data.estado.charAt(0).toUpperCase() + data.estado.slice(1).toLowerCase();
-            }
+            sede_id.value = data.sede.id;
 
             let categoria_id = form.querySelector('select[name="categoria_id"]');
-            if (data.estado) {
-                // convierte la primera letra en mayuscula
-                categoria_id.value = data.estado.charAt(0).toUpperCase() + data.estado.slice(1).toLowerCase();
-            }
+            categoria_id.value = data.categoria.id;
 
             let subcategoria_id = form.querySelector('select[name="subcategoria_id"]');
-            if (data.estado) {
-                // convierte la primera letra en mayuscula
-                subcategoria_id.value = data.estado.charAt(0).toUpperCase() + data.estado.slice(1).toLowerCase();
-            }
+            subcategoria_id.value = data.estado.id;
         })
 }
 
 
 function editar() {
-    var form = document.getElementById("userForm");
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+    var form = document.getElementById("incidenciaForm");
     var formData = new FormData(form);
-    formData.append('_token', csrfToken);
     formData.append('_method', 'PUT');
-
-    fetch("/users/editar", {
+    fetch("/incidencias/editar", {
         method: "POST",
         body: formData
     })
@@ -121,24 +119,27 @@ function editar() {
             return response.text();
         })
         .then(data => {
-            form.reset();
-            form.onsubmit = function (event) {
-                event.preventDefault();
-                Crearusuario();
-            };
-            document.getElementById('userModal').classList.add('hidden');
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('incidenciaModal').classList.add('hidden');
+                mostrardatosincidencias()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }
 
-function Crearusuario() {
-    var form = document.getElementById("userForm");
+function crearincidencia() {
+    var form = document.getElementById("incidenciaForm");
     var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
     var formData = new FormData(form);
     formData.append('_token', csrfToken);
     formData.append('_method', 'POST');
 
-    fetch("/users/admincrearusuario", {
+    fetch("/incidencias/admincrearincidencia", {
         method: "POST",
         body: formData
     })
@@ -147,6 +148,15 @@ function Crearusuario() {
             return response.text();
         })
         .then(data => {
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('incidenciaModal').classList.add('hidden');
+                mostrardatosincidencias()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }

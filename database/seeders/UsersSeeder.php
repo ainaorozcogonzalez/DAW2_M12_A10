@@ -20,35 +20,75 @@ class UsersSeeder extends Seeder
                 'estado' => 'activo'
             ],
             [
-                'nombre' => 'Cliente',
-                'email' => 'cliente@incidencias.com',
+                'nombre' => 'ClienteBarcelona',
+                'email' => 'clientebarcelona@incidencias.com',
                 'password' => bcrypt('qweQWE123'),
                 'rol_id' => 2, // cliente
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
             ],
             [
-                'nombre' => 'Gestor',
-                'email' => 'gestor@incidencias.com',
+                'nombre' => 'ClienteBerlin',
+                'email' => 'clienteberlin@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 2, // cliente
+                'sede_id' => 2, // Berlin
+                'estado' => 'activo'
+            ],
+            [
+                'nombre' => 'ClienteMontreal',
+                'email' => 'clientemontreal@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 2, // cliente
+                'sede_id' => 3, // Montreal
+                'estado' => 'activo'
+            ],
+            [
+                'nombre' => 'GestorBarcelona',
+                'email' => 'gestorbarcelona@incidencias.com',
                 'password' => bcrypt('qweQWE123'),
                 'rol_id' => 3, // gestor
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
             ],
             [
-                'nombre' => 'Técnico',
-                'email' => 'tecnico@incidencias.com',
+                'nombre' => 'GestorBerlin',
+                'email' => 'gestorberlin@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 3, // gestor
+                'sede_id' => 2, // Berlin
+                'estado' => 'activo'
+            ],
+            [
+                'nombre' => 'GestorMontreal',
+                'email' => 'gestormontreal@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 3, // gestor
+                'sede_id' => 3, // Montreal
+                'estado' => 'activo'
+            ],
+            [
+                'nombre' => 'TécnicoBarcelona',
+                'email' => 'tecnicobarcelona@incidencias.com',
                 'password' => bcrypt('qweQWE123'),
                 'rol_id' => 4, // tecnico
                 'sede_id' => 1, // Barcelona
                 'estado' => 'activo'
             ],
             [
-                'nombre' => 'pruebas',
-                'email' => 'pruebas@incidencias.com',
+                'nombre' => 'TécnicoBerlin',
+                'email' => 'tecnicoberlin@incidencias.com',
                 'password' => bcrypt('qweQWE123'),
                 'rol_id' => 4, // tecnico
-                'sede_id' => 1, // Barcelona
+                'sede_id' => 2, // Berlin
+                'estado' => 'activo'
+            ],
+            [
+                'nombre' => 'TécnicoMontreal',
+                'email' => 'tecnicomontreal@incidencias.com',
+                'password' => bcrypt('qweQWE123'),
+                'rol_id' => 4, // tecnico
+                'sede_id' => 3, // Montreal
                 'estado' => 'activo'
             ],
         ];
