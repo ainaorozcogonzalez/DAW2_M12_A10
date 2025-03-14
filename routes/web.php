@@ -16,7 +16,6 @@ use App\Models\Prioridad;
 use App\Models\Sede;
 use App\Models\Subcategoria;
 use App\Models\Categoria;
-use App\Http\Controllers\GestorEquiposController;
 use App\Http\Controllers\TecnicoController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -125,6 +124,7 @@ Route::resource('users', UserController::class);
 Route::prefix('client')->middleware('auth')->group(function() {
     Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
     Route::post('/incidencias', [ClientIncidenciaController::class, 'store'])->name('client.incidencias.store');
+    Route::get('/incidencias/filtrar', [ClientIncidenciaController::class, 'index'])->name('client.incidencias.filter');
 });
 
 Route::get('/subcategorias/{categoria_id}', function ($categoria_id) {

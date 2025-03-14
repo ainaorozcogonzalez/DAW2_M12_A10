@@ -10,7 +10,7 @@
         </div>
     @endif
 
-    <form action="{{ route('incidencias.store') }}" method="POST">
+    <form action="{{ route('client.incidencias.store') }}" method="POST">
         @csrf
 
         <!-- Campo oculto para el ID del cliente -->

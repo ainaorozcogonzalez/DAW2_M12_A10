@@ -29,24 +29,13 @@ class ClientIncidenciaController extends Controller
         $prioridades = Prioridad::all();
         $sedes = Sede::all();
         $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
         
         // Obtener las incidencias filtradas
-        $incidencias = Incidencia::where('cliente_id', auth()->id())
-            ->when(request('estado_id'), function($query, $estado_id) {
-                return $query->where('estado_id', $estado_id);
-            })
-            ->when(request('excluir_cerradas'), function($query) {
-                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
-                if ($estadoCerrada) {
-                    return $query->where('estado_id', '!=', $estadoCerrada->id);
-                }
-            })
-            ->when(request('sort') == 'fecha_creacion', function($query) {
-                return $query->orderBy('fecha_creacion', request('direction', 'asc'));
-            })
-            ->get();
+        $incidencias = $this->getFilteredIncidencias();
 
         // Contadores de incidencias
+        $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count();
         $contadorResueltas = Incidencia::where('cliente_id', auth()->id())
             ->whereHas('estado', function($query) {
                 $query->where('nombre', 'Resuelta');
@@ -58,6 +47,12 @@ class ClientIncidenciaController extends Controller
                 $query->where('nombre', 'Cerrada');
             })
             ->count();
+            
+        $contadorPendientes = $contadorTotal - $contadorCerradas;
+
+        if (request()->ajax()) {
+            return view('cliente.partials.incidencia-list', compact('incidencias'));
+        }
 
         return view('cliente.dashboard', compact(
             'estados',
@@ -65,9 +60,50 @@ class ClientIncidenciaController extends Controller
             'prioridades',
             'sedes',
             'categorias',
+            'subcategorias',
+            'contadorTotal',
             'contadorResueltas',
-            'contadorCerradas'
+            'contadorCerradas',
+            'contadorPendientes'
         ));
+    }
+
+    private function getFilteredIncidencias()
+    {
+        $query = Incidencia::where('cliente_id', auth()->id());
+
+        // Filtro por estado
+        if (request('estado_id')) {
+            $query->where('estado_id', request('estado_id'));
+        }
+
+        // Filtro por prioridad
+        if (request('prioridad_id')) {
+            $query->where('prioridad_id', request('prioridad_id'));
+        }
+
+        // Excluir incidencias cerradas
+        if (request('excluir_cerradas')) {
+            $query->whereHas('estado', function($q) {
+                $q->where('nombre', '!=', 'Cerrada');
+            });
+        }
+
+        // Ordenar por fecha de creación
+        if (request('sort_by')) {
+            switch (request('sort_by')) {
+                case 'fecha_creacion_asc':
+                    $query->orderBy('fecha_creacion', 'asc');
+                    break;
+                case 'fecha_creacion_desc':
+                    $query->orderBy('fecha_creacion', 'desc');
+                    break;
+            }
+        } else {
+            $query->latest('fecha_creacion');
+        }
+
+        return $query->get();
     }
 
     public function create()

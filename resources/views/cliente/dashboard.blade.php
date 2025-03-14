@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Cliente</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="{{ asset('js/incidencia-modal.js') }}"></script>
@@ -49,7 +50,7 @@
 
         <!-- Filtros y ordenación mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <form action="{{ route('client.dashboard') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form id="filterForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <label for="estado_id" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
@@ -68,6 +69,14 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label for="sort_by" class="block text-sm font-medium text-gray-700 mb-1">Ordenar por</label>
+                    <select name="sort_by" id="sort_by" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="">Sin ordenar</option>
+                        <option value="fecha_creacion_asc">Fecha creación ↑</option>
+                        <option value="fecha_creacion_desc">Fecha creación ↓</option>
+                    </select>
+                </div>
                 <div class="flex items-end">
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" name="excluir_cerradas" id="excluir_cerradas" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 transition duration-200" {{ request('excluir_cerradas') ? 'checked' : '' }}>
@@ -75,14 +84,14 @@
                     </label>
                 </div>
                 <div class="flex items-end space-x-2">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
+                    <button type="button" id="aplicarFiltros" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-filter"></i>
                         <span>Filtrar</span>
                     </button>
-                    <a href="{{ route('client.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
+                    <button type="button" id="limpiarFiltros" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-sync"></i>
                         <span>Limpiar</span>
-                    </a>
+                    </button>
                 </div>
             </form>
         </div>
@@ -111,81 +120,9 @@
         </div>
 
         <!-- Listado de incidencias mejorado con tarjetas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="incidenciasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($incidencias as $incidencia)
-                <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <span class="text-sm text-gray-500">{{ $incidencia->fecha_creacion?->format('d/m/Y H:i') ?? 'N/A' }}</span>
-                                <h3 class="text-lg font-semibold mt-1">{{ Str::limit($incidencia->descripcion, 40) }}</h3>
-                            </div>
-                            <div class="flex space-x-2">
-                                @php
-                                    $estadoColors = [
-                                        'Resuelta' => 'bg-green-100 text-green-800',
-                                        'Pendiente' => 'bg-yellow-100 text-yellow-800',
-                                        'En progreso' => 'bg-blue-100 text-blue-800',
-                                        'Baja' => 'bg-gray-100 text-gray-800',
-                                        'Urgente' => 'bg-red-100 text-red-800',
-                                        'default' => 'bg-gray-100 text-gray-800'
-                                    ];
-                                    $estadoColor = $estadoColors[$incidencia->estado->nombre] ?? $estadoColors['default'];
-                                @endphp
-                                <span class="px-2 py-1 text-xs rounded-full {{ $estadoColor }}">
-                                    {{ $incidencia->estado->nombre }}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="text-sm text-gray-600 mb-4">
-                            <div class="flex items-center space-x-2 mb-2">
-                                <i class="fas fa-tag text-gray-400"></i>
-                                <span>{{ $incidencia->categoria->nombre }}</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-map-marker-alt text-gray-400"></i>
-                                <span>{{ $incidencia->sede->nombre }}</span>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between items-center">
-                            <div class="flex space-x-2">
-                                @php
-                                    $prioridadColors = [
-                                        'Alta' => 'text-red-500',
-                                        'Media' => 'text-yellow-500',
-                                        'Baja' => 'text-gray-500',
-                                        'default' => 'text-gray-500'
-                                    ];
-                                    $prioridadColor = $prioridadColors[$incidencia->prioridad->nombre] ?? $prioridadColors['default'];
-                                @endphp
-                                <span class="{{ $prioridadColor }}">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                </span>
-                                <span class="text-sm {{ $prioridadColor }}">
-                                    {{ $incidencia->prioridad->nombre }}
-                                </span>
-                            </div>
-                            <div class="flex space-x-2">
-                                <a href="#" class="text-green-500 hover:text-green-700 transition duration-200" title="Chat">
-                                    <i class="fas fa-comments"></i>
-                                </a>
-                                <button onclick="confirmarCierre({{ $incidencia->id }})" class="text-red-500 hover:text-red-700 transition duration-200" title="Cerrar incidencia" {{ $incidencia->estado_id == 5 ? 'disabled' : '' }}>
-                                    <i class="fas fa-times-circle"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    @if($incidencia->fecha_resolucion)
-                        <div class="bg-green-50 px-6 py-3 border-t">
-                            <div class="text-sm text-green-700 flex items-center space-x-2">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Resuelta el {{ $incidencia->fecha_resolucion->format('d/m/Y') }}</span>
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                @include('cliente.partials.incidencia-card', ['incidencia' => $incidencia])
             @endforeach
         </div>
 
@@ -207,7 +144,7 @@
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
                 <div id="form-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}" id="incidenciaForm">
+                <form class="mt-4 space-y-4" method="POST" action="{{ route('client.incidencias.store') }}" id="incidenciaForm">
                     @csrf
                     <div>
                         <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
@@ -248,71 +185,91 @@
     </div>
 
     <script>
-        // Funciones para abrir/cerrar el modal
-        function openIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.remove('hidden');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+            const filterForm = document.getElementById('filterForm');
+            const aplicarFiltros = document.getElementById('aplicarFiltros');
+            const limpiarFiltros = document.getElementById('limpiarFiltros');
+            const incidenciasContainer = document.getElementById('incidenciasContainer');
 
-        function closeIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.add('hidden');
-        }
+            // Toggle menú usuario
+            if (userMenuButton && userMenu) {
+                userMenuButton.addEventListener('click', function() {
+                    userMenu.classList.toggle('hidden');
+                });
 
-        document.getElementById('categoria_id').addEventListener('change', function() {
-            var categoriaId = this.value;
-            var subcategoriaSelect = document.getElementById('subcategoria_id');
-            subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
-
-            if (categoriaId) {
-                fetch(`/subcategorias/${categoriaId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(subcategoria => {
-                            var option = document.createElement('option');
-                            option.value = subcategoria.id;
-                            option.text = subcategoria.nombre;
-                            subcategoriaSelect.appendChild(option);
-                        });
-                    });
-            }
-        });
-
-        function confirmarCierre(incidenciaId) {
-            if (confirm('¿Estás seguro de que deseas cerrar esta incidencia?')) {
-                fetch(`/incidencias/${incidenciaId}/cerrar`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                // Cerrar menú al hacer clic fuera
+                document.addEventListener('click', function(event) {
+                    if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                        userMenu.classList.add('hidden');
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload(); // Recargar la página para ver los cambios
-                    } else {
-                        alert(data.message || 'Hubo un error al intentar cerrar la incidencia');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error en la solicitud');
                 });
             }
-        }
 
-        // Manejar el menú desplegable
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
+            // Función para cargar incidencias con AJAX
+            async function cargarIncidencias(params = new URLSearchParams()) {
+                try {
+                    const response = await fetch(`{{ route('client.incidencias.filter') }}?${params.toString()}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error al cargar incidencias');
+                    }
+                    
+                    const html = await response.text();
+                    incidenciasContainer.innerHTML = html;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
 
-        userMenuButton.addEventListener('click', () => {
-            userMenu.classList.toggle('hidden');
-        });
+            // Aplicar filtros
+            if (aplicarFiltros && filterForm) {
+                aplicarFiltros.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(filterForm);
+                    const params = new URLSearchParams(formData);
+                    cargarIncidencias(params);
+                });
+            }
 
-        // Cerrar el menú si se hace clic fuera de él
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.classList.add('hidden');
+            // Limpiar filtros
+            if (limpiarFiltros && filterForm) {
+                limpiarFiltros.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterForm.reset();
+                    cargarIncidencias();
+                });
+            }
+
+            // Cargar subcategorías al cambiar categoría
+            const categoriaSelect = document.getElementById('categoria_id');
+            const subcategoriaSelect = document.getElementById('subcategoria_id');
+
+            if (categoriaSelect && subcategoriaSelect) {
+                categoriaSelect.addEventListener('change', function() {
+                    const categoriaId = this.value;
+                    subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
+
+                    if (categoriaId) {
+                        fetch(`/subcategorias/${categoriaId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                data.forEach(subcategoria => {
+                                    const option = document.createElement('option');
+                                    option.value = subcategoria.id;
+                                    option.textContent = subcategoria.nombre;
+                                    subcategoriaSelect.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                });
             }
         });
     </script>
