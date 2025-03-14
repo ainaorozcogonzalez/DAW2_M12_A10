@@ -12,7 +12,7 @@ class IncidenciasSeeder extends Seeder
         $incidencias = [
             [
                 'cliente_id' => 2,
-                'tecnico_id' => 4,
+                'tecnico_id' => 8,
                 'sede_id' => 1,
                 'categoria_id' => 1,
                 'subcategoria_id' => 1,
@@ -22,9 +22,9 @@ class IncidenciasSeeder extends Seeder
                 'fecha_creacion' => now(),
             ],
             [
-                'cliente_id' => 2,
-                'tecnico_id' => 4,
-                'sede_id' => 1,
+                'cliente_id' => 3,
+                'tecnico_id' => 9,
+                'sede_id' => 2,
                 'categoria_id' => 2,
                 'subcategoria_id' => 3,
                 'descripcion' => 'El sistema operativo no arranca',
@@ -33,9 +33,9 @@ class IncidenciasSeeder extends Seeder
                 'fecha_creacion' => now(),
             ],
             [
-                'cliente_id' => 2,
-                'tecnico_id' => 4,
-                'sede_id' => 1,
+                'cliente_id' => 4,
+                'tecnico_id' => 10,
+                'sede_id' => 3,
                 'categoria_id' => 1,
                 'subcategoria_id' => 5,
                 'descripcion' => 'No hay conexión WiFi',

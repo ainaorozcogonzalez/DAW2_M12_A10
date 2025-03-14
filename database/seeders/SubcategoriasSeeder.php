@@ -14,16 +14,16 @@ class SubCategoriasSeeder extends Seeder
     public function run(): void
     {
         $subcat = [
-            ['categoria_id' => 1, 'nombre' => 'Aplicació gestió administrativa.'],
-            ['categoria_id' => 1, 'nombre' => 'Accés remot.'],
-            ['categoria_id' => 1, 'nombre' => 'Aplicació de videoconferència.'],
-            ['categoria_id' => 1, 'nombre' => 'Imatge de projector defectuosa.'],
+            ['categoria_id' => 1, 'nombre' => 'Aplicación gestión administrativa.'],
+            ['categoria_id' => 1, 'nombre' => 'Acceso remoto.'],
+            ['categoria_id' => 1, 'nombre' => 'Aplicación de videoconferencias.'],
+            ['categoria_id' => 1, 'nombre' => 'Imagen de projector defectuosa.'],
 
 
-            ['categoria_id' => 2, 'nombre' => 'Problema amb el teclat.'],
-            ['categoria_id' => 2, 'nombre' => 'El ratolí no funciona.'],
-            ['categoria_id' => 2, 'nombre' => "Monitor no s'encén."],
-            ['categoria_id' => 2, 'nombre' => 'Imatge de projector defectuosa.'],
+            ['categoria_id' => 2, 'nombre' => 'Problema cone el teclado.'],
+            ['categoria_id' => 2, 'nombre' => 'El ratón no funciona.'],
+            ['categoria_id' => 2, 'nombre' => "Monitor no se enciende."],
+            ['categoria_id' => 2, 'nombre' => 'Imagen de projector defectuosa.'],
         ];
 
         foreach ($subcat as $sub) {
