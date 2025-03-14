@@ -47,26 +47,26 @@ class IncidenciaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'cliente_id' => 'required|exists:users,id',
-            'tecnico_id' => 'nullable|exists:users,id',
-            'sede_id' => 'required|exists:sedes,id',
-            'categoria_id' => 'required|exists:categorias,id',
-            'subcategoria_id' => 'required|exists:subcategorias,id',
-            'descripcion' => 'required|string|min:10|max:1000',
-            'estado_id' => 'required|exists:estado_incidencias,id',
-            'prioridad_id' => 'required|exists:prioridades,id'
-        ], [
-            'cliente_id.required' => 'Seleccione un cliente',
-            'sede_id.required' => 'Seleccione una sede',
-            'categoria_id.required' => 'Seleccione una categoría',
-            'subcategoria_id.required' => 'Seleccione una subcategoría',
-            'descripcion.required' => 'La descripción es obligatoria',
-            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres',
-            'descripcion.max' => 'La descripción no puede exceder los 1000 caracteres',
-            'estado_id.required' => 'Seleccione un estado',
-            'prioridad_id.required' => 'Seleccione una prioridad'
-        ]);
+        // $request->validate([
+        //     'cliente_id' => 'required|exists:users,id',
+        //     'tecnico_id' => 'nullable|exists:users,id',
+        //     'sede_id' => 'required|exists:sedes,id',
+        //     'categoria_id' => 'required|exists:categorias,id',
+        //     'subcategoria_id' => 'required|exists:subcategorias,id',
+        //     'descripcion' => 'required|string|min:10|max:1000',
+        //     'estado_id' => 'required|exists:estado_incidencias,id',
+        //     'prioridad_id' => 'required|exists:prioridades,id'
+        // ], [
+        //     'cliente_id.required' => 'Seleccione un cliente',
+        //     'sede_id.required' => 'Seleccione una sede',
+        //     'categoria_id.required' => 'Seleccione una categoría',
+        //     'subcategoria_id.required' => 'Seleccione una subcategoría',
+        //     'descripcion.required' => 'La descripción es obligatoria',
+        //     'descripcion.min' => 'La descripción debe tener al menos 10 caracteres',
+        //     'descripcion.max' => 'La descripción no puede exceder los 1000 caracteres',
+        //     'estado_id.required' => 'Seleccione un estado',
+        //     'prioridad_id.required' => 'Seleccione una prioridad'
+        // ]);
 
 
         try {

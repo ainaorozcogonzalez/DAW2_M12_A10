@@ -17,7 +17,7 @@ use App\Models\Subcategoria;
 use App\Models\Categoria;
 use App\Http\Controllers\GestorEquiposController;
 use App\Http\Controllers\TecnicoController;
-use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
 // Redirigir la ruta raíz al login
@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
         Route::post('/{incidencia}/edit', [IncidenciaController::class, 'edit']);
         Route::put('/editar', [IncidenciaController::class, 'update']);
-        Route::delete('/{incidencia}/delete', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
+        Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy']);
         Route::post('/{incidencia}/cerrar', [IncidenciaController::class, 'cerrar'])->name('incidencias.cerrar');
         Route::post('/datosincidencias', [IncidenciaController::class, 'datosincidencias']);
     });
@@ -122,7 +122,7 @@ Route::get('storage/archivos/{filename}', function ($filename) {
 })->name('archivos.serve');
 Route::resource('users', UserController::class);
 
-Route::prefix('client')->middleware('auth')->group(function() {
+Route::prefix('client')->middleware('auth')->group(function () {
     // Route::get('/dashboard', [ClientIncidenciaController::class, 'index'])->name('client.dashboard');
     Route::post('/dashboard', [ClientIncidenciaController::class, 'indexCliente'])->name('client.dashboard');
 

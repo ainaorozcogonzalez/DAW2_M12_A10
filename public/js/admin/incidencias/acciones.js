@@ -119,13 +119,16 @@ function editar() {
             return response.text();
         })
         .then(data => {
-            form.reset();
-            form.onsubmit = function (event) {
-                event.preventDefault();
-                Crearusuario();
-            };
-            document.getElementById('userModal').classList.add('hidden');
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('incidenciaModal').classList.add('hidden');
+                mostrardatosincidencias()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }
 
@@ -136,7 +139,7 @@ function crearincidencia() {
     formData.append('_token', csrfToken);
     formData.append('_method', 'POST');
 
-    fetch("/users/admincrearusuario", {
+    fetch("/incidencias/admincrearincidencia", {
         method: "POST",
         body: formData
     })
@@ -145,6 +148,15 @@ function crearincidencia() {
             return response.text();
         })
         .then(data => {
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('incidenciaModal').classList.add('hidden');
+                mostrardatosincidencias()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }
