@@ -19,6 +19,13 @@ class Incidencia extends Model
         'fecha_resolucion'
     ];
 
+    protected $casts = [
+        'fecha_creacion' => 'datetime',
+        'fecha_resolucion' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
     public function cliente()
     {
         return $this->belongsTo(User::class, 'cliente_id');

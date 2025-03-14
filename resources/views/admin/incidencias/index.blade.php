@@ -260,6 +260,18 @@
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
+<<<<<<< HEAD
+                    <div>
+                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
+                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="excluir_cerradas" name="excluir_cerradas" value="1" {{ request('excluir_cerradas') ? 'checked' : '' }}>
+                        <label for="excluir_cerradas">Excluir cerradas</label>
+                    </div>
+=======
+>>>>>>> main
                     <div class="flex justify-end space-x-4">
                         <button type="button" onclick="closeIncidenciaModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancelar</button>
                         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Guardar</button>

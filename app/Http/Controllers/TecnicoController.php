@@ -19,12 +19,22 @@ class TecnicoController extends Controller
     {
         $incidencias = Incidencia::where('tecnico_id', auth()->id())
             ->with(['cliente', 'estado', 'prioridad'])
+            ->when(request('hideClosed'), function($query) {
+                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
+                if ($estadoCerrada) {
+                    return $query->where('estado_id', '!=', $estadoCerrada->id);
+                }
+            })
             ->get();
 
         $estados = EstadoIncidencia::whereNotIn('nombre', ['Sin asignar', 'Cerrada'])->get();
 
         // Inicializamos $mensajes como un array vacío
         $mensajes = [];
+
+        if (request()->ajax()) {
+            return view('tecnico.partials.incidencias', compact('incidencias', 'estados', 'mensajes'));
+        }
 
         return view('tecnico.dashboard', compact('incidencias', 'estados', 'mensajes'));
     }
@@ -36,6 +46,10 @@ class TecnicoController extends Controller
         ]);
 
         $incidencia->update(['estado_id' => $request->estado_id]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
 
         return back()->with('success', 'Estado de la incidencia actualizado correctamente');
     }
@@ -70,14 +84,14 @@ class TecnicoController extends Controller
         $request->validate([
             'incidencia_id' => 'required|exists:incidencias,id',
             'mensaje' => 'nullable|string|max:500',
-            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'archivo' => 'nullable|file|mimes:jpg,jpeg,png,pdf,webp,zip,rar,tar,gz|max:20480',
         ]);
 
         // Crear el comentario
         $comentario = Comentario::create([
             'incidencia_id' => $request->incidencia_id,
             'usuario_id' => auth()->id(),
-            'mensaje' => $request->mensaje,
+            'mensaje' => $request->mensaje ? htmlspecialchars($request->mensaje) : null,
         ]);
 
         // Si se adjunta un archivo, guardarlo relacionado con el comentario

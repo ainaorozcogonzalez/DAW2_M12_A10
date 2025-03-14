@@ -4,9 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Panel de Administrador</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
 </head>
 
 <body class="bg-gray-50">
@@ -23,7 +26,7 @@
                         <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin"
                                 class="w-8 h-8 rounded-full">
-                            <span class="text-gray-700">Admin</span>
+                            <span class="text-gray-700"> <span class="nombreusuario"></span></span>
                             <i class="fas fa-chevron-down text-gray-500"></i>
                         </button>
                         <!-- Menú desplegable -->
@@ -46,7 +49,7 @@
         <main class="container mx-auto px-4 py-8">
             <!-- Welcome Section -->
             <div class="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg p-6 text-white mb-8">
-                <h2 class="text-2xl font-bold mb-2">Bienvenido, Administrador!</h2>
+                <h2 class="text-2xl font-bold mb-2">Bienvenido, <span class="nombreusuario"></span>!</h2>
                 <p class="text-gray-100">Aquí puedes gestionar todos los aspectos del sistema de incidencias.</p>
             </div>
 
@@ -59,7 +62,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Usuarios</p>
-                            <p class="text-2xl font-bold">{{ App\Models\User::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalusuarios"></p>
                         </div>
                     </a>
                 </div>
@@ -70,7 +73,7 @@
                         </div>
                         <div>
                             <p class="text-gray-500">Incidencias</p>
-                            <p class="text-2xl font-bold">{{ App\Models\Incidencia::count() }}</p>
+                            <p class="text-2xl font-bold" id="totalincidencias"></p>
                         </div>
                     </a>
                 </div>
@@ -165,45 +168,44 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('users.store') }}" id="userForm">
+                <form class="mt-4 space-y-4" method="POST" id="userForm"
+                    onsubmit="Crearusuario(event.preventDefault())">
                     @csrf
+                    @method('POST')
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md" required>
+                            class="w-full px-3 py-2 border rounded-md" required value="asdASD">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" required>
+                            class="w-full px-3 py-2 border rounded-md" required value="asd@asd.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password" required>
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password"
+                            value="asdASD123" required>
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" id="rol_id_dashboard" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="rol_id" id="rol_id_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_roles" required>
                             <option value="">Seleccione un rol</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id_dashboard" class="w-full px-3 py-2 border rounded-md" required>
+                        <select name="sede_id" id="sede_id_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes" required>
                             <option value="">Seleccione una sede</option>
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado_dashboard" class="w-full px-3 py-2 border rounded-md" required>
-                            <option value="inactivo" selected>Inactivo</option>
-                            <option value="activo">Activo</option>
+                        <select name="estado" id="estado_dashboard"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estadousuario">
+                            <option value="">Seleccione un estado</option>
                         </select>
                         <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -227,43 +229,33 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('incidencias.store') }}"
-                    id="incidenciaForm">
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
+                    onsubmit="crearincidencia(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="cliente_id" id="cliente_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_clientes">
                             <option value="">Seleccione un cliente</option>
-                            @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="incidencia_sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" id="incidencia_sede_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="subcategoria_id" id="subcategoria_id"
-                            class="w-full px-3 py-2 border rounded-md">
+                            class="w-full px-3 py-2 border rounded-md mostrar_subcategorias">
                             <option value="">Seleccione una subcategoría</option>
-                            @foreach ($subcategorias as $subcategoria)
-                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -273,20 +265,16 @@
                         <div id="descripcion-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="estado_id" id="estado_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estado">
                             <option value="">Seleccione un estado</option>
-                            @foreach ($estados as $estado)
-                                <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="prioridad_id" id="prioridad_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_prioridades">
                             <option value="">Seleccione una prioridad</option>
-                            @foreach ($prioridades as $prioridad)
-                                <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
@@ -310,8 +298,8 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Categoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('categorias.store') }}"
-                    id="categoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="categoriaForm"
+                    onsubmit="crearcategoria(event.preventDefault())">
                     @csrf
                     <div>
                         <input type="text" name="nombre" id="nombre_categoria"
@@ -338,15 +326,12 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Subcategoría</h3>
-                <form class="mt-4 space-y-4" method="POST" action="{{ route('subcategorias.store') }}"
-                    id="subcategoriaForm">
+                <form class="mt-4 space-y-4" method="POST" id="subcategoriaForm"
+                    onsubmit="crearsubcategoria(event.preventDefault())">
                     @csrf
                     <div>
-                        <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -369,11 +354,12 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
-    <script src="{{ asset('js/user-form.js') }}"></script>
-    <script src="{{ asset('js/incidencia-form.js') }}"></script>
-    <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
+    {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/incidencia-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/categoria-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
 
     <script>
         function openUserModal() {
@@ -461,8 +447,8 @@
             if (!form) return;
 
             const fields = {
-                nombre: { 
-                    required: true, 
+                nombre: {
+                    required: true,
                     regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
                     message: 'El nombre solo puede contener letras y espacios.'
                 },
@@ -476,9 +462,18 @@
                     regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
                     message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
                 },
-                rol_id: { required: true, message: 'Seleccione un rol' },
-                sede_id: { required: true, message: 'Seleccione una sede' },
-                estado: { required: true, message: 'Seleccione un estado' }
+                rol_id: {
+                    required: true,
+                    message: 'Seleccione un rol'
+                },
+                sede_id: {
+                    required: true,
+                    message: 'Seleccione una sede'
+                },
+                estado: {
+                    required: true,
+                    message: 'Seleccione un estado'
+                }
             };
 
             Object.keys(fields).forEach(fieldId => {
@@ -529,23 +524,6 @@
             }
         });
     </script>
-
-    @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-            role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <style>
         .border-red-500 {

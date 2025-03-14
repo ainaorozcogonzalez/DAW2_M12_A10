@@ -2,26 +2,32 @@
 
 namespace Database\Seeders;
 
-use App\Models\Subcategoria;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Subcategoria;
 
-class SubcategoriasSeeder extends Seeder
+class SubCategoriasSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        $subcategorias = [
-            ['categoria_id' => 1, 'nombre' => 'Pantalla'],
-            ['categoria_id' => 1, 'nombre' => 'Teclado'],
-            ['categoria_id' => 2, 'nombre' => 'Sistema Operativo'],
-            ['categoria_id' => 2, 'nombre' => 'Aplicación'],
-            ['categoria_id' => 3, 'nombre' => 'Conexión WiFi'],
-            ['categoria_id' => 3, 'nombre' => 'Cableado'],
-            ['categoria_id' => 4, 'nombre' => 'Atascos de papel'],
-            ['categoria_id' => 4, 'nombre' => 'Falta de tinta'],
+        $subcat = [
+            ['categoria_id' => 1, 'nombre' => 'Aplicació gestió administrativa.'],
+            ['categoria_id' => 1, 'nombre' => 'Accés remot.'],
+            ['categoria_id' => 1, 'nombre' => 'Aplicació de videoconferència.'],
+            ['categoria_id' => 1, 'nombre' => 'Imatge de projector defectuosa.'],
+
+
+            ['categoria_id' => 2, 'nombre' => 'Problema amb el teclat.'],
+            ['categoria_id' => 2, 'nombre' => 'El ratolí no funciona.'],
+            ['categoria_id' => 2, 'nombre' => "Monitor no s'encén."],
+            ['categoria_id' => 2, 'nombre' => 'Imatge de projector defectuosa.'],
         ];
 
-        foreach ($subcategorias as $subcategoria) {
-            Subcategoria::create($subcategoria);
+        foreach ($subcat as $sub) {
+            Subcategoria::create($sub);
         }
     }
-} 
+}

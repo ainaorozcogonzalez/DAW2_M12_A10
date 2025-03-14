@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('incidencia_id')->constrained('incidencias');
             $table->foreignId('usuario_id')->constrained('users');
-            $table->text('mensaje');
+            $table->text('mensaje')->nullable();
             $table->timestamps();
         });
     }
