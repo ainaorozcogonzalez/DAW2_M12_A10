@@ -1,3 +1,34 @@
+function openUserModal() {
+    var form = document.getElementById("userForm");
+    form.reset()
+    document.getElementById('userModal').classList.remove('hidden');
+}
+
+function closeUserModal() {
+    var form = document.getElementById("userForm");
+    form.reset()
+    document.getElementById('userModal').classList.add('hidden');
+}
+
+// Cerrar modal al hacer clic fuera de él
+document.addEventListener('click', (event) => {
+    const incidenciaModal = document.getElementById('incidenciaModal');
+    const categoriaModal = document.getElementById('categoriaModal');
+    const subcategoriaModal = document.getElementById('subcategoriaModal');
+    const userModal = document.getElementById('userModal');
+    if (event.target == userModal) {
+        closeUserModal();
+    }
+    if (event.target == incidenciaModal) {
+        closeIncidenciaModal();
+    }
+    if (event.target == categoriaModal) {
+        closeCategoriaModal();
+    }
+    if (event.target == subcategoriaModal) {
+        closeSubcategoriaModal();
+    }
+});
 
 function Crearusuario() {
     var form = document.getElementById("userForm");
@@ -25,6 +56,18 @@ function Crearusuario() {
         })
 }
 
+function openIncidenciaModal() {
+    var form = document.getElementById("incidenciaForm");
+    form.reset()
+    document.getElementById('incidenciaModal').classList.remove('hidden');
+}
+
+function closeIncidenciaModal() {
+    var form = document.getElementById("incidenciaForm");
+    form.reset()
+    document.getElementById('incidenciaModal').classList.add('hidden');
+}
+
 function crearincidencia() {
     var form = document.getElementById("incidenciaForm");
     var formData = new FormData(form);
@@ -50,6 +93,18 @@ function crearincidencia() {
         })
 }
 
+function openCategoriaModal() {
+    var form = document.getElementById("categoriaForm");
+    form.reset()
+    document.getElementById('categoriaModal').classList.remove('hidden');
+}
+
+function closeCategoriaModal() {
+    var form = document.getElementById("categoriaForm");
+    form.reset()
+    document.getElementById('categoriaModal').classList.add('hidden');
+}
+
 function crearcategoria() {
     var form = document.getElementById("categoriaForm");
     var formData = new FormData(form);
@@ -73,6 +128,18 @@ function crearcategoria() {
                 icon: primeraParte,
             });
         })
+}
+
+function openSubcategoriaModal() {
+    var form = document.getElementById("subcategoriaForm");
+    form.reset()
+    document.getElementById('subcategoriaModal').classList.remove('hidden');
+}
+
+function closeSubcategoriaModal() {
+    var form = document.getElementById("subcategoriaForm");
+    form.reset()
+    document.getElementById('subcategoriaModal').classList.add('hidden');
 }
 
 function crearsubcategoria() {
@@ -149,7 +216,7 @@ function datosadicionales() {
 
 
             Array.from(mostrarprioridades).forEach(prioridades => {
-                prioridades.innerHTML = "";
+                prioridades.innerHTML = '<option value="" >Seleccionar una prioridad</option>';
                 data.prioridad.forEach(prioridad => {
                     let respuesta = ""
                     respuesta += ' <option value="' + prioridad.id + '" >' + prioridad.nombre + '</option>';
@@ -158,7 +225,7 @@ function datosadicionales() {
             });
 
             Array.from(mostrarestado).forEach(estados => {
-                estados.innerHTML = "";
+                estados.innerHTML = '<option value="" >Seleccionar una estado</option>';
                 data.estadosincidenas.forEach(estadoincidensia => {
                     let respuesta = ""
                     respuesta += ' <option value="' + estadoincidensia.id + '" >' + estadoincidensia.nombre + '</option>';
@@ -167,7 +234,7 @@ function datosadicionales() {
             });
 
             Array.from(mostrarclientes).forEach(clientes => {
-                clientes.innerHTML = "";
+                clientes.innerHTML = '<option value="" >Seleccionar un cliente</option>';
                 data.clientes.forEach(cliente => {
                     let respuesta = ""
                     respuesta += ' <option value="' + cliente.id + '" >' + cliente.nombre + '</option>';
@@ -176,7 +243,7 @@ function datosadicionales() {
             });
 
             Array.from(mostrarsubcategorias).forEach(subcategorias => {
-                subcategorias.innerHTML = "";
+                subcategorias.innerHTML = '<option value="" >Seleccionar una subcategoria</option>';
                 data.subcategorias.forEach(subcategoria => {
                     let respuesta = ""
                     respuesta += ' <option value="' + subcategoria.id + '" >' + subcategoria.nombre + '</option>';
@@ -185,7 +252,7 @@ function datosadicionales() {
             });
 
             Array.from(mostrarcategorias).forEach(categorias => {
-                categorias.innerHTML = "";
+                categorias.innerHTML = '<option value="" >Seleccionar una categoria</option>';
                 data.categorias.forEach(categoria => {
                     let respuesta = ""
                     respuesta += ' <option value="' + categoria.id + '" >' + categoria.nombre + '</option>';
@@ -194,7 +261,7 @@ function datosadicionales() {
             });
 
             Array.from(mostrarroles).forEach(rols => {
-                rols.innerHTML = "";
+                rols.innerHTML = '<option value="" >Seleccionar una rol</option>';
                 data.roles.forEach(rol => {
                     let respuesta = ""
                     respuesta += ' <option value="' + rol.id + '" >' + rol.nombre + '</option>';
@@ -203,19 +270,40 @@ function datosadicionales() {
             });
 
             Array.from(mostrarsedes).forEach(sedes => {
-                sedes.innerHTML = "";
+                sedes.innerHTML = '<option value="" >Seleccionar una sede</option>';
                 data.sedes.forEach(sede => {
                     sedes.innerHTML += ' <option value="' + sede.id + '" >' + sede.nombre + '</option>';
                 });
             });
 
             Array.from(mostrar_estadousuario).forEach(mostrarestado => {
-                mostrarestado.innerHTML = "";
+                mostrarestado.innerHTML = '';
                 data.estados.forEach(estado => {
                     mostrarestado.innerHTML += ' <option value="' + estado + '" >' + estado + '</option>';
                 });
             });
         })
 }
+
+
+// Manejar el menú desplegable
+const userMenuButton = document.getElementById('user-menu-button');
+const userMenu = document.getElementById('user-menu');
+
+userMenuButton.addEventListener('click', () => {
+    userMenu.classList.toggle('hidden');
+});
+
+// Cerrar el menú si se hace clic fuera de él
+document.addEventListener('click', (event) => {
+    if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+        userMenu.classList.add('hidden');
+    }
+});
+
+// Cerrar modal al hacer clic fuera de él
+
+
+
 
 

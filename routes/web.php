@@ -17,7 +17,7 @@ use App\Models\Subcategoria;
 use App\Models\Categoria;
 use App\Http\Controllers\GestorEquiposController;
 use App\Http\Controllers\TecnicoController;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; 
 use Illuminate\Support\Facades\Response;
 
 // Redirigir la ruta raíz al login
@@ -46,11 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::prefix('incidencias')->group(function () {
         Route::get('/', [IncidenciaController::class, 'index'])->name('incidencias.index');
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
-        Route::post('/', [IncidenciaController::class, 'store'])->name('incidencias.store');
-        Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
+        Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
+        Route::post('/{incidencia}/edit', [IncidenciaController::class, 'edit']);
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
         Route::post('/{incidencia}/cerrar', [IncidenciaController::class, 'cerrar'])->name('incidencias.cerrar');
+        Route::post('/datosincidencias', [IncidenciaController::class, 'datosincidencias']);
     });
 
     // Report routes
