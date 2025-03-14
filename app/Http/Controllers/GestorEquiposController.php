@@ -12,7 +12,32 @@ class GestorEquiposController extends Controller
 {
     public function vistagestor()
     {
-        return view('/gestor.index');
+        $incidencias = Incidencia::select(
+            'incidencias.*',
+            'c.nombre as clientenombre',
+            't.nombre as tecniconombre',
+            'ei.nombre as nombreestado',
+            'pr.nombre as nombreprioridades'
+        )
+            ->leftJoin('users as c', 'c.id', '=', 'incidencias.cliente_id')
+            ->leftJoin('users as t', 't.id', '=', 'incidencias.tecnico_id')
+            ->leftJoin('estado_incidencias as ei', 'ei.id', '=', 'incidencias.estado_id')
+            ->leftJoin('prioridades as pr', 'pr.id', '=', 'incidencias.prioridad_id')
+            ->where('incidencias.sede_id', '=', Auth::user()->sede_id)
+            ->get()
+            ->map(function($incidencia) {
+                return [
+                    'id' => $incidencia->id,
+                    'descripcion' => $incidencia->descripcion,
+                    'created_at' => $incidencia->created_at,
+                    'clientenombre' => $incidencia->clientenombre ?? 'Cliente no asignado',
+                    'tecniconombre' => $incidencia->tecniconombre ?? 'Técnico no asignado',
+                    'nombreestado' => $incidencia->nombreestado ?? 'Estado no definido',
+                    'nombreprioridades' => $incidencia->nombreprioridades ?? 'Sin prioridad'
+                ];
+            });
+
+        return view('/gestor.index', compact('incidencias'));
     }
 
     public function datosincidencias(Request $request)
@@ -35,6 +60,22 @@ class GestorEquiposController extends Controller
             $incidencias->where('incidencias.prioridad_id', '=', "$prioridad");
         }
 
+        if ($request->tecnico) {
+            $incidencias->where('incidencias.tecnico_id', '=', $request->tecnico);
+        }
+
+        if ($request->orden) {
+            if ($request->orden == 'numerico') {
+                $incidencias->orderBy('incidencias.id');
+            } else {
+                $order = $request->orden == 'asc' ? 'asc' : 'desc';
+                $incidencias->orderBy('incidencias.prioridad_id', $order);
+            }
+        } else {
+            // Orden por defecto: numérico por ID de incidencia
+            $incidencias->orderBy('incidencias.id');
+        }
+
         if ($request->fechacreacion && $request->fechafin) {
             $fechacreacion = $request->fechacreacion . ' 00:00:00';
             $fechafin = $request->fechafin . ' 23:59:59';
@@ -47,10 +88,16 @@ class GestorEquiposController extends Controller
             $incidencias->where('incidencias.created_at', '<=', $fechafin);
         }
 
+        if ($request->fecha_creacion) {
+            $fecha = $request->fecha_creacion . ' 00:00:00';
+            $incidencias->whereDate('incidencias.created_at', '=', $fecha);
+        }
+
         $incidencias = $incidencias->get();
 
         $tecnicos = User::select('id', 'nombre')
-            ->where('rol_id', '=', 4, 'AND', 'sede_id', '=', Auth::user()->sede_id)
+            ->where('rol_id', 4)
+            ->where('sede_id', Auth::user()->sede_id)
             ->get();
 
         $prioridades = Prioridad::all();
@@ -83,6 +130,15 @@ class GestorEquiposController extends Controller
     {
         try {
             if ($request->assignadopara != "") {
+                // Verificar que el técnico pertenece a la misma sede que el gestor
+                $tecnico = User::where('id', $request->assignadopara)
+                    ->where('sede_id', Auth::user()->sede_id)
+                    ->first();
+
+                if (!$tecnico) {
+                    throw new \Exception('El técnico no pertenece a tu sede');
+                }
+
                 $resultado = Incidencia::find($request->id);
                 $resultado->tecnico_id = $request->assignadopara;
                 $resultado->estado_id = 2;
@@ -99,6 +155,8 @@ class GestorEquiposController extends Controller
             }
         } catch (\PDOException $e) {
             echo "error";
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
     }
 }

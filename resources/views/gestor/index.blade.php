@@ -46,7 +46,7 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Filtros mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <form action="" method="post" id="frmbusqueda" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <form action="" method="post" id="frmbusqueda" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 @csrf
                 <div>
                     <label for="prioridad" class="block text-sm font-medium text-gray-700 mb-1">Prioridad</label>
@@ -58,18 +58,28 @@
                     </select>
                 </div>
                 <div>
-                    <label for="fechacreacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha creación</label>
-                    <input type="date" name="fechacreacion" id="fechacreacion" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <label for="tecnico" class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
+                    <select name="tecnico" id="tecnico" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="">Todos</option>
+                    </select>
                 </div>
                 <div>
-                    <label for="fechafin" class="block text-sm font-medium text-gray-700 mb-1">Fecha fin</label>
-                    <input type="date" name="fechafin" id="fechafin" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <label for="orden" class="block text-sm font-medium text-gray-700 mb-1">Ordenar por</label>
+                    <select name="orden" id="orden" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="numerico" selected>Numérico</option>
+                        <option value="desc">Prioridad: Menor a mayor</option>
+                        <option value="asc">Prioridad: Mayor a menor</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="fecha_creacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha de creación</label>
+                    <input type="date" name="fecha_creacion" id="fecha_creacion" onchange="datosincidencias()" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
                 </div>
                 <div class="flex items-end space-x-2">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
-                        <i class="fas fa-filter"></i>
-                        <span>Filtrar</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="ocultarCerradas" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 transition duration-200">
+                        <label for="ocultarCerradas" class="text-sm text-gray-600">Ocultar cerradas</label>
+                    </div>
                     <button type="button" id="borrarfiltros" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-sync"></i>
                         <span>Limpiar</span>
@@ -80,98 +90,58 @@
 
         <!-- Incidencias mejoradas -->
         <div id="infoincidencias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Incidencia 1 -->
+            @foreach($incidencias as $incidencia)
             <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-800">Incidencia #1</h3>
-                            <p class="text-sm text-gray-500">Creada: 01/01/2023</p>
+                            <h3 class="text-lg font-semibold text-gray-800">Incidencia #{{ $incidencia['id'] }}</h3>
+                            <p class="text-sm text-gray-500">Creada: {{ $incidencia['created_at']->format('d/m/Y H:i') }}</p>
                         </div>
-                        <span class="px-2 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
-                            Asignada
+                        <span class="px-2 py-1 text-sm rounded-full estado-badge">
+                            {{ $incidencia['nombreestado'] }}
                         </span>
                     </div>
                     
-                    <p class="text-gray-600 mb-4">La pantalla no enciende</p>
+                    <p class="text-gray-600 mb-4">{{ $incidencia['descripcion'] }}</p>
                     
                     <div class="space-y-2 text-sm">
                         <div class="flex items-center text-gray-600">
                             <i class="fas fa-user-cog text-indigo-500 mr-2"></i>
-                            <span>Técnico: Técnico</span>
+                            <span>Técnico: {{ $incidencia['tecniconombre'] }}</span>
                         </div>
                         <div class="flex items-center text-gray-600">
                             <i class="fas fa-user text-green-500 mr-2"></i>
-                            <span>Cliente: Cliente</span>
+                            <span>Cliente: {{ $incidencia['clientenombre'] }}</span>
                         </div>
-                        <div class="flex items-center space-x-1 text-red-500">
+                        <div class="flex items-center space-x-1">
                             <i class="fas fa-exclamation-circle"></i>
-                            <span>Alta</span>
+                            <span>{{ $incidencia['nombreprioridades'] }}</span>
                         </div>
                     </div>
+
                 </div>
             </div>
+            @endforeach
+        </div>
+    </div>
 
-            <!-- Incidencia 2 -->
-            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800">Incidencia #2</h3>
-                            <p class="text-sm text-gray-500">Creada: 01/01/2023</p>
-                        </div>
-                        <span class="px-2 py-1 text-sm rounded-full bg-green-100 text-green-800">
-                            Resuelta
-                        </span>
+    <!-- Modal de Chat -->
+    <div id="chatModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-5 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Chat de la Incidencia</h3>
+                <div class="mt-4">
+                    <!-- Área de mensajes -->
+                    <div id="chatMessages" class="h-96 overflow-y-auto mb-4 border p-4 rounded-md">
+                        <p class="text-gray-500 text-center">Cargando mensajes...</p>
                     </div>
-                    
-                    <p class="text-gray-600 mb-4">El sistema operativo no arranca</p>
-                    
-                    <div class="space-y-2 text-sm">
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-user-cog text-indigo-500 mr-2"></i>
-                            <span>Técnico: Técnico</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-user text-green-500 mr-2"></i>
-                            <span>Cliente: Cliente</span>
-                        </div>
-                        <div class="flex items-center space-x-1 text-yellow-500">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Media</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Incidencia 3 -->
-            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800">Incidencia #3</h3>
-                            <p class="text-sm text-gray-500">Creada: 01/01/2023</p>
-                        </div>
-                        <span class="px-2 py-1 text-sm rounded-full bg-gray-100 text-gray-800">
-                            Cerrada
-                        </span>
-                    </div>
-                    
-                    <p class="text-gray-600 mb-4">No hay conexión WiFi</p>
-                    
-                    <div class="space-y-2 text-sm">
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-user-cog text-indigo-500 mr-2"></i>
-                            <span>Técnico: Técnico</span>
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <i class="fas fa-user text-green-500 mr-2"></i>
-                            <span>Cliente: Cliente</span>
-                        </div>
-                        <div class="flex items-center space-x-1 text-gray-500">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Baja</span>
-                        </div>
+                    <!-- Botón para cerrar -->
+                    <div class="flex justify-end">
+                        <button onclick="closeChatModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Cerrar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -179,22 +149,7 @@
     </div>
 
     <script src="{{ asset('js/manager/datosincidencias.js') }}"></script>
-    <script>
-        // Toggle user menu
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
 
-        userMenuButton.addEventListener('click', () => {
-            userMenu.classList.toggle('hidden');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.classList.add('hidden');
-            }
-        });
-    </script>
 </body>
 
 </html>
