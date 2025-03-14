@@ -48,8 +48,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
         Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
         Route::post('/{incidencia}/edit', [IncidenciaController::class, 'edit']);
-        Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
-        Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
+        Route::put('/editar', [IncidenciaController::class, 'update']);
+        Route::delete('/{incidencia}/delete', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
         Route::post('/{incidencia}/cerrar', [IncidenciaController::class, 'cerrar'])->name('incidencias.cerrar');
         Route::post('/datosincidencias', [IncidenciaController::class, 'datosincidencias']);
     });

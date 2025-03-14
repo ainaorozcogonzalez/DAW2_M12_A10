@@ -108,12 +108,9 @@ function cargadatoseditar(id) {
 
 function editar() {
     var form = document.getElementById("incidenciaForm");
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
     var formData = new FormData(form);
-    formData.append('_token', csrfToken);
     formData.append('_method', 'PUT');
-
-    fetch("/users/editar", {
+    fetch("/incidencias/editar", {
         method: "POST",
         body: formData
     })

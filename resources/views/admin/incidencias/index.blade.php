@@ -201,7 +201,6 @@
                 <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
                     onsubmit="mostrardatosusuarios(event.preventDefault())">
                     @csrf
-                    <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="incidencia_id" id="incidencia_id">
                     <div>
                         <textarea name="descripcion" id="descripcion" placeholder="Descripción" class="w-full px-3 py-2 border rounded-md"></textarea>

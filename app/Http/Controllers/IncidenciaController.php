@@ -248,19 +248,19 @@ class IncidenciaController extends Controller
         $categorias = Categoria::all();
         $subcategorias = Subcategoria::all();
         $sedes = Sede::all();
-        
+
         // Obtener las incidencias filtradas
         $incidencias = Incidencia::where('cliente_id', auth()->id())
-            ->when(request('estado_id'), function($query, $estado_id) {
+            ->when(request('estado_id'), function ($query, $estado_id) {
                 return $query->where('estado_id', $estado_id);
             })
-            ->when(request('excluir_cerradas'), function($query) {
+            ->when(request('excluir_cerradas'), function ($query) {
                 $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
                 if ($estadoCerrada) {
                     return $query->where('estado_id', '!=', $estadoCerrada->id);
                 }
             })
-            ->when(request('sort') == 'fecha_creacion', function($query) {
+            ->when(request('sort') == 'fecha_creacion', function ($query) {
                 return $query->orderBy('fecha_creacion', request('direction', 'asc'));
             })
             ->get();
@@ -268,7 +268,7 @@ class IncidenciaController extends Controller
         // Contadores de incidencias
         $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count(); // Total de incidencias
         $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
-            ->whereHas('estado', function($query) {
+            ->whereHas('estado', function ($query) {
                 $query->where('nombre', 'Cerrada');
             })
             ->count();
@@ -315,4 +315,65 @@ class IncidenciaController extends Controller
             ], 500);
         }
     }
-} 
+
+    public function update(Request $request, User $user)
+    {
+        // Verificar que los datos requeridos están presentes
+        // if (!$request->has('rol_id') || !$request->has('sede_id')) {
+        //     return back()->withErrors(['error' => 'Faltan campos requeridos']);
+        // }
+
+        // $request->validate([
+        //     'nombre' => [
+        //         'required',
+        //         'string',
+        //         'max:255',
+        //         'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'
+        //     ],
+        //     'email' => [
+        //         'required',
+        //         'string',
+        //         'email',
+        //         'max:255',
+        //         'unique:users,email,' . $user->id,
+        //         'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0.9.-]+\.[a-zA-Z]{2,}$/'
+        //     ],
+        //     'password' => [
+        //         'nullable',
+        //         'string',
+        //         'min:8',
+        //         'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/'
+        //     ],
+        //     'rol_id' => 'required|exists:roles,id',
+        //     'sede_id' => 'required|exists:sedes,id',
+        //     'estado' => 'required|in:activo,inactivo'
+        // ]);
+
+
+        try {
+            $user = Incidencia::find($request->incidencia_id);
+            $updateData = [
+                'cliente_id' => $request->cliente_id,
+                'tecnico_id' => $request->tecnico_id,
+                'sede_id' => $request->sede_id,
+                'categoria_id' => $request->categoria_id,
+                'subcategoria_id' => $request->subcategoria_id,
+                'descripcion' => $request->descripcion,
+                'estado_id' => $request->estado_id,
+                'prioridad_id' => $request->prioridad_id
+            ];
+            if ($request->password) {
+                $updateData['password'] = bcrypt($request->password);
+            }
+            $user->update($updateData);
+            echo "success Incidencia #" . $request->incidencia_id . " editada correctamente";
+            die();
+        } catch (\PDOException $e) {
+            echo "error No se pudo editar la incidencia: " . $request->nombre;
+            // echo  $e;
+            die();
+        }
+        echo "Invalido Intentelo mas tarde";
+        // return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente');
+    }
+}
