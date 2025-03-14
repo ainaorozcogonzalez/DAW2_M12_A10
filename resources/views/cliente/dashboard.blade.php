@@ -185,13 +185,25 @@
     </div>
 
     <script>
+        // Funciones para abrir/cerrar el modal
+        function openIncidenciaModal() {
+            document.getElementById('incidenciaModal').classList.remove('hidden');
+        }
+
+        function closeIncidenciaModal() {
+            document.getElementById('incidenciaModal').classList.add('hidden');
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Referencias a elementos del DOM
             const userMenuButton = document.getElementById('user-menu-button');
             const userMenu = document.getElementById('user-menu');
             const filterForm = document.getElementById('filterForm');
             const aplicarFiltros = document.getElementById('aplicarFiltros');
             const limpiarFiltros = document.getElementById('limpiarFiltros');
             const incidenciasContainer = document.getElementById('incidenciasContainer');
+            const categoriaSelect = document.getElementById('categoria_id');
+            const subcategoriaSelect = document.getElementById('subcategoria_id');
 
             // Toggle menú usuario
             if (userMenuButton && userMenu) {
@@ -208,24 +220,29 @@
             }
 
             // Función para cargar incidencias con AJAX
-            async function cargarIncidencias(params = new URLSearchParams()) {
-                try {
-                    const response = await fetch(`{{ route('client.incidencias.filter') }}?${params.toString()}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'text/html'
-                        }
-                    });
-                    
+            function cargarIncidencias(params) {
+                if (!params) params = new URLSearchParams();
+                
+                fetch('{{ route('client.incidencias.filter') }}?' + params.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
+                    }
+                })
+                .then(function(response) {
                     if (!response.ok) {
                         throw new Error('Error al cargar incidencias');
                     }
-                    
-                    const html = await response.text();
-                    incidenciasContainer.innerHTML = html;
-                } catch (error) {
+                    return response.text();
+                })
+                .then(function(html) {
+                    if (incidenciasContainer) {
+                        incidenciasContainer.innerHTML = html;
+                    }
+                })
+                .catch(function(error) {
                     console.error('Error:', error);
-                }
+                });
             }
 
             // Aplicar filtros
@@ -248,26 +265,27 @@
             }
 
             // Cargar subcategorías al cambiar categoría
-            const categoriaSelect = document.getElementById('categoria_id');
-            const subcategoriaSelect = document.getElementById('subcategoria_id');
-
             if (categoriaSelect && subcategoriaSelect) {
                 categoriaSelect.addEventListener('change', function() {
                     const categoriaId = this.value;
                     subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
 
                     if (categoriaId) {
-                        fetch(`/subcategorias/${categoriaId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                data.forEach(subcategoria => {
+                        fetch('/subcategorias/' + categoriaId)
+                            .then(function(response) {
+                                return response.json();
+                            })
+                            .then(function(data) {
+                                data.forEach(function(subcategoria) {
                                     const option = document.createElement('option');
                                     option.value = subcategoria.id;
                                     option.textContent = subcategoria.nombre;
                                     subcategoriaSelect.appendChild(option);
                                 });
                             })
-                            .catch(error => console.error('Error:', error));
+                            .catch(function(error) {
+                                console.error('Error:', error);
+                            });
                     }
                 });
             }

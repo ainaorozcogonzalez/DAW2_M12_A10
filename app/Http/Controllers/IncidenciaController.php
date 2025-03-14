@@ -175,7 +175,6 @@ class IncidenciaController extends Controller
         $incidencia->delete();
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
     }
-<<<<<<< HEAD
 
     public function indexCliente()
     {
@@ -185,73 +184,44 @@ class IncidenciaController extends Controller
         $subcategorias = Subcategoria::all();
         $sedes = Sede::all();
         
+        // Obtener el ID del estado "Cerrada"
+        $estadoCerradaId = EstadoIncidencia::where('nombre', 'Cerrada')->value('id');
+        
         // Obtener las incidencias filtradas
-        $incidencias = Incidencia::where('cliente_id', auth()->id())
-            ->when(request('estado_id'), function($query, $estado_id) {
-                return $query->where('estado_id', $estado_id);
-            })
-            ->when(request('excluir_cerradas'), function($query) {
-                $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
-                if ($estadoCerrada) {
-                    return $query->where('estado_id', '!=', $estadoCerrada->id);
-                }
-            })
-            ->when(request('sort') == 'fecha_creacion', function($query) {
-                return $query->orderBy('fecha_creacion', request('direction', 'asc'));
-            })
-            ->get();
+        $query = Incidencia::where('cliente_id', auth()->id());
 
-        // Contadores de incidencias
-        $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count(); // Total de incidencias
+        // Aplicar filtros
+        if (request('estado_id')) {
+            $query->where('estado_id', request('estado_id'));
+        }
+
+        if (request('excluir_cerradas') && $estadoCerradaId) {
+            $query->where('estado_id', '!=', $estadoCerradaId);
+        }
+
+        if (request('sort') == 'fecha_creacion') {
+            $query->orderBy('fecha_creacion', request('direction', 'asc'));
+        }
+
+        $incidencias = $query->get();
+
+        // Contadores para el dashboard
+        $contadorTotal = Incidencia::where('cliente_id', auth()->id())->count();
         $contadorCerradas = Incidencia::where('cliente_id', auth()->id())
-            ->whereHas('estado', function($query) {
-                $query->where('nombre', 'Cerrada');
-            })
+            ->where('estado_id', $estadoCerradaId)
             ->count();
-        $contadorPendientes = $contadorTotal - $contadorCerradas; // Incidencias pendientes
+        $contadorPendientes = $contadorTotal - $contadorCerradas;
 
         return view('cliente.dashboard', compact(
-            'estados',
             'incidencias',
+            'estados',
             'prioridades',
             'categorias',
             'subcategorias',
+            'sedes',
             'contadorTotal',
-            'contadorCerradas',
-            'contadorPendientes'
+            'contadorPendientes',
+            'contadorCerradas'
         ));
     }
-
-    public function cerrar(Incidencia $incidencia)
-    {
-        try {
-            // Verificar si el estado "Cerrada" existe
-            $estadoCerrada = EstadoIncidencia::where('nombre', 'Cerrada')->first();
-
-            if (!$estadoCerrada) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'El estado "Cerrada" no existe en la base de datos'
-                ], 404);
-            }
-
-            // Actualizar el estado de la incidencia
-            $incidencia->estado_id = $estadoCerrada->id;
-            $incidencia->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Incidencia cerrada correctamente'
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error al cerrar la incidencia: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al cerrar la incidencia: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-} 
-=======
 }
->>>>>>> ba4e35cf242f9b61f9e9d4f7ba78d45471db8b13
