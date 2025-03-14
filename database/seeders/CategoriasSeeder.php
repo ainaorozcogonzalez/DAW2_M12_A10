@@ -2,24 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Categoria;
+use Illuminate\Database\Seeder;
 
 class CategoriasSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $cat = [
-            ['nombre' => 'Software'],
+        $categorias = [
             ['nombre' => 'Hardware'],
+            ['nombre' => 'Software'],
+            ['nombre' => 'Redes'],
+            ['nombre' => 'Impresión'],
         ];
 
-        foreach ($cat as $ca) {
-            Categoria::create($ca);
+        foreach ($categorias as $categoria) {
+            Categoria::create($categoria);
         }
     }
-}
+} 

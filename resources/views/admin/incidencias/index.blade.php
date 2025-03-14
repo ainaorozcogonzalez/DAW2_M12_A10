@@ -103,6 +103,24 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div>
+                            <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
+                            <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                                <option value="">Todas</option>
+                                @foreach($sedes as $sede)
+                                    <option value="{{ $sede->id }}" {{ request('sede_id') == $sede->id ? 'selected' : '' }}>{{ $sede->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="categoria_id" class="block text-sm font-medium text-gray-700">Categoría</label>
+                            <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                                <option value="">Todas</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}" {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
                             <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                                 <i class="fas fa-filter"></i> Filtrar
@@ -241,11 +259,6 @@
                             @endforeach
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                    </div>
-                    <div>
-                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
-                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-end space-x-4">
                         <button type="button" onclick="closeIncidenciaModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancelar</button>

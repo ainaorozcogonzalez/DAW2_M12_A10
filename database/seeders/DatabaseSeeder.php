@@ -19,10 +19,12 @@ class DatabaseSeeder extends Seeder
             SedesSeeder::class,
             EstadoIncidenciasSeeder::class,
             PrioridadesSeeder::class,
-            UsersSeeder::class,
             CategoriasSeeder::class,
-            SubCategoriasSeeder::class,
-            IncidenciaSeeder::class,
+            SubcategoriasSeeder::class,
+            UsersSeeder::class,
+            IncidenciasSeeder::class,
+            ComentariosSeeder::class,
+            ArchivosSeeder::class,
         ]);
     }
 }
