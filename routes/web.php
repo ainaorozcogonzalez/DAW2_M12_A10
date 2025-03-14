@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\GestorEquiposController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
@@ -90,7 +91,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/incidencias/{incidencia}/mensajes', [TecnicoController::class, 'obtenerMensajes'])->name('incidencias.mensajes');
     Route::post('/incidencias/mensajes', [TecnicoController::class, 'enviarMensaje'])->name('incidencias.enviar-mensaje');
-});
+
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 

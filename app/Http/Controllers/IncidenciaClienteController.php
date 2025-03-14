@@ -40,7 +40,7 @@ class IncidenciaClienteController extends Controller
         $prioridades = Prioridad::all();
 
         // Pasar los datos a la vista
-        return view('incidencias.create', compact(
+        return view('client.dashboard', compact(
             'cliente',
             'sede',
             'categorias',
