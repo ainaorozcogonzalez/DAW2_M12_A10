@@ -12,7 +12,32 @@ class GestorEquiposController extends Controller
 {
     public function vistagestor()
     {
-        return view('/gestor.index');
+        $incidencias = Incidencia::select(
+            'incidencias.*',
+            'c.nombre as clientenombre',
+            't.nombre as tecniconombre',
+            'ei.nombre as nombreestado',
+            'pr.nombre as nombreprioridades'
+        )
+            ->leftJoin('users as c', 'c.id', '=', 'incidencias.cliente_id')
+            ->leftJoin('users as t', 't.id', '=', 'incidencias.tecnico_id')
+            ->leftJoin('estado_incidencias as ei', 'ei.id', '=', 'incidencias.estado_id')
+            ->leftJoin('prioridades as pr', 'pr.id', '=', 'incidencias.prioridad_id')
+            ->where('incidencias.sede_id', '=', Auth::user()->sede_id)
+            ->get()
+            ->map(function($incidencia) {
+                return [
+                    'id' => $incidencia->id,
+                    'descripcion' => $incidencia->descripcion,
+                    'created_at' => $incidencia->created_at,
+                    'clientenombre' => $incidencia->clientenombre ?? 'Cliente no asignado',
+                    'tecniconombre' => $incidencia->tecniconombre ?? 'Técnico no asignado',
+                    'nombreestado' => $incidencia->nombreestado ?? 'Estado no definido',
+                    'nombreprioridades' => $incidencia->nombreprioridades ?? 'Sin prioridad'
+                ];
+            });
+
+        return view('/gestor.index', compact('incidencias'));
     }
 
     public function datosincidencias(Request $request)

@@ -71,7 +71,7 @@ class TecnicoController extends Controller
 
     public function obtenerMensajes(Incidencia $incidencia)
     {
-        $mensajes = Comentario::with('archivo')
+        $mensajes = Comentario::with(['usuario', 'archivo'])
             ->where('incidencia_id', $incidencia->id)
             ->orderBy('created_at', 'asc')
             ->get();
