@@ -172,8 +172,72 @@ class IncidenciaController extends Controller
 
     public function destroy(Incidencia $incidencia)
     {
-        $incidencia->delete();
-        return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada exitosamente');
+        try {
+            $incidencia->delete();
+            echo "success incidencia #" . $incidencia->id . " eliminada correctamente";
+            die();
+        } catch (\PDOException $e) {
+            echo "error no se ha podido borrar la incidencia #" . $incidencia->id;
+            // echo $e;
+            die();
+        }
+    }
+
+    public function datosincidencias(Request $request)
+    {
+        $clientes = User::where('rol_id', 2)->get();
+        $tecnicos = User::where('rol_id', 4)->get();
+        $sedes = Sede::all();
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        $estados = EstadoIncidencia::all();
+        $prioridades = Prioridad::all();
+
+        // Construir la consulta base
+        $query = Incidencia::with(['cliente', 'tecnico', 'estado', 'prioridad']);
+
+        // Aplicar filtros si están presentes en la solicitud
+        if ($request->has('estado_id') && $request->estado_id) {
+            $query->where('estado_id', $request->estado_id);
+        }
+
+        if ($request->has('prioridad_id') && $request->prioridad_id) {
+            $query->where('prioridad_id', $request->prioridad_id);
+        }
+
+        if ($request->has('cliente_id') && $request->cliente_id) {
+            $query->where('cliente_id', $request->cliente_id);
+        }
+
+        if ($request->has('tecnico_id') && $request->tecnico_id) {
+            $query->where('tecnico_id', $request->tecnico_id);
+        }
+
+        if ($request->has('sede_id') && $request->sede_id) {
+            $query->where('sede_id', $request->sede_id);
+        }
+
+        if ($request->has('categoria_id') && $request->categoria_id) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
+
+        if ($request->has('subcategoria_id') && $request->subcategoria_id) {
+            $query->where('subcategoria_id', $request->subcategoria_id);
+        }
+
+        // Obtener las incidencias filtradas
+        $incidencias = $query->get();
+
+        return response()->json([
+            'incidencias' => $incidencias,
+            'clientes' => $clientes,
+            'tecnicos' => $tecnicos,
+            'sedes' => $sedes,
+            'categorias' => $categorias,
+            'subcategorias' => $subcategorias,
+            'estados' => $estados,
+            'prioridades' => $prioridades,
+        ]);
     }
 
     public function indexCliente()

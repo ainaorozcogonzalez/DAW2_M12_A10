@@ -7,26 +7,45 @@ document.getElementById('btnBorrarFiltros').onclick = () => {
     mostrardatosusuarios();
 };
 
-function eliminar(event, id) {
-    event.preventDefault();
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
-
-    var formData = new FormData();
-    formData.append('_token', csrfToken);
-    formData.append('_method', 'DELETE');
-    formData.append('id', id);
-
-    fetch("/users/eliminaruario", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            mostrardatosusuarios()
-        })
+function eliminar(id, nombre) {
+    Swal.fire({
+        title: "Seguro de eliminar al usuario <br>" + nombre + '?',
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#4f46e5",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+            var formData = new FormData();
+            formData.append('_token', csrfToken);
+            formData.append('_method', 'DELETE');
+            formData.append('id', id);
+            fetch("/users/eliminaruario", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al cargar los datos");
+                    return response.text();
+                })
+                .then(data => {
+                    const [primeraParte, resto] = data.split(/ (.+)/);
+                    console.log(resto)
+                    if (primeraParte == 'success') {
+                        document.getElementById('userModal').classList.add('hidden');
+                        mostrardatosusuarios()
+                    }
+                    Swal.fire({
+                        title: resto,
+                        icon: primeraParte,
+                    });
+                })
+        }
+    });
 }
 
 function cargadatoseditar(event, id) {
@@ -94,13 +113,16 @@ function editar() {
             return response.text();
         })
         .then(data => {
-            form.reset();
-            form.onsubmit = function (event) {
-                event.preventDefault();
-                Crearusuario();
-            };
-            document.getElementById('userModal').classList.add('hidden');
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('userModal').classList.add('hidden');
+                mostrardatosusuarios()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }
 
@@ -120,6 +142,15 @@ function Crearusuario() {
             return response.text();
         })
         .then(data => {
-            mostrardatosusuarios()
+            const [primeraParte, resto] = data.split(/ (.+)/);
+            if (primeraParte == 'success') {
+                form.reset()
+                document.getElementById('userModal').classList.add('hidden');
+                mostrardatosusuarios()
+            }
+            Swal.fire({
+                title: resto,
+                icon: primeraParte,
+            });
         })
 }
