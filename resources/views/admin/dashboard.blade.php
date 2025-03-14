@@ -174,30 +174,30 @@
                     @method('POST')
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md" required value="asdASD">
+                            class="w-full px-3 py-2 border rounded-md" value="asdASD">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" required value="asd@asd.com">
+                            class="w-full px-3 py-2 border rounded-md" value="asd@asd.com">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
                             class="w-full px-3 py-2 border rounded-md" autocomplete="current-password"
-                            value="asdASD123" required>
+                            value="asdASD123">
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="rol_id" id="rol_id_dashboard"
-                            class="w-full px-3 py-2 border rounded-md mostrar_roles" required>
+                            class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="sede_id_dashboard"
-                            class="w-full px-3 py-2 border rounded-md mostrar_sedes" required>
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
