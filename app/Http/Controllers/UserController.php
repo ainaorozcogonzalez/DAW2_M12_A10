@@ -268,12 +268,13 @@ class UserController extends Controller
             $user = User::find($request->id);
             if ($user) {
                 $user->delete();
-                echo "ok";
+                echo "success Usuario eliminado correctamente";
                 die();
             }
-            echo "no existe";
         } catch (\PDOException $e) {
-            echo "error " . $e;
+            echo "error Intentelo más tarde";
+            // echo "error " . $e;
+            die();
         }
         // return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
     }

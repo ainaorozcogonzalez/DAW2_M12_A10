@@ -10,7 +10,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\GestorEquiposController;
 use App\Http\Controllers\TecnicoController;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; 
 use Illuminate\Support\Facades\Response;
 
 // Redirigir la ruta raíz al login
@@ -40,9 +40,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [IncidenciaController::class, 'index'])->name('incidencias.index');
         Route::get('/create', [IncidenciaController::class, 'create'])->name('incidencias.create');
         Route::post('/admincrearincidencia', [IncidenciaController::class, 'store']);
-        Route::get('/{incidencia}/edit', [IncidenciaController::class, 'edit'])->name('incidencias.edit');
+        Route::post('/{incidencia}/edit', [IncidenciaController::class, 'edit']);
         Route::put('/{incidencia}', [IncidenciaController::class, 'update'])->name('incidencias.update');
         Route::delete('/{incidencia}', [IncidenciaController::class, 'destroy'])->name('incidencias.destroy');
+        Route::post('/datosincidencias', [IncidenciaController::class, 'datosincidencias']);
     });
 
     // Report routes

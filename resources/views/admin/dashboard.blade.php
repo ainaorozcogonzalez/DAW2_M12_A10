@@ -174,30 +174,29 @@
                     @method('POST')
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md" required value="asdASD">
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" required value="asd@asd.com">
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="email">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password"
-                            value="asdASD123" required>
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password">
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="rol_id" id="rol_id_dashboard"
-                            class="w-full px-3 py-2 border rounded-md mostrar_roles" required>
+                            class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
                         </select>
                         <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="sede_id_dashboard"
-                            class="w-full px-3 py-2 border rounded-md mostrar_sedes" required>
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
                         <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
@@ -345,7 +344,8 @@
                             class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                             Crear
                         </button>
                     </div>
@@ -356,91 +356,12 @@
     </div>
     <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
-    {{-- <script src="{{ asset('js/user-form.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/incidencia-form.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/categoria-form.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/user-form.js') }}"></script>
+    <script src="{{ asset('js/incidencia-form.js') }}"></script>
+    <script src="{{ asset('js/categoria-form.js') }}"></script>
+    <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
 
     <script>
-        function openUserModal() {
-            document.getElementById('userModal').classList.remove('hidden');
-        }
-
-        function closeUserModal() {
-            document.getElementById('userModal').classList.add('hidden');
-        }
-
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('userModal');
-            if (event.target == modal) {
-                closeUserModal();
-            }
-        }
-
-        function openIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.remove('hidden');
-        }
-
-        function closeIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.add('hidden');
-        }
-
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('incidenciaModal');
-            if (event.target == modal) {
-                closeIncidenciaModal();
-            }
-        }
-
-        function openCategoriaModal() {
-            document.getElementById('categoriaModal').classList.remove('hidden');
-        }
-
-        function closeCategoriaModal() {
-            document.getElementById('categoriaModal').classList.add('hidden');
-        }
-
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('categoriaModal');
-            if (event.target == modal) {
-                closeCategoriaModal();
-            }
-        }
-
-        function openSubcategoriaModal() {
-            document.getElementById('subcategoriaModal').classList.remove('hidden');
-        }
-
-        function closeSubcategoriaModal() {
-            document.getElementById('subcategoriaModal').classList.add('hidden');
-        }
-
-        // Cerrar modal al hacer clic fuera de él
-        window.onclick = function(event) {
-            const modal = document.getElementById('subcategoriaModal');
-            if (event.target == modal) {
-                closeSubcategoriaModal();
-            }
-        }
-
-        // Manejar el menú desplegable
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
-
-        userMenuButton.addEventListener('click', () => {
-            userMenu.classList.toggle('hidden');
-        });
-
-        // Cerrar el menú si se hace clic fuera de él
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.classList.add('hidden');
-            }
-        });
-
         // Validaciones JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('userForm');

@@ -41,11 +41,9 @@ function mostrardatosusuarios() {
                 respuesta += '            <i class="fas fa-edit"></i> Editar';
                 respuesta += '        </button>';
                 respuesta += '        </form>';
-                respuesta += '        <form class="inline" id="formeliminar" onsubmit="eliminar(event, ' + user.id + ')">';
-                respuesta += '            <button type="submit" class="text-red-600 hover:text-red-900">';
+                respuesta += '            <button onclick="eliminar(' + user.id + ', \'' + user.nombre + '\')"  class="text-red-600 hover:text-red-900">';
                 respuesta += '                <i class="fas fa-trash"></i> Eliminar';
                 respuesta += '            </button>';
-                respuesta += '        </form>';
                 respuesta += '    </div>';
                 respuesta += '</div>';
                 datosusuarios.innerHTML += respuesta;
@@ -75,7 +73,7 @@ function datosfiltros() {
             mostrarestados.innerHTML = "";
 
             Array.from(mostrarroles).forEach(rols => {
-                rols.innerHTML = "";
+                rols.innerHTML = '<option value="" >Seleccionar rol</option>';
                 data.roles.forEach(rol => {
                     let respuesta = ""
                     respuesta += ' <option value="' + rol.id + '" >' + rol.nombre + '</option>';
@@ -84,14 +82,14 @@ function datosfiltros() {
             });
 
             Array.from(mostrarsedes).forEach(sedes => {
-                sedes.innerHTML = "";
+                sedes.innerHTML = '<option value="" >Seleccionar sede</option>';
                 data.sedes.forEach(sede => {
                     sedes.innerHTML += ' <option value="' + sede.id + '" >' + sede.nombre + '</option>';
                 });
             });
 
             Array.from(mostrarestados).forEach(mostrarestado => {
-                mostrarestado.innerHTML = "";
+                mostrarestado.innerHTML = '<option value="" >Seleccionar estado</option>';
                 data.estados.forEach(estado => {
                     mostrarestado.innerHTML += ' <option value="' + estado + '" >' + estado + '</option>';
                 });

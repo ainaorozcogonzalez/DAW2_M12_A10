@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport content="width=device-width, initial-scale="1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <title>Gestión de Usuarios</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -127,17 +128,17 @@
                     <input type="hidden" name="user_id" id="user_id">
                     <div>
                         <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="name">
+                            class="w-full px-3 py-2 border rounded-md">
                         <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="email">
+                            class="w-full px-3 py-2 border rounded-md">
                         <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="new-password">
+                            class="w-full px-3 py-2 border rounded-md">
                         <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
@@ -174,6 +175,21 @@
     <script src="{{ asset('js/admin/users/modals.js') }}"></script>
     <script src="{{ asset('js/admin/users/datosusuarios.js') }}"></script>
     <script src="{{ asset('js/admin/users/acciones.js') }}"></script>
+    <script>
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+
+        userMenuButton.addEventListener('click', () => {
+            userMenu.classList.toggle('hidden');
+        });
+
+        // Cerrar el menú si se hace clic fuera de él
+        document.addEventListener('click', (event) => {
+            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 
 </html>

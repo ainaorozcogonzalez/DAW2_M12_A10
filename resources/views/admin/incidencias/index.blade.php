@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf_token" content="{{ csrf_token() }}">
     <title>Gestión de Incidencias</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -77,71 +78,43 @@
 
                 <!-- Filtros -->
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                    <form method="GET" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <form method="GET" id="formfiltros" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                        onsubmit="mostrardatosincidencias(event.preventDefault())">
+                        @csrf
                         <div>
                             <label for="estado_id" class="block text-sm font-medium text-gray-700">Estado</label>
-                            <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
                                 <option value="">Todos</option>
-                                @foreach ($estados as $estado)
-                                    <option value="{{ $estado->id }}"
-                                        {{ request('estado_id') == $estado->id ? 'selected' : '' }}>
-                                        {{ $estado->nombre }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="prioridad_id" class="block text-sm font-medium text-gray-700">Prioridad</label>
-                            <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
                                 <option value="">Todas</option>
-                                @foreach ($prioridades as $prioridad)
-                                    <option value="{{ $prioridad->id }}"
-                                        {{ request('prioridad_id') == $prioridad->id ? 'selected' : '' }}>
-                                        {{ $prioridad->nombre }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="cliente_id" class="block text-sm font-medium text-gray-700">Cliente</label>
-                            <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
                                 <option value="">Todos</option>
-                                @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}"
-                                        {{ request('cliente_id') == $cliente->id ? 'selected' : '' }}>
-                                        {{ $cliente->nombre }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="tecnico_id" class="block text-sm font-medium text-gray-700">Técnico</label>
-                            <select name="tecnico_id" id="tecnico_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="tecnico_id" class="w-full px-3 py-2 border rounded-md mostrartecnicos">
                                 <option value="">Todos</option>
-                                @foreach ($tecnicos as $tecnico)
-                                    <option value="{{ $tecnico->id }}"
-                                        {{ request('tecnico_id') == $tecnico->id ? 'selected' : '' }}>
-                                        {{ $tecnico->nombre }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
-                            <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
                                 <option value="">Todas</option>
-                                @foreach ($sedes as $sede)
-                                    <option value="{{ $sede->id }}"
-                                        {{ request('sede_id') == $sede->id ? 'selected' : '' }}>{{ $sede->nombre }}
-                                    </option>
-                                @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="categoria_id" class="block text-sm font-medium text-gray-700">Categoría</label>
-                            <select name="categoria_id" id="categoria_id" class="w-full px-3 py-2 border rounded-md">
+                            <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
                                 <option value="">Todas</option>
-                                @foreach ($categorias as $categoria)
-                                    <option value="{{ $categoria->id }}"
-                                        {{ request('categoria_id') == $categoria->id ? 'selected' : '' }}>
-                                        {{ $categoria->nombre }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="md:col-span-3 lg:col-span-4 flex justify-end space-x-4">
@@ -149,10 +122,10 @@
                                 class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                                 <i class="fas fa-filter"></i> Filtrar
                             </button>
-                            <a href="{{ route('incidencias.index') }}"
+                            <button type="button" id="btnBorrarFiltros"
                                 class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
                                 <i class="fas fa-times"></i> Limpiar
-                            </a>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -185,8 +158,8 @@
                                     Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($incidencias as $incidencia)
+                        <tbody id="resultadostabla" class="bg-white divide-y divide-gray-200">
+                            {{-- @foreach ($incidencias as $incidencia)
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->titulo }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->descripcion }}</td>
@@ -212,7 +185,7 @@
                                         </form>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -230,77 +203,49 @@
                     <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="incidencia_id" id="incidencia_id">
                     <div>
-                        <input type="text" name="titulo" id="titulo" placeholder="Título"
-                            class="w-full px-3 py-2 border rounded-md" autocomplete="off">
-                        <div id="titulo-error" class="text-red-500 text-sm mt-1 hidden"></div>
-                    </div>
-                    <div>
-                        <textarea name="descripcion" id="descripcion" placeholder="Descripción" class="w-full px-3 py-2 border rounded-md"
-                            autocomplete="off"></textarea>
+                        <textarea name="descripcion" id="descripcion" placeholder="Descripción" class="w-full px-3 py-2 border rounded-md"></textarea>
                         <div id="descripcion-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
                             <option value="">Seleccione un estado</option>
-                            @foreach ($estados as $estado)
-                                <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="estado_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="prioridad_id" id="prioridad_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
                             <option value="">Seleccione una prioridad</option>
-                            @foreach ($prioridades as $prioridad)
-                                <option value="{{ $prioridad->id }}">{{ $prioridad->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="prioridad_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="cliente_id" id="cliente_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
                             <option value="">Seleccione un cliente</option>
-                            @foreach ($clientes as $cliente)
-                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="cliente_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="tecnico_id" id="tecnico_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="tecnico_id" class="w-full px-3 py-2 border rounded-md mostrartecnicos">
                             <option value="">Seleccione un técnico</option>
-                            @foreach ($tecnicos as $tecnico)
-                                <option value="{{ $tecnico->id }}">{{ $tecnico->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="tecnico_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id" class="w-full px-3 py-2 border rounded-md">
+                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
                             <option value="">Seleccione una sede</option>
-                            @foreach ($sedes as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" id="categoria_id_modal"
-                            class="w-full px-3 py-2 border rounded-md">
+                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
                             <option value="">Seleccione una categoría</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="categoria_id_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="subcategoria_id" id="subcategoria_id"
-                            class="w-full px-3 py-2 border rounded-md">
+                        <select name="subcategoria_id"
+                            class="w-full px-3 py-2 border rounded-md mostrarsubcategorias">
                             <option value="">Seleccione una subcategoría</option>
-                            @foreach ($subcategorias as $subcategoria)
-                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->nombre }}</option>
-                            @endforeach
                         </select>
                         <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
@@ -315,13 +260,16 @@
         </div>
     </div>
 
+    <script src="{{ asset('js/admin/incidencias/acciones.js') }}"></script>
+    <script src="{{ asset('js/admin/incidencias/modals.js') }}"></script>
+    <script src="{{ asset('js/admin/incidencias/datosincidencias.js') }}"></script>
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{ asset('js/incidencia-form.js') }}"></script>
     <script src="{{ asset('js/subcategoria-form.js') }}"></script>
     <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/user-form.js') }}"></script>
-    <script>
+    <script src="{{ asset('js/user-form.js') }}"></script> --}}
+    {{-- <script>
         // Funciones para abrir/cerrar el modal
         function openIncidenciaModal() {
             document.getElementById('modalTitle').innerText = 'Crear Nueva Incidencia';
@@ -388,7 +336,7 @@
                 userMenu.classList.add('hidden');
             }
         });
-    </script>
+    </script> --}}
 </body>
 
 </html>
