@@ -10,6 +10,8 @@ use App\Models\Categoria;
 use App\Models\Subcategoria;
 use App\Models\EstadoIncidencia;
 use App\Models\Prioridad;
+use App\Models\Comentario;
+use Illuminate\Support\Facades\DB;
 
 class IncidenciaController extends Controller
 {
@@ -173,11 +175,15 @@ class IncidenciaController extends Controller
 
     public function destroy(Incidencia $incidencia)
     {
+        DB::beginTransaction();
         try {
+            Comentario::where('incidencia_id', $incidencia->id)->delete();
             $incidencia->delete();
+            DB::commit();
             echo "success incidencia #" . $incidencia->id . " eliminada correctamente";
             die();
         } catch (\PDOException $e) {
+            DB::rollback();
             echo "error no se ha podido borrar la incidencia #" . $incidencia->id;
             // echo $e;
             die();
