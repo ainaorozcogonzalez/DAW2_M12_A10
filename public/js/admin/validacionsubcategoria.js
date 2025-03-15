@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Asignar eventos keyup a los inputs
-    document.getElementById('nombre_subcategoria_modal').addEventListener('keyup', validarDescripcion);
+    document.getElementById('nombre_subcategoria_modal').addEventListener('keyup', validarDescripcionsubcat);
     // Asignar eventos change al select para la categoría
     document.getElementById('categoria_id_subcategoria').addEventListener('change', validarCategoria);
 });
 
 // ✅ Validar nombre de subcategoría
-function validarDescripcion() {
+function validarDescripcionsubcat() {
     const nombreSubcategoria = document.getElementById('nombre_subcategoria_modal').value.trim();
     const error = document.getElementById('nombre_subcategoria_modal-error');
 
@@ -36,7 +36,7 @@ function validarCategoria() {
 // ✅ Validación antes de enviar el formulario
 function validarFormulariosubcategoria(event) {
     event.preventDefault();
-    const isValid = validarDescripcion() & validarCategoria();
+    const isValid = validarDescripcionsubcat() & validarCategoria();
     return isValid;
 }
 

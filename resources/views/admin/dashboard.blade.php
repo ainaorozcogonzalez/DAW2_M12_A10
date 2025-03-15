@@ -191,14 +191,14 @@
                             class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
                         </select>
-                        <div id="rol_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="rol_id_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="sede_id_user"
                             class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
-                        <div id="sede_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="sede_id_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
                         <select name="estado" id="estado_user"
@@ -223,9 +223,15 @@
     <div id="incidenciaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Crear Nueva Incidencia</h3>
                 <form class="mt-4 space-y-4" method="POST" id="incidenciaForm" onsubmit="crearincidencia(event)">
                     @csrf
+                    <input type="hidden" name="incidencia_id" id="incidencia_id">
+                    <div>
+                        <textarea name="descripcion" id="descripcion_incidencia" placeholder="Descripción de la incidencia"
+                            class="w-full px-3 py-2 border rounded-md"></textarea>
+                        <div id="descripcion_incidencia-error" class="text-red-500 text-sm mt-1"></div>
+                    </div>
                     <div>
                         <select name="cliente_id" id="cliente_id_incidencia"
                             class="w-full px-3 py-2 border rounded-md mostrar_clientes">
@@ -254,21 +260,23 @@
                         </select>
                         <div id="subcategoria_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
-                    <div>
-                        <textarea name="descripcion" id="descripcion_incidencia" placeholder="Descripción de la incidencia"
-                            class="w-full px-3 py-2 border rounded-md"></textarea>
-                        <div id="descripcion_incidencia-error" class="text-red-500 text-sm mt-1"></div>
+                    <div class="hidden">
+                        <select name="tecnico_id" id="tecnico_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrartecnicos">
+                            <option value="">Seleccione un tecnico</option>
+                        </select>
+                        <div id="tecnico_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="estado_id" id="estado_id_incidencia"
-                            class="w-full px-3 py-2 border rounded-md mostrar_estado">
+                            class="w-full px-3 py-2 border rounded-md mostrar_estado_incidencia">
                             <option value="">Seleccione un estado</option>
                         </select>
                         <div id="estado_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="prioridad_id" id="prioridad_id_incidencia"
-                            class="w-full px-3 py-2 border rounded-md mostrar_prioridades">
+                            class="w-full px-3 py-2 border rounded-md prioridad_id_incidencia">
                             <option value="">Seleccione una prioridad</option>
                         </select>
                         <div id="prioridad_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>

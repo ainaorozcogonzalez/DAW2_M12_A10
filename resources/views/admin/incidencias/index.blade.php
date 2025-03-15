@@ -245,7 +245,7 @@
     <script src="{{ asset('js/admin/incidencias/acciones.js') }}"></script>
     <script src="{{ asset('js/admin/incidencias/modals.js') }}"></script>
     <script src="{{ asset('js/admin/incidencias/datosincidencias.js') }}"></script>
-    <script src="{{ asset('js/admin/validacionincidencia.js') }}"></script>
+    <script src="{{ asset('js/admin/incidencias/validacionincidencia.js') }}"></script>
 </body>
 
 </html>

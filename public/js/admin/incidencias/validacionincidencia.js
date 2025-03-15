@@ -98,7 +98,6 @@ function validarPrioridad() {
 // ✅ Validar descripción
 function validarDescripcion() {
     const descripcion = document.getElementById('descripcion_incidencia').value.trim();
-    console.log('Descripción:', descripcion);  // Agregado para depuración
     const error = document.getElementById('descripcion_incidencia-error');
 
     if (descripcion === "") {
@@ -109,17 +108,20 @@ function validarDescripcion() {
     error.classList.add('hidden');
     return true;
 }
+
+// ✅ Validar tecnico
+
 // ✅ Validación antes de enviar el formulario
 function validarFormularioincidencia(event) {
     event.preventDefault();
     const isValid =
-        validarDescripcion() &
         validarCliente() &
         validarSedeincidencia() &
         validarCategoriaSedeincidencia() &
         validarSubcategoria() &
         validarEstado() &
-        validarPrioridad();
+        validarPrioridad() &
+        validarDescripcion();
     return isValid;
 }
 
@@ -130,12 +132,6 @@ function crearincidencia(event) {
     }
     var form = document.getElementById("incidenciaForm");
     var formData = new FormData(form);
-
-    // Log para verificar los datos que se están enviando
-    for (let [key, value] of formData.entries()) {
-        console.log(key + ": " + value);
-    }
-
     fetch("/incidencias/admincrearincidencia", {
         method: "POST",
         body: formData
@@ -146,14 +142,17 @@ function crearincidencia(event) {
         })
         .then(data => {
             const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset();
-                datosadicionales();
-                document.getElementById('incidenciaModal').classList.add('hidden');
-            }
+
             Swal.fire({
                 title: resto,
                 icon: primeraParte,
             });
+
+            if (primeraParte == 'success') {
+                document.getElementById('incidenciaModal').classList.add('hidden');
+                form.reset();
+                datosfiltros()
+                mostrardatosincidencias();
+            }
         })
 }
