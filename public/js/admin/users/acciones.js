@@ -24,7 +24,7 @@ function eliminar(id, nombre) {
             formData.append('_token', csrfToken);
             formData.append('_method', 'DELETE');
             formData.append('id', id);
-            fetch("/users/eliminaruario", {
+            fetch("/users/" + id, {
                 method: "POST",
                 body: formData
             })
