@@ -176,7 +176,7 @@
     <script src="{{ asset('js/admin/users/modals.js') }}"></script>
     <script src="{{ asset('js/admin/users/datosusuarios.js') }}"></script>
     <script src="{{ asset('js/admin/users/acciones.js') }}"></script>
-    <script src="{{ asset('js/admin/validacionuser.js') }}"></script>
+    <script src="{{ asset('js/admin/users/validacionuser.js') }}"></script>
     <script>
         const userMenuButton = document.getElementById('user-menu-button');
         const userMenu = document.getElementById('user-menu');
