@@ -241,6 +241,35 @@ class UserController extends Controller
 
 
         try {
+            // // Buscar el usuario
+            // $user = User::find($request->user_id);
+
+            // // Si la sede_id cambia, actualizar las incidencias relacionadas
+            // if ($user->sede_id !== $request->sede_id) {
+            //     Incidencia::where('cliente_id', $user->id)
+            //         ->update(['sede_id' => $request->sede_id]);
+            // }
+
+            // // Datos para actualizar
+            // $updateData = [
+            //     'nombre' => $request->nombre,
+            //     'email' => $request->email,
+            //     'rol_id' => $request->rol_id,
+            //     'sede_id' => $request->sede_id,
+            //     'estado' => $request->estado
+            // ];
+
+            // // Si hay contraseña, se encripta
+            // if ($request->filled('password')) {
+            //     $updateData['password'] = bcrypt($request->password);
+            // }
+
+            // // Actualizar usuario
+            // $user->update($updateData);
+            // DB::commit();
+            // echo "success " . $request->nombre . " editado correctamente";
+            // die();
+
             $user = User::find($request->user_id);
             $updateData = [
                 'nombre' => $request->nombre,
