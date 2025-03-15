@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('subcategoria_id_incidencia').addEventListener('change', validarSubcategoria);
     document.getElementById('estado_id_incidencia').addEventListener('change', validarEstado);
     document.getElementById('prioridad_id_incidencia').addEventListener('change', validarPrioridad);
-    document.getElementById('tecnico_id_incidencia').addEventListener('change', validarTecnico);
 });
 
 // ✅ Validar cliente
@@ -99,6 +98,7 @@ function validarPrioridad() {
 // ✅ Validar descripción
 function validarDescripcion() {
     const descripcion = document.getElementById('descripcion_incidencia').value.trim();
+    console.log('Descripción:', descripcion);  // Agregado para depuración
     const error = document.getElementById('descripcion_incidencia-error');
 
     if (descripcion === "") {
@@ -109,33 +109,17 @@ function validarDescripcion() {
     error.classList.add('hidden');
     return true;
 }
-
-// ✅ Validar tecnico
-function validarTecnico() {
-    const tecnico_id = document.getElementById('tecnico_id_incidencia').value;
-    const error = document.getElementById('tecnico_id_incidencia-error');
-
-    if (tecnico_id === "") {
-        error.innerText = "Seleccione una tecnico";
-        error.classList.remove('hidden');
-        return false;
-    }
-    error.classList.add('hidden');
-    return true;
-}
-
 // ✅ Validación antes de enviar el formulario
 function validarFormularioincidencia(event) {
     event.preventDefault();
     const isValid =
+        validarDescripcion() &
         validarCliente() &
         validarSedeincidencia() &
         validarCategoriaSedeincidencia() &
         validarSubcategoria() &
         validarEstado() &
-        validarPrioridad() &
-        validarDescripcion() &
-        validarTecnico();
+        validarPrioridad();
     return isValid;
 }
 
@@ -146,6 +130,12 @@ function crearincidencia(event) {
     }
     var form = document.getElementById("incidenciaForm");
     var formData = new FormData(form);
+
+    // Log para verificar los datos que se están enviando
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ": " + value);
+    }
+
     fetch("/incidencias/admincrearincidencia", {
         method: "POST",
         body: formData

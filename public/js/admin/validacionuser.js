@@ -15,10 +15,9 @@ function validarNombre() {
     const nombre = document.getElementById('nombre_user').value.trim();
     const error = document.getElementById('nombre_user-error');
 
-    // Expresión regular que permite solo letras (mayúsculas y minúsculas) y espacios
     const nombreRegex = /^[a-zA-Z\s]+$/;
 
-    if (nombre === "") {
+    if (!nombre) {
         error.innerText = "El nombre es obligatorio";
         error.classList.remove('hidden');
         return false;
@@ -36,12 +35,12 @@ function validarEmail() {
     const email = document.getElementById('email_user').value.trim();
     const error = document.getElementById('email_user-error');
 
-    if (email === "") {
+    if (!email) {
         error.innerText = "El correo electrónico es obligatorio";
         error.classList.remove('hidden');
         return false;
     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-        error.innerText = "El correo electrónico no es válido ejemplo: ejemplo@gmail.com";
+        error.innerText = "Formato de correo inválido. Ejemplo: ejemplo@gmail.com";
         error.classList.remove('hidden');
         return false;
     }
@@ -54,19 +53,14 @@ function validarPassword() {
     const password = document.getElementById('password_user').value.trim();
     const error = document.getElementById('password_user-error');
 
-    // Validar que la contraseña no esté vacía, tenga al menos 8 caracteres y contenga una mayúscula, una minúscula y un número
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-    if (password === "") {
+    if (!password) {
         error.innerText = "La contraseña es obligatoria";
         error.classList.remove('hidden');
         return false;
-    } else if (password.length < 8) {
-        error.innerText = "La contraseña debe tener al menos 8 caracteres";
-        error.classList.remove('hidden');
-        return false;
     } else if (!passwordRegex.test(password)) {
-        error.innerText = "La contraseña debe contener al menos una mayúscula, una minúscula y un número";
+        error.innerText = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número";
         error.classList.remove('hidden');
         return false;
     }
@@ -74,12 +68,12 @@ function validarPassword() {
     return true;
 }
 
-// ✅ Validar rol
+// ✅ Validar Rol
 function validarRol() {
     const rol_id = document.getElementById('rol_id_user').value;
-    const error = document.getElementById('rol_user-error');
+    const error = document.getElementById('rol_id_user-error');
 
-    if (rol_id === "") {
+    if (!rol_id) {
         error.innerText = "Seleccione un rol";
         error.classList.remove('hidden');
         return false;
@@ -90,10 +84,10 @@ function validarRol() {
 
 // ✅ Validar sede
 function validarSede() {
-    const sede_id = document.getElementById('sede_id_user').value;
-    const error = document.getElementById('sede_user-error');
+    const sede = document.getElementById('sede_id_user').value;
+    const error = document.getElementById('sede_id_user-error');
 
-    if (sede_id === "") {
+    if (!sede) {
         error.innerText = "Seleccione una sede";
         error.classList.remove('hidden');
         return false;
@@ -107,7 +101,7 @@ function validarEstado() {
     const estado = document.getElementById('estado_user').value;
     const error = document.getElementById('estado_user-error');
 
-    if (estado === "") {
+    if (!estado) {
         error.innerText = "Seleccione un estado";
         error.classList.remove('hidden');
         return false;
@@ -116,16 +110,16 @@ function validarEstado() {
     return true;
 }
 
-// ✅ Validación antes de enviar el formulario
+// ✅ Crear usuario
 function validarFormularioUsers(event) {
     event.preventDefault();
+
     const isValid =
         validarNombre() &
         validarEmail() &
         validarPassword() &
         validarRol() &
-        validarSede() &
-        validarEstado();
+        validarSede();
     return isValid;
 }
 
@@ -148,23 +142,14 @@ function Crearusuario(event) {
         })
         .then(data => {
             const [primeraParte, resto] = data.split(/ (.+)/);
-
             if (primeraParte === 'success') {
-                form.reset(); // Resetea el formulario después de enviar
-                datosadicionales(); // Llama a la función de datos adicionales
+                form.reset();
+                datosadicionales();
                 document.getElementById('userModal').classList.add('hidden');
             }
-
             Swal.fire({
                 title: resto,
                 icon: primeraParte,
             });
         })
-        .catch(error => {
-            Swal.fire({
-                title: "Error",
-                text: "No se pudo crear el usuario. Inténtelo de nuevo.",
-                icon: "error"
-            });
-        });
 }

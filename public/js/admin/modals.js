@@ -96,14 +96,15 @@ function datosadicionales() {
     let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
     let mostrar_estadousuario = document.getElementsByClassName("mostrar_estadousuario");
     let nombreusuario = document.getElementsByClassName("nombreusuario");
+
     let totalusuarios = document.getElementById("totalusuarios");
     let totalincidencias = document.getElementById("totalincidencias");
 
     let mostrarsubcategorias = document.getElementsByClassName("mostrar_subcategorias");
     let mostrarcategorias = document.getElementsByClassName("mostrar_categorias");
     let mostrarclientes = document.getElementsByClassName("mostrar_clientes");
-    let mostrarestado = document.getElementsByClassName("mostrar_estado");
-    let mostrarprioridades = document.getElementsByClassName("mostrar_prioridades");
+    let mostrarestado = document.getElementsByClassName("mostrar_estado_incidencia");
+    let mostrarprioridades = document.getElementsByClassName("prioridad_id_incidencia");
     var form = document.getElementById("subcategoriaForm");
     var formData = new FormData(form);
     fetch("/users/datosusuarios", {
