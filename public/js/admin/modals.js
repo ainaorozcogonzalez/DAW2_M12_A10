@@ -1,14 +1,3 @@
-function openUserModal() {
-    var form = document.getElementById("userForm");
-    form.reset()
-    document.getElementById('userModal').classList.remove('hidden');
-}
-
-function closeUserModal() {
-    var form = document.getElementById("userForm");
-    form.reset()
-    document.getElementById('userModal').classList.add('hidden');
-}
 
 // Cerrar modal al hacer clic fuera de él
 document.addEventListener('click', (event) => {
@@ -30,31 +19,24 @@ document.addEventListener('click', (event) => {
     }
 });
 
-function Crearusuario() {
+// modal usuarios
+function openUserModal() {
     var form = document.getElementById("userForm");
-    var formData = new FormData(form);
-    fetch("/users/admincrearusuario", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                datosadicionales()
-                document.getElementById('userModal').classList.add('hidden');
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-
-        })
+    form.reset()
+    document.getElementById('userModal').classList.remove('hidden');
 }
+
+function closeUserModal() {
+    var form = document.getElementById("userForm");
+    form.reset()
+    const errorMessages = document.querySelectorAll('.text-red-500');
+    errorMessages.forEach(function (error) {
+        error.classList.add('hidden');
+    });
+    document.getElementById('userModal').classList.add('hidden');
+}
+
+//modal incidencias
 
 function openIncidenciaModal() {
     var form = document.getElementById("incidenciaForm");
@@ -65,33 +47,14 @@ function openIncidenciaModal() {
 function closeIncidenciaModal() {
     var form = document.getElementById("incidenciaForm");
     form.reset()
+    const errorMessages = document.querySelectorAll('.text-red-500');
+    errorMessages.forEach(function (error) {
+        error.classList.add('hidden');
+    });
     document.getElementById('incidenciaModal').classList.add('hidden');
 }
 
-function crearincidencia() {
-    var form = document.getElementById("incidenciaForm");
-    var formData = new FormData(form);
-    fetch("/incidencias/admincrearincidencia", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                datosadicionales()
-                document.getElementById('incidenciaModal').classList.add('hidden');
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-        })
-}
+// modal categoria
 
 function openCategoriaModal() {
     var form = document.getElementById("categoriaForm");
@@ -102,32 +65,11 @@ function openCategoriaModal() {
 function closeCategoriaModal() {
     var form = document.getElementById("categoriaForm");
     form.reset()
+    const errorMessages = document.querySelectorAll('.text-red-500');
+    errorMessages.forEach(function (error) {
+        error.classList.add('hidden');
+    });
     document.getElementById('categoriaModal').classList.add('hidden');
-}
-
-function crearcategoria() {
-    var form = document.getElementById("categoriaForm");
-    var formData = new FormData(form);
-    fetch("/categorias/admincrearcategoria", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                datosadicionales()
-                document.getElementById('categoriaModal').classList.add('hidden');
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-        })
 }
 
 function openSubcategoriaModal() {
@@ -139,33 +81,13 @@ function openSubcategoriaModal() {
 function closeSubcategoriaModal() {
     var form = document.getElementById("subcategoriaForm");
     form.reset()
+    const errorMessages = document.querySelectorAll('.text-red-500');
+    errorMessages.forEach(function (error) {
+        error.classList.add('hidden');
+    });
     document.getElementById('subcategoriaModal').classList.add('hidden');
 }
 
-function crearsubcategoria() {
-    var form = document.getElementById("subcategoriaForm");
-    var formData = new FormData(form);
-    fetch("/subcategorias/admincrearsubcategoria", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                datosadicionales()
-                document.getElementById('subcategoriaModal').classList.add('hidden');
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-        })
-}
 
 datosadicionales()
 
@@ -174,14 +96,15 @@ function datosadicionales() {
     let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
     let mostrar_estadousuario = document.getElementsByClassName("mostrar_estadousuario");
     let nombreusuario = document.getElementsByClassName("nombreusuario");
+
     let totalusuarios = document.getElementById("totalusuarios");
     let totalincidencias = document.getElementById("totalincidencias");
 
     let mostrarsubcategorias = document.getElementsByClassName("mostrar_subcategorias");
     let mostrarcategorias = document.getElementsByClassName("mostrar_categorias");
     let mostrarclientes = document.getElementsByClassName("mostrar_clientes");
-    let mostrarestado = document.getElementsByClassName("mostrar_estado");
-    let mostrarprioridades = document.getElementsByClassName("mostrar_prioridades");
+    let mostrarestado = document.getElementsByClassName("mostrar_estado_incidencia");
+    let mostrarprioridades = document.getElementsByClassName("prioridad_id_incidencia");
     var form = document.getElementById("subcategoriaForm");
     var formData = new FormData(form);
     fetch("/users/datosusuarios", {

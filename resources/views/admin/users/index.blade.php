@@ -94,7 +94,7 @@
                         </div>
                         <div>
                             <label for="estado" class="block text-sm font-medium text-gray-700">Estado</label>
-                            <select name="estado" class="w-full px-3 py-2 border rounded-md mostrar_estados">
+                            <select name="estado" class="w-full px-3 py-2 border rounded-md mostrar_estadousuario">
                                 <option value="">Todos</option>
                             </select>
                         </div>
@@ -127,46 +127,47 @@
                     <input type="hidden" name="_method" id="formMethod" value="POST">
                     <input type="hidden" name="user_id" id="user_id">
                     <div>
-                        <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
-                            class="w-full px-3 py-2 border rounded-md">
-                        <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <input type="text" name="nombre" id="nombre_user" placeholder="Nombre completo"
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="username">
+                        <div id="nombre_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
-                            class="w-full px-3 py-2 border rounded-md">
-                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <input type="email" name="email" id="email_user" placeholder="Correo electrónico"
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="email">
+                        <div id="email_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="password" name="password" id="password" placeholder="Contraseña"
-                            class="w-full px-3 py-2 border rounded-md">
-                        <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <input type="password" name="password" id="password_user" placeholder="Contraseña"
+                            class="w-full px-3 py-2 border rounded-md" autocomplete="current-password">
+                        <div id="password_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" class="w-full px-3 py-2 border rounded-md mostrar_roles">
+                        <select name="rol_id" id="rol_id_user"
+                            class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
                         </select>
-                        <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="rol_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrar_sedes">
+                        <select name="sede_id" id="sede_id_user"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
-                        <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="sede_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" class="w-full px-3 py-2 border rounded-md mostrar_estados">
+                        <select name="estado" id="estado_user"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estadousuario">
+                            <option value="">Seleccione un estado</option>
                         </select>
-                        <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="estado_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeUserModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Guardar Cambios
-                        </button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" id="btfrmcrear">Crear
+                            Usuario</button>
                     </div>
                 </form>
             </div>
@@ -175,6 +176,7 @@
     <script src="{{ asset('js/admin/users/modals.js') }}"></script>
     <script src="{{ asset('js/admin/users/datosusuarios.js') }}"></script>
     <script src="{{ asset('js/admin/users/acciones.js') }}"></script>
+    <script src="{{ asset('js/admin/users/validacionuser.js') }}"></script>
     <script>
         const userMenuButton = document.getElementById('user-menu-button');
         const userMenu = document.getElementById('user-menu');

@@ -83,19 +83,20 @@
                         @csrf
                         <div>
                             <label for="estado_id" class="block text-sm font-medium text-gray-700">Estado</label>
-                            <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
+                            <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrar_estado">
                                 <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="prioridad_id" class="block text-sm font-medium text-gray-700">Prioridad</label>
-                            <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
+                            <select name="prioridad_id"
+                                class="w-full px-3 py-2 border rounded-md prioridad_id_incidencia">
                                 <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="cliente_id" class="block text-sm font-medium text-gray-700">Cliente</label>
-                            <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
+                            <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrar_clientes">
                                 <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
@@ -107,13 +108,13 @@
                         </div>
                         <div>
                             <label for="sede_id" class="block text-sm font-medium text-gray-700">Sede</label>
-                            <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
+                            <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                                 <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
                         <div>
                             <label for="categoria_id" class="block text-sm font-medium text-gray-700">Categoría</label>
-                            <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
+                            <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                                 <option value="">Intentelo más tarde</option>
                             </select>
                         </div>
@@ -159,33 +160,7 @@
                             </tr>
                         </thead>
                         <tbody id="resultadostabla" class="bg-white divide-y divide-gray-200">
-                            {{-- @foreach ($incidencias as $incidencia)
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->titulo }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->descripcion }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->estado->nombre }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->prioridad->nombre }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $incidencia->cliente->nombre }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $incidencia->tecnico ? $incidencia->tecnico->nombre : 'Sin asignar' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button onclick="openEditIncidenciaModal({{ $incidencia->id }})"
-                                            class="text-indigo-600 hover:text-indigo-900 mr-2">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <form action="{{ route('incidencias.destroy', $incidencia) }}" method="POST"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900"
-                                                onclick="return confirm('¿Estás seguro de eliminar esta incidencia?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach --}}
+
                         </tbody>
                     </table>
                 </div>
@@ -198,62 +173,69 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
-                    onsubmit="mostrardatosusuarios(event.preventDefault())">
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm">
                     @csrf
                     <input type="hidden" name="incidencia_id" id="incidencia_id">
                     <div>
-                        <textarea name="descripcion" id="descripcion" placeholder="Descripción" class="w-full px-3 py-2 border rounded-md"></textarea>
-                        <div id="descripcion-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <textarea name="descripcion" id="descripcion_incidencia" placeholder="Descripción de la incidencia"
+                            class="w-full px-3 py-2 border rounded-md"></textarea>
+                        <div id="descripcion_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="estado_id" class="w-full px-3 py-2 border rounded-md mostrarestados">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="cliente_id" id="cliente_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_clientes">
+                            <option value="">Seleccione un cliente</option>
                         </select>
-                        <div id="estado_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="cliente_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="prioridad_id" class="w-full px-3 py-2 border rounded-md mostrarprioridades">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="sede_id" id="incidencia_sede_id"
+                            class="w-full px-3 py-2 border rounded-md mostrar_sedes">
+                            <option value="">Seleccione una sede</option>
                         </select>
-                        <div id="prioridad_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="sede_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="sede_id" class="w-full px-3 py-2 border rounded-md mostrarsedes">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="categoria_id" id="categoria_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_categorias">
+                            <option value="">Seleccione una categoría</option>
                         </select>
-                        <div id="sede_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="categoria_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="cliente_id" class="w-full px-3 py-2 border rounded-md mostrarclientes">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="subcategoria_id" id="subcategoria_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_subcategorias">
+                            <option value="">Seleccione una subcategoría</option>
                         </select>
-                        <div id="cliente_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="subcategoria_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="tecnico_id" class="w-full px-3 py-2 border rounded-md mostrartecnicos">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="tecnico_id" id="tecnico_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrartecnicos">
+                            <option value="">Seleccione un estado</option>
                         </select>
-                        <div id="tecnico_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="tecnico_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrarcategorias">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="estado_id" id="estado_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estado">
+                            <option value="">Seleccione un estado</option>
                         </select>
-                        <div id="categoria_id_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="estado_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="subcategoria_id" id="mostrarsubcategorias"
-                            class="w-full px-3 py-2 border rounded-md ">
-                            <option value="">Intentelo más tarde</option>
+                        <select name="prioridad_id" id="prioridad_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md prioridad_id_incidencia">
+                            <option value="">Seleccione una prioridad</option>
                         </select>
-                        <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="prioridad_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
-                    <div class="flex justify-end space-x-4">
+                    <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeIncidenciaModal()"
-                            class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancelar</button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Guardar</button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Crear
+                            Incidencia</button>
                     </div>
                 </form>
             </div>
@@ -263,12 +245,7 @@
     <script src="{{ asset('js/admin/incidencias/acciones.js') }}"></script>
     <script src="{{ asset('js/admin/incidencias/modals.js') }}"></script>
     <script src="{{ asset('js/admin/incidencias/datosincidencias.js') }}"></script>
-    <!-- Scripts -->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="{{ asset('js/incidencia-form.js') }}"></script>
-    <script src="{{ asset('js/subcategoria-form.js') }}"></script>
-    <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/user-form.js') }}"></script> --}}
+    <script src="{{ asset('js/admin/incidencias/validacionincidencia.js') }}"></script>
 </body>
 
 </html>

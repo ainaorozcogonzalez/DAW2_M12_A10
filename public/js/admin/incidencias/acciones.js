@@ -74,12 +74,11 @@ function cargadatoseditar(id) {
         })
         .then(data => {
             form.onsubmit = function (event) {
-                event.preventDefault();
-                editar();
+                editar(event);
             };
             modalTitle.innerText = 'Editando la Incidencia #' + data.id;
             document.getElementById('incidencia_id').value = data.id || '';
-            document.getElementById('descripcion').value = data.descripcion || '';
+            document.getElementById('descripcion_incidencia').value = data.descripcion || '';
 
             let estado_id = form.querySelector('select[name="estado_id"]');
             estado_id.value = data.estado.id;
@@ -105,41 +104,14 @@ function cargadatoseditar(id) {
         })
 }
 
-
-function editar() {
+function editar(event) {
+    if (!validarFormularioincidencia(event)) {
+        return;
+    }
     var form = document.getElementById("incidenciaForm");
     var formData = new FormData(form);
     formData.append('_method', 'PUT');
     fetch("/incidencias/editar", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                document.getElementById('incidenciaModal').classList.add('hidden');
-                mostrardatosincidencias()
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-        })
-}
-
-function crearincidencia() {
-    var form = document.getElementById("incidenciaForm");
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
-    var formData = new FormData(form);
-    formData.append('_token', csrfToken);
-    formData.append('_method', 'POST');
-
-    fetch("/incidencias/admincrearincidencia", {
         method: "POST",
         body: formData
     })

@@ -80,27 +80,25 @@
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                     <div class="flex items-center space-x-4">
                         <div class="p-3 bg-yellow-50 rounded-full">
-                            <i class="fas fa-chart-line text-yellow-600"></i>
+                            <i class="fas fa-tags text-yellow-600"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500">Reportes</p>
+                            <p class="text-gray-500">Categorías</p>
                             <p class="text-2xl font-bold">
-                                {{ App\Models\Incidencia::whereNotNull('fecha_resolucion')->count() }}</p>
+                                {{ App\Models\Categoria::count() }}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                     <div class="flex items-center space-x-4">
                         <div class="p-3 bg-red-50 rounded-full">
-                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            <i class="fas fa-tag text-red-600"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500">Urgentes</p>
+                            <p class="text-gray-500">Subcategorías</p>
                             <p class="text-2xl font-bold">
-                                @php
-                                    $prioridadUrgente = App\Models\Prioridad::where('nombre', 'Urgente')->first();
-                                    echo $prioridadUrgente ? $prioridadUrgente->incidencias()->count() : 0;
-                                @endphp
+                                {{ App\Models\Subcategoria::count() }}
                             </p>
                         </div>
                     </div>
@@ -168,55 +166,51 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nuevo Usuario</h3>
-                <form class="mt-4 space-y-4" method="POST" id="userForm"
-                    onsubmit="Crearusuario(event.preventDefault())">
+                <form class="mt-4 space-y-4" method="POST" id="userForm" onsubmit="Crearusuario(event)">
                     @csrf
                     @method('POST')
                     <div>
-                        <input type="text" name="nombre" id="nombre" placeholder="Nombre completo"
+                        <input type="text" name="nombre" id="nombre_user" placeholder="Nombre completo"
                             class="w-full px-3 py-2 border rounded-md" autocomplete="username">
-                        <div id="nombre-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="nombre_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="email" name="email" id="email" placeholder="Correo electrónico"
+                        <input type="email" name="email" id="email_user" placeholder="Correo electrónico"
                             class="w-full px-3 py-2 border rounded-md" autocomplete="email">
-                        <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="email_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="password" name="password" id="password" placeholder="Contraseña"
+                        <input type="password" name="password" id="password_user" placeholder="Contraseña"
                             class="w-full px-3 py-2 border rounded-md" autocomplete="current-password">
-                        <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="password_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="rol_id" id="rol_id_dashboard"
+                        <select name="rol_id" id="rol_id_user"
                             class="w-full px-3 py-2 border rounded-md mostrar_roles">
                             <option value="">Seleccione un rol</option>
                         </select>
-                        <div id="rol-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="rol_id_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="sede_id" id="sede_id_dashboard"
+                        <select name="sede_id" id="sede_id_user"
                             class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
-                        <div id="sede-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="sede_id_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <select name="estado" id="estado_dashboard"
+                        <select name="estado" id="estado_user"
                             class="w-full px-3 py-2 border rounded-md mostrar_estadousuario">
                             <option value="">Seleccione un estado</option>
                         </select>
-                        <div id="estado-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="estado_user-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeUserModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Crear Usuario
-                        </button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Crear
+                            Usuario</button>
                     </div>
                 </form>
             </div>
@@ -227,65 +221,70 @@
     <div id="incidenciaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Incidencia</h3>
-                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm"
-                    onsubmit="crearincidencia(event.preventDefault())">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">Crear Nueva Incidencia</h3>
+                <form class="mt-4 space-y-4" method="POST" id="incidenciaForm" onsubmit="crearincidencia(event)">
                     @csrf
+                    <input type="hidden" name="incidencia_id" id="incidencia_id">
                     <div>
-                        <select name="cliente_id" id="cliente_id"
+                        <textarea name="descripcion" id="descripcion_incidencia" placeholder="Descripción de la incidencia"
+                            class="w-full px-3 py-2 border rounded-md"></textarea>
+                        <div id="descripcion_incidencia-error" class="text-red-500 text-sm mt-1"></div>
+                    </div>
+                    <div>
+                        <select name="cliente_id" id="cliente_id_incidencia"
                             class="w-full px-3 py-2 border rounded-md mostrar_clientes">
                             <option value="">Seleccione un cliente</option>
                         </select>
-                        <div id="cliente_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="cliente_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
                         <select name="sede_id" id="incidencia_sede_id"
                             class="w-full px-3 py-2 border rounded-md mostrar_sedes">
                             <option value="">Seleccione una sede</option>
                         </select>
-                        <div id="sede_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="sede_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
+                        <select name="categoria_id" id="categoria_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
                         </select>
-                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="categoria_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="subcategoria_id" id="subcategoria_id"
+                        <select name="subcategoria_id" id="subcategoria_id_incidencia"
                             class="w-full px-3 py-2 border rounded-md mostrar_subcategorias">
                             <option value="">Seleccione una subcategoría</option>
                         </select>
-                        <div id="subcategoria_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="subcategoria_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
+                    </div>
+                    <div class="hidden">
+                        <select name="tecnico_id" id="tecnico_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrartecnicos">
+                            <option value="">Seleccione un tecnico</option>
+                        </select>
+                        <div id="tecnico_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <textarea name="descripcion" id="descripcion" placeholder="Descripción de la incidencia"
-                            class="w-full px-3 py-2 border rounded-md"></textarea>
-                        <div id="descripcion-error" class="text-red-500 text-sm mt-1"></div>
-                    </div>
-                    <div>
-                        <select name="estado_id" id="estado_id"
-                            class="w-full px-3 py-2 border rounded-md mostrar_estado">
+                        <select name="estado_id" id="estado_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md mostrar_estado_incidencia">
                             <option value="">Seleccione un estado</option>
                         </select>
-                        <div id="estado_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="estado_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div>
-                        <select name="prioridad_id" id="prioridad_id"
-                            class="w-full px-3 py-2 border rounded-md mostrar_prioridades">
+                        <select name="prioridad_id" id="prioridad_id_incidencia"
+                            class="w-full px-3 py-2 border rounded-md prioridad_id_incidencia">
                             <option value="">Seleccione una prioridad</option>
                         </select>
-                        <div id="prioridad_id-error" class="text-red-500 text-sm mt-1"></div>
+                        <div id="prioridad_id_incidencia-error" class="text-red-500 text-sm mt-1"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeIncidenciaModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Crear Incidencia
-                        </button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Crear
+                            Incidencia</button>
                     </div>
                 </form>
             </div>
@@ -297,23 +296,19 @@
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Categoría</h3>
-                <form class="mt-4 space-y-4" method="POST" id="categoriaForm"
-                    onsubmit="crearcategoria(event.preventDefault())">
+                <form class="mt-4 space-y-4" method="POST" id="categoriaForm" onsubmit="crearcategoria(event)">
                     @csrf
                     <div>
-                        <input type="text" name="nombre" id="nombre_categoria"
+                        <input type="text" name="nombre" id="nombre_categoria_modal"
                             placeholder="Nombre de la categoría" class="w-full px-3 py-2 border rounded-md">
-                        <div id="nombre_categoria-error" class="error-message"></div>
+                        <div id="nombre_categoria_modal-error" class="error-message"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeCategoriaModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Crear Categoría
-                        </button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Crear
+                            Categoría</button>
                     </div>
                 </form>
             </div>
@@ -326,125 +321,38 @@
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Crear Nueva Subcategoría</h3>
                 <form class="mt-4 space-y-4" method="POST" id="subcategoriaForm"
-                    onsubmit="crearsubcategoria(event.preventDefault())">
+                    onsubmit="crearsubcategoria(event)">
                     @csrf
                     <div>
-                        <select name="categoria_id" class="w-full px-3 py-2 border rounded-md mostrar_categorias">
+                        <select name="categoria_id" id="categoria_id_subcategoria"
+                            class="w-full px-3 py-2 border rounded-md mostrar_categorias">
                             <option value="">Seleccione una categoría</option>
                         </select>
-                        <div id="categoria_id-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="categoria_id_subcategoria-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div>
-                        <input type="text" name="nombre" id="nombre_subcategoria"
+                        <input type="text" name="nombre" id="nombre_subcategoria_modal"
                             placeholder="Nombre de la subcategoría" class="w-full px-3 py-2 border rounded-md">
-                        <div id="nombre_subcategoria-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <div id="nombre_subcategoria_modal-error" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                     <div class="flex justify-between mt-4">
                         <button type="button" onclick="closeSubcategoriaModal()"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Crear
-                        </button>
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Crear</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    </div>
-    <script src="{{ asset('js/admin/acciones.js') }}"></script>
 
-    {{-- <script src="{{ asset('js/user-form.js') }}"></script>
-    <script src="{{ asset('js/incidencia-form.js') }}"></script>
-    <script src="{{ asset('js/categoria-form.js') }}"></script>
-    <script src="{{ asset('js/subcategoria-form.js') }}"></script> --}}
+    <script src="{{ asset('js/admin/modals.js') }}"></script>
+    <script src="{{ asset('js/admin/validacionuser.js') }}"></script>
+    <script src="{{ asset('js/admin/validacionincidencia.js') }}"></script>
+    <script src="{{ asset('js/admin/validacioncategoria.js') }}"></script>
+    <script src="{{ asset('js/admin/validacionsubcategoria.js') }}"></script>
 
-    <script>
-        // Validaciones JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('userForm');
-            if (!form) return;
 
-            const fields = {
-                nombre: {
-                    required: true,
-                    regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-                    message: 'El nombre solo puede contener letras y espacios.'
-                },
-                email: {
-                    required: true,
-                    regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: 'El formato del email no es válido.'
-                },
-                password: {
-                    required: true,
-                    regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-                    message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
-                },
-                rol_id: {
-                    required: true,
-                    message: 'Seleccione un rol'
-                },
-                sede_id: {
-                    required: true,
-                    message: 'Seleccione una sede'
-                },
-                estado: {
-                    required: true,
-                    message: 'Seleccione un estado'
-                }
-            };
-
-            Object.keys(fields).forEach(fieldId => {
-                const input = document.getElementById(fieldId);
-                if (input) {
-                    input.addEventListener('blur', () => validateField(input, fields[fieldId]));
-                }
-            });
-
-            form.addEventListener('submit', function(event) {
-                let isValid = true;
-                Object.keys(fields).forEach(fieldId => {
-                    const input = document.getElementById(fieldId);
-                    if (input && !validateField(input, fields[fieldId])) {
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
-                    event.preventDefault();
-                }
-            });
-
-            function validateField(input, rules) {
-                const errorDiv = document.getElementById(`${input.id}-error`);
-                errorDiv.textContent = '';
-                input.classList.remove('border-red-500');
-
-                const value = input.value.trim();
-
-                if (rules.required && !value) {
-                    showError(errorDiv, 'Este campo es obligatorio', input);
-                    return false;
-                }
-
-                if (rules.regex && value && !rules.regex.test(value)) {
-                    showError(errorDiv, rules.message, input);
-                    return false;
-                }
-
-                return true;
-            }
-
-            function showError(errorDiv, message, input) {
-                errorDiv.textContent = message;
-                errorDiv.classList.remove('hidden');
-                input.classList.add('border-red-500');
-            }
-        });
-    </script>
 
     <style>
         .border-red-500 {

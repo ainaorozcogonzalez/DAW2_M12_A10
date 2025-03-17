@@ -2,8 +2,7 @@ function openIncidenciaModal() {
     var form = document.getElementById("incidenciaForm")
     document.getElementById('incidenciaModal').classList.remove('hidden');
     form.onsubmit = function (event) {
-        event.preventDefault();
-        crearincidencia();
+        crearincidencia(event);
     };
     form.reset();
 }
@@ -12,9 +11,12 @@ function closeIncidenciaModal() {
     var form = document.getElementById("incidenciaForm")
     document.getElementById('incidenciaModal').classList.add('hidden');
     form.onsubmit = function (event) {
-        event.preventDefault();
-        crearincidencia();
+        crearincidencia(event);
     };
+    const errorMessages = document.querySelectorAll('.text-red-500');
+    errorMessages.forEach(function (error) {
+        error.classList.add('hidden');
+    });
     const modalTitle = document.getElementById('modalTitle');
     modalTitle.innerText = 'Crear Nueva Incidencia';
     form.reset();

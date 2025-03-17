@@ -13,7 +13,6 @@ function mostrardatosincidencias() {
             return response.json();
         })
         .then(data => {
-            // console.log(data)
             resultadostabla.innerHTML = '';
             data.incidencias.forEach(incidencia => {
                 let respuesta = ""
@@ -44,13 +43,14 @@ function mostrardatosincidencias() {
 datosfiltros()
 
 function datosfiltros() {
-    let mostrarestados = document.getElementsByClassName("mostrarestados");
-    let mostrarprioridades = document.getElementsByClassName("mostrarprioridades");
-    let mostrarclientes = document.getElementsByClassName("mostrarclientes");
+    let mostrarclientes = document.getElementsByClassName("mostrar_clientes");
+    let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
+    let mostrarcategorias = document.getElementsByClassName("mostrar_categorias");
+    let mostrarsubcategorias = document.getElementById("subcategoria_id_incidencia");
+    let mostrarestados = document.getElementsByClassName("mostrar_estado");
+    let mostrarprioridades = document.getElementsByClassName("prioridad_id_incidencia");
+
     let mostrartecnicos = document.getElementsByClassName("mostrartecnicos");
-    let mostrarsedes = document.getElementsByClassName("mostrarsedes");
-    let mostrarcategorias = document.getElementsByClassName("mostrarcategorias");
-    let mostrarsubcategorias = document.getElementById("mostrarsubcategorias");
     var form = document.getElementById("formfiltros");
     var formData = new FormData(form);
     fetch("/incidencias/datosincidencias", {

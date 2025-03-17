@@ -24,7 +24,7 @@ function eliminar(id, nombre) {
             formData.append('_token', csrfToken);
             formData.append('_method', 'DELETE');
             formData.append('id', id);
-            fetch("/users/eliminaruario", {
+            fetch("/users/" + id, {
                 method: "POST",
                 body: formData
             })
@@ -51,6 +51,8 @@ function eliminar(id, nombre) {
 function cargadatoseditar(event, id) {
     event.preventDefault();
     const modalTitle = document.getElementById('modalTitle');
+    const btfrmcrear = document.getElementById('btfrmcrear');
+    btfrmcrear.innerHTML = 'Confirmar cambios';
 
     document.getElementById('userModal').classList.remove('hidden');
     var userForm = document.getElementById("userForm");
@@ -75,8 +77,8 @@ function cargadatoseditar(event, id) {
             };
             modalTitle.innerText = 'Editando a ' + data.nombre;
             document.getElementById('user_id').value = data.id || '';
-            document.getElementById('nombre').value = data.nombre || '';
-            document.getElementById('email').value = data.email || '';
+            document.getElementById('nombre_user').value = data.nombre || '';
+            document.getElementById('email_user').value = data.email || '';
 
             let rolSelect = userForm.querySelector('select[name="rol_id"]');
             if (data.rol_id) {
@@ -105,35 +107,6 @@ function editar() {
     formData.append('_method', 'PUT');
 
     fetch("/users/editar", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al cargar los datos");
-            return response.text();
-        })
-        .then(data => {
-            const [primeraParte, resto] = data.split(/ (.+)/);
-            if (primeraParte == 'success') {
-                form.reset()
-                document.getElementById('userModal').classList.add('hidden');
-                mostrardatosusuarios()
-            }
-            Swal.fire({
-                title: resto,
-                icon: primeraParte,
-            });
-        })
-}
-
-function Crearusuario() {
-    var form = document.getElementById("userForm");
-    var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
-    var formData = new FormData(form);
-    formData.append('_token', csrfToken);
-    formData.append('_method', 'POST');
-
-    fetch("/users/admincrearusuario", {
         method: "POST",
         body: formData
     })
