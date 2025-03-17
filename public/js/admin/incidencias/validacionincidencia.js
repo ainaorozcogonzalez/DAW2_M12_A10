@@ -29,7 +29,7 @@ function validarCliente() {
 function validarSedeincidencia() {
     const sede_id = document.getElementById('incidencia_sede_id').value;
     const error = document.getElementById('sede_id_incidencia-error');
-
+    cargausuarioscrear(sede_id)
     if (sede_id === "") {
         error.innerText = "Seleccione una sede";
         error.classList.remove('hidden');
@@ -44,6 +44,7 @@ function validarCategoriaSedeincidencia() {
     const categoria_id = document.getElementById('categoria_id_incidencia').value;
     const error = document.getElementById('categoria_id_incidencia-error');
 
+    cargasubcat(categoria_id)
     if (categoria_id === "") {
         error.innerText = "Seleccione una categoría";
         error.classList.remove('hidden');
@@ -155,4 +156,101 @@ function crearincidencia(event) {
                 mostrardatosincidencias();
             }
         })
+}
+
+function cargausuarioscrear(id) {
+    resultadousers = document.getElementById('cliente_id_incidencia');
+    resultadotecnics = document.getElementById('tecnico_id_incidencia');
+    if (id == '') {
+        resultadousers.innerHTML = '<option value="">Primero seleccione una sede</option>';
+        resultadotecnics.innerHTML = '<option value="">Primero seleccione una sede</option>';
+    } else {
+        var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+        var formData = new FormData();
+        formData.append('_token', csrfToken);
+        formData.append('id', id);
+        fetch("/datos/usuarios", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Error al cargar los datos");
+                return response.json();
+            })
+            .then(data => {
+                if (data.usuarios.length != "0") {
+                    resultadousers.innerHTML = '<option value="">Seleccione una cliente</option>';
+                    data.usuarios.forEach(usario => {
+                        resultadousers.innerHTML += '<option value="' + usario.id + '">' + usario.nombre + '</option>';
+                    });
+                } else {
+                    resultadousers.innerHTML = '<option value="">No hay clientes</option>';
+                }
+
+                if (data.tecnicos.length != "0") {
+                    resultadotecnics.innerHTML = '<option value="">Seleccione una tecnico</option>';
+                    data.tecnicos.forEach(usario => {
+                        resultadotecnics.innerHTML += '<option value="' + usario.id + '">' + usario.nombre + '</option>';
+                    });
+                } else {
+                    resultadotecnics.innerHTML = '<option value="">No hay tecnico</option>';
+                }
+            })
+    }
+}
+
+// function cargatecnico(id) {
+//     resultado = document.getElementById('tecnico_id_incidencia');
+//     if (id == '') {
+//         resultado.innerHTML = '<option value="">Primero seleccione una sede</option>';
+//     } else {
+//         var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+//         var formData = new FormData();
+//         formData.append('_token', csrfToken);
+//         formData.append('id', id);
+//         fetch("/datos/tecnicos", {
+//             method: "POST",
+//             body: formData
+//         })
+//             .then(response => {
+//                 if (!response.ok) throw new Error("Error al cargar los datos");
+//                 return response.json();
+//             })
+//             .then(data => {
+//                 if (data.length != "0") {
+//                     resultado.innerHTML = '<option value="">Seleccione un tecnico</option>';
+//                     data.forEach(usario => {
+//                         resultado.innerHTML += '<option value="' + usario.id + '">' + usario.nombre + '</option>';
+//                     });
+//                 } else {
+//                     resultado.innerHTML = '<option value="">No hay tecnicos</option>';
+//                 }
+//             })
+//     }
+// }
+
+function cargasubcat(id) {
+    resultado = document.getElementById('subcategoria_id_incidencia');
+    if (id == '') {
+        resultado.innerHTML = '<option value="">Primero seleccione una categoría</option>';
+    } else {
+        var csrfToken = document.querySelector('meta[name="csrf_token"]').getAttribute('content');
+        var formData = new FormData();
+        formData.append('_token', csrfToken);
+        formData.append('id', id);
+        fetch("/datos/subcat", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Error al cargar los datos");
+                return response.json();
+            })
+            .then(data => {
+                resultado.innerHTML = '<option value="">Seleccione una subcategoría</option>';
+                data.forEach(subcat => {
+                    resultado.innerHTML += '<option value="' + subcat.id + '">' + subcat.nombre + '</option>';
+                });
+            })
+    }
 }
