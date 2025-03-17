@@ -46,7 +46,6 @@ function datosfiltros() {
     let mostrarclientes = document.getElementsByClassName("mostrar_clientes");
     let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
     let mostrarcategorias = document.getElementsByClassName("mostrar_categorias");
-    let mostrarsubcategorias = document.getElementById("subcategoria_id_incidencia");
     let mostrarestados = document.getElementsByClassName("mostrar_estado");
     let mostrarprioridades = document.getElementsByClassName("prioridad_id_incidencia");
 
@@ -102,11 +101,6 @@ function datosfiltros() {
                 data.categorias.forEach(categoria => {
                     categorias.innerHTML += ' <option value="' + categoria.id + '" >' + categoria.nombre + '</option>';
                 });
-            });
-
-            mostrarsubcategorias.innerHTML = '<option value="">Seleccionar subcategoria</option>';
-            data.subcategorias.forEach(subcategoria => {
-                mostrarsubcategorias.innerHTML += ' <option value="' + subcategoria.id + '" >' + subcategoria.nombre + '</option>';
             });
         })
 }
