@@ -14,6 +14,8 @@ use App\Models\Subcategoria;
 use App\Models\EstadoIncidencia;
 use App\Models\Prioridad;
 use App\Models\Incidencia;
+use App\Models\Comentario;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -241,6 +243,35 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
+            // // Buscar el usuario
+            // $user = User::find($request->user_id);
+
+            // // Si la sede_id cambia, actualizar las incidencias relacionadas
+            // if ($user->sede_id !== $request->sede_id) {
+            //     Incidencia::where('cliente_id', $user->id)
+            //         ->update(['sede_id' => $request->sede_id]);
+            // }
+
+            // // Datos para actualizar
+            // $updateData = [
+            //     'nombre' => $request->nombre,
+            //     'email' => $request->email,
+            //     'rol_id' => $request->rol_id,
+            //     'sede_id' => $request->sede_id,
+            //     'estado' => $request->estado
+            // ];
+
+            // // Si hay contraseña, se encripta
+            // if ($request->filled('password')) {
+            //     $updateData['password'] = bcrypt($request->password);
+            // }
+
+            // // Actualizar usuario
+            // $user->update($updateData);
+            // DB::commit();
+            // echo "success " . $request->nombre . " editado correctamente";
+            // die();
+
             $user = User::find($request->user_id);
             $updateData = [
                 'nombre' => $request->nombre,
@@ -266,20 +297,32 @@ class UserController extends Controller
         // return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente');
     }
 
-    public function destroy(Request $request)
+    public function destroy(User $usuario)
     {
+        DB::beginTransaction();
         try {
-            $user = User::find($request->id);
-            if ($user) {
-                $user->delete();
-                echo "success Usuario eliminado correctamente";
-                die();
+            $incidencias = Incidencia::where('cliente_id', $usuario->id)
+                ->orWhere('tecnico_id', $usuario->id)
+                ->get();
+
+            if ($incidencias->isNotEmpty()) {
+                foreach ($incidencias as $incidencia) {
+                    // Eliminar los comentarios asociados a cada incidencia y luego la incidencia
+                    Comentario::where('incidencia_id', $incidencia->id)->delete();
+                    $incidencia->delete();
+                }
             }
+
+            $usuario->delete();
+            DB::commit();
+            echo "success Usuario eliminado correctamente";
+            die();
         } catch (\PDOException $e) {
+            DB::rollback();
             echo "error Intentelo más tarde";
             // echo "error " . $e;
             die();
         }
-        // return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
     }
 }

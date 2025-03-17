@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admincrearusuario', [UserController::class, 'store']);
         Route::post('/{user}/edit', [UserController::class, 'edit']);
         Route::put('/editar', [UserController::class, 'update']);
-        Route::delete('/eliminaruario', [UserController::class, 'destroy']);
+        Route::delete('/{usuario}', [UserController::class, 'destroy']);
         Route::post('/datosusuarios', [UserController::class, 'datosusuarios']);
     });
 

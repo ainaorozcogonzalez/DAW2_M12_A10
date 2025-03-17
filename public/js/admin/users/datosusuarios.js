@@ -56,7 +56,7 @@ datosfiltros()
 function datosfiltros() {
     let mostrarroles = document.getElementsByClassName("mostrar_roles");
     let mostrarsedes = document.getElementsByClassName("mostrar_sedes");
-    let mostrarestados = document.getElementsByClassName("mostrar_estados");
+    let mostrarestados = document.getElementsByClassName("mostrar_estadousuario");
     var form = document.getElementById("formfiltros");
     var formData = new FormData(form);
     fetch("/users/datosusuarios", {
