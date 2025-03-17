@@ -7,7 +7,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Cliente</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="{{ asset('js/incidencia-modal.js') }}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -51,7 +50,7 @@
 
         <!-- Filtros y ordenación mejorados -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <form id="filtrosForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form id="filtrosForm" class="grid grid-cols-1 md:grid-cols-5 gap-4" onsubmit="event.preventDefault(); filtrarIncidencias();">
                 <div>
                     <label for="estado_id" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                     <select name="estado_id" id="estado_id" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
@@ -70,12 +69,21 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label for="orden_fecha" class="block text-sm font-medium text-gray-700 mb-1">Ordenar por fecha</label>
+                    <select name="orden_fecha" id="orden_fecha" class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        <option value="">Seleccionar</option>
+                        <option value="asc">Más antiguas primero</option>
+                        <option value="desc">Más recientes primero</option>
+                    </select>
+                </div>
                 <div class="flex items-end">
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" name="excluir_cerradas" id="excluir_cerradas" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 transition duration-200" {{ request('excluir_cerradas') ? 'checked' : '' }}>
                         <span class="text-sm text-gray-700">Excluir cerradas</span>
                     </label>
                 </div>
+
                 <div class="flex items-end space-x-2">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center space-x-2 transition duration-200">
                         <i class="fas fa-filter"></i>
@@ -290,76 +298,8 @@
     </div>
 
     <!-- Referencia al archivo JavaScript externo -->
-    <script src="{{ asset('js/chat.js') }}"></script>
-
-    <script>
-        // Funciones para abrir/cerrar el modal
-        function openIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.remove('hidden');
-        }
-
-        function closeIncidenciaModal() {
-            document.getElementById('incidenciaModal').classList.add('hidden');
-        }
-
-        document.getElementById('categoria_id').addEventListener('change', function() {
-            var categoriaId = this.value;
-            var subcategoriaSelect = document.getElementById('subcategoria_id');
-            subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
-
-            if (categoriaId) {
-                fetch(`/subcategorias/${categoriaId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(subcategoria => {
-                            var option = document.createElement('option');
-                            option.value = subcategoria.id;
-                            option.text = subcategoria.nombre;
-                            subcategoriaSelect.appendChild(option);
-                        });
-                    });
-            }
-        });
-
-        function confirmarCierre(incidenciaId) {
-            if (confirm('¿Estás seguro de que deseas cerrar esta incidencia?')) {
-                fetch(`/incidencias/${incidenciaId}/cerrar`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload(); // Recargar la página para ver los cambios
-                    } else {
-                        alert(data.message || 'Hubo un error al intentar cerrar la incidencia');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error en la solicitud');
-                });
-            }
-        }
-
-        // Manejar el menú desplegable
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
-
-        userMenuButton.addEventListener('click', () => {
-            userMenu.classList.toggle('hidden');
-        });
-
-        // Cerrar el menú si se hace clic fuera de él
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
-                userMenu.classList.add('hidden');
-            }
-        });
-    </script>
+    <script src="{{ asset('js/chat.js') }}" defer></script>
+    <script src="{{ asset('js/dashboard.js') }}" defer></script>
+    <script src="{{ asset('js/incidencia-modal.js') }}" defer></script>
 </body>
 </html>
