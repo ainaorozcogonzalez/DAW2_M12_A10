@@ -101,17 +101,6 @@ Este proyecto es una plataforma web para la **gestión centralizada de incidenci
 
 ---
 
-## 🤝 Contribuciones
-
-¡Las contribuciones son bienvenidas! 🚀
-
-1. Haz un **fork** del repositorio.
-2. Crea una nueva **rama** (`feature/nueva-funcionalidad`).
-3. Realiza los cambios y haz **commit**.
-4. Envía un **pull request** detallado.
-
----
-
 ## 📄 Licencia
 
 📝 Este proyecto está bajo la **Licencia MIT**. Consulta el archivo `LICENSE` para más información.
