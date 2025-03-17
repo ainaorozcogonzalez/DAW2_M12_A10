@@ -80,27 +80,25 @@
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                     <div class="flex items-center space-x-4">
                         <div class="p-3 bg-yellow-50 rounded-full">
-                            <i class="fas fa-chart-line text-yellow-600"></i>
+                            <i class="fas fa-tags text-yellow-600"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500">Reportes</p>
+                            <p class="text-gray-500">Categorías</p>
                             <p class="text-2xl font-bold">
-                                {{ App\Models\Incidencia::whereNotNull('fecha_resolucion')->count() }}</p>
+                                {{ App\Models\Categoria::count() }}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                     <div class="flex items-center space-x-4">
                         <div class="p-3 bg-red-50 rounded-full">
-                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            <i class="fas fa-tag text-red-600"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500">Urgentes</p>
+                            <p class="text-gray-500">Subcategorías</p>
                             <p class="text-2xl font-bold">
-                                @php
-                                    $prioridadUrgente = App\Models\Prioridad::where('nombre', 'Urgente')->first();
-                                    echo $prioridadUrgente ? $prioridadUrgente->incidencias()->count() : 0;
-                                @endphp
+                                {{ App\Models\Subcategoria::count() }}
                             </p>
                         </div>
                     </div>
