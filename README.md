@@ -101,12 +101,6 @@ Este proyecto es una plataforma web para la **gestión centralizada de incidenci
 
 ---
 
-## 📄 Licencia
-
-📝 Este proyecto está bajo la **Licencia MIT**. Consulta el archivo `LICENSE` para más información.
-
----
-
 ## 📚 Recursos Adicionales
 
 📖 [Documentación de Laravel](https://laravel.com/docs)
