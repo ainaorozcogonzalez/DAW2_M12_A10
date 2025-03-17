@@ -84,6 +84,7 @@ class UserController extends Controller
         //     'email.regex' => 'El formato del email no es válido.',
         //     'password.regex' => 'La contraseña debe contener al menos una mayúscula, una minúscula y un número.'
         // ]);
+        DB:beginTransaction();
         try {
             User::create([
                 'nombre' => $request->nombre,
@@ -93,10 +94,11 @@ class UserController extends Controller
                 'sede_id' => $request->sede_id,
                 'estado' => $request->estado,
             ]);
-
+            DB::commit();
             echo "success " . $request->nombre . " creado correctamente";
             die();
         } catch (\PDOException $e) {
+            DB::rollBack();
             echo "error No se pudo crear a: " . $request->nombre;
             die();
         }
@@ -237,7 +239,7 @@ class UserController extends Controller
         //     'estado' => 'required|in:activo,inactivo'
         // ]);
 
-
+        DB::beginTransaction();
         try {
             $user = User::find($request->user_id);
             $updateData = [
@@ -251,9 +253,11 @@ class UserController extends Controller
                 $updateData['password'] = bcrypt($request->password);
             }
             $user->update($updateData);
+            DB::commit();
             echo "success " . $request->nombre . " editado correctamente";
             die();
         } catch (\PDOException $e) {
+            DB::rollBack();
             echo "error No se pudo editar a: " . $request->nombre;
             // echo  $e;
             die();
