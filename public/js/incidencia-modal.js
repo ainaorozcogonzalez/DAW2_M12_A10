@@ -8,6 +8,32 @@ document.addEventListener('DOMContentLoaded', function() {
         subcategoria_id: { required: true, message: 'Seleccione una subcategoría.' }
     };
 
+    const categoriaSelect = document.getElementById('categoria_id');
+    const subcategoriaSelect = document.getElementById('subcategoria_id');
+
+    if (categoriaSelect && subcategoriaSelect) {
+        categoriaSelect.addEventListener('change', function() {
+            const categoriaId = this.value;
+            subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
+
+            if (categoriaId) {
+                fetch(`/subcategorias/${categoriaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(subcategoria => {
+                            const option = document.createElement('option');
+                            option.value = subcategoria.id;
+                            option.text = subcategoria.nombre;
+                            subcategoriaSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar subcategorías:', error);
+                    });
+            }
+        });
+    }
+
     // Función para validar un campo
     function validateField(input, rules) {
         if (!input) return true;
