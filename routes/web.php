@@ -9,6 +9,7 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\ClientIncidenciaController;
+use App\Http\Controllers\DatosFrmController;
 use App\Models\EstadoIncidencia;
 use App\Models\Incidencia;
 use App\Models\Prioridad;
@@ -97,6 +98,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/datosincidencias', 'datosincidencias');
         Route::post('/editarassignar', 'editarassignar');
         Route::post('/editarprioridad', 'editarprioridad');
+    });
+
+    Route::controller(DatosFrmController::class)->group(function () {
+        Route::post('/datos/usuarios', 'mostrarusuarios');
+        Route::post('/datos/subcat', 'mostrarsubcategorias');
     });
 
     Route::get('/incidencias/{incidencia}/mensajes', [TecnicoController::class, 'obtenerMensajes'])->name('incidencias.mensajes');
